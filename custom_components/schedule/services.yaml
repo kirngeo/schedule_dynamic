@@ -1,0 +1,63 @@
+reload:
+get_schedule:
+  target:
+    entity:
+      domain: schedule
+advance_schedule:
+  target:
+    entity:
+      domain: schedule
+alter_schedule:
+  target:
+    entity:
+      domain: schedule
+  fields:
+    state:
+      required: true
+      selector:
+        text:
+boost_schedule:
+  target:
+    entity:
+      domain: schedule
+  fields:
+    duration:
+      example: "00:01:00 or 60"
+      required: true
+      selector:
+        duration:
+    state:
+      required: true
+      selector:
+        text:
+dump_schedule:
+  target:
+    entity:
+      domain: schedule
+refresh_schedule:
+  target:
+    entity:
+      domain: schedule
+vary_schedule:
+  target:
+    entity:
+      domain: schedule
+  fields:
+    lookahead:
+      example: "00:01:00 or 60"
+      required: true
+      selector:
+        duration:
+    lookbehind:
+      example: "00:01:00 or 60"
+      required: true
+      selector:
+        duration:
+    normal:
+      required: true
+      selector:
+        datetime:
+    variation:
+      required: true
+      selector:
+        datetime:

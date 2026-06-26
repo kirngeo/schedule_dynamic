@@ -1,0 +1,143 @@
+{
+  "common": {
+    "condition_behavior_name": "Condition passes if",
+    "trigger_behavior_name": "Trigger when"
+  },
+  "conditions": {
+    "is_off": {
+      "description": "Tests if one or more schedule blocks are currently not active.",
+      "fields": {
+        "behavior": {
+          "name": "[%key:component::schedule::common::condition_behavior_name%]"
+        }
+      },
+      "name": "Schedule is off"
+    },
+    "is_on": {
+      "description": "Tests if one or more schedule blocks are currently active.",
+      "fields": {
+        "behavior": {
+          "name": "[%key:component::schedule::common::condition_behavior_name%]"
+        }
+      },
+      "name": "Schedule is on"
+    }
+  },
+  "entity_component": {
+    "_": {
+      "name": "[%key:component::schedule::title%]",
+      "state": {
+        "off": "[%key:common::state::off%]",
+        "on": "[%key:common::state::on%]"
+      },
+      "state_attributes": {
+        "editable": {
+          "name": "[%key:common::generic::ui_managed%]",
+          "state": {
+            "false": "[%key:common::state::no%]",
+            "true": "[%key:common::state::yes%]"
+          }
+        },
+        "next_event": {
+          "name": "Next event"
+        }
+      }
+    }
+  },
+  "selector": {
+    "condition_behavior": {
+      "options": {
+        "all": "All",
+        "any": "Any"
+      }
+    },
+    "trigger_behavior": {
+      "options": {
+        "any": "Any",
+        "first": "First",
+        "last": "Last"
+      }
+    }
+  },
+  "services": {
+    "get_schedule": {
+      "description": "Retrieves the configured time ranges of one or multiple schedules.",
+      "name": "Get schedule"
+    },
+    "reload": {
+      "description": "Reloads schedules from the YAML-configuration.",
+      "name": "Reload schedules"
+    },
+    "advance_schedule": {
+      "description": "Advances schedule to the next transition.",
+      "name": "Advance schedule",
+      "fields" : {
+      }
+    },
+    "alter_schedule": {
+      "description": "Alters current schedule value, to a specified value.",
+      "name": "Alter schedule",
+      "fields" : {
+          "state" : {"description" : "Alter schedule to this value",
+                     "name" : "Value"}
+      }
+    },
+    "boost_schedule": {
+      "description": "Alters schedule to a specified value, for a specified duration.",
+      "name": "Boost schedule",
+      "fields" : {
+          "duration" : {"description" : "Duration of the alteration",
+                        "name" : "Duration"},
+          "state" : {"description" : "Alter schedule to this value, for the specified duration",
+                     "name" : "Value"}
+      }
+    },
+    "dump_schedule": {
+      "description": "Dumps schedule entries to the log file.",
+      "name": "Dump schedule",
+      "fields" : {
+      }
+    },
+    "refresh_schedule": {
+      "description": "Refresh schedule transitions, without reloading YAML.",
+      "name": "Refresh schedule",
+      "fields" : {
+      }
+    },
+    "vary_schedule": {
+      "description": "Varies schedule transitions times, within a specifies range, by a specified duration.",
+      "name": "Vary schedule",
+      "fields" : {
+          "normal" : {"description" : "Date/time; specifies the centre point of range",
+                        "name" : "Normal"},
+          "variation" : {"description" : "Date/time; the difference from \"Normal\" specifies the amount of time to cvary transitions which are with the range",
+                        "name" : "Variation"},
+          "lookahead" : {"description" : "Duration : the end of the range is this duration after \"Normal\"",
+                     "name" : "Lookahead"},
+          "lookbehind" : {"description" : "Duration : the start of the range is this duration before \"Normal\"",
+                     "name" : "Lookbehind"}
+      }
+    }
+  },
+  "title": "Schedule",
+  "triggers": {
+    "turned_off": {
+      "description": "Triggers when a schedule block ends.",
+      "fields": {
+        "behavior": {
+          "name": "[%key:component::schedule::common::trigger_behavior_name%]"
+        }
+      },
+      "name": "Schedule block ended"
+    },
+    "turned_on": {
+      "description": "Triggers when a schedule block starts.",
+      "fields": {
+        "behavior": {
+          "name": "[%key:component::schedule::common::trigger_behavior_name%]"
+        }
+      },
+      "name": "Schedule block started"
+    }
+  }
+}

@@ -1,0 +1,151 @@
+{
+    "common": {
+        "condition_behavior_name": "Condition passes if",
+        "trigger_behavior_name": "Trigger when"
+    },
+    "conditions": {
+        "is_off": {
+            "description": "Tests if one or more schedule blocks are currently not active.",
+            "fields": {
+                "behavior": {
+                    "name": "Condition passes if"
+                }
+            },
+            "name": "Schedule is off"
+        },
+        "is_on": {
+            "description": "Tests if one or more schedule blocks are currently active.",
+            "fields": {
+                "behavior": {
+                    "name": "Condition passes if"
+                }
+            },
+            "name": "Schedule is on"
+        }
+    },
+    "entity_component": {
+        "_": {
+            "name": "Schedule",
+            "state": {
+                "off": "Off",
+                "on": "On"
+            },
+            "state_attributes": {
+                "editable": {
+                    "name": "Managed via UI",
+                    "state": {
+                        "false": "No",
+                        "true": "Yes"
+                    }
+                },
+                "next_event": {
+                    "name": "Next event"
+                }
+            }
+        }
+    },
+    "selector": {
+        "condition_behavior": {
+            "options": {
+                "all": "All",
+                "any": "Any"
+            }
+        },
+        "trigger_behavior": {
+            "options": {
+                "any": "Any",
+                "first": "First",
+                "last": "Last"
+            }
+        }
+    },
+    "services": {
+        "advance_schedule": {
+            "description": "Advances schedule to the next transition.",
+            "name": "Advance schedule"
+        },
+        "alter_schedule": {
+            "description": "Alters current schedule value, to a specified value.",
+            "fields": {
+                "state": {
+                    "description": "Alter schedule to this value",
+                    "name": "Value"
+                }
+            },
+            "name": "Alter schedule"
+        },
+        "boost_schedule": {
+            "description": "Alters schedule to a specified value, for a specified duration.",
+            "fields": {
+                "duration": {
+                    "description": "Duration of the alteration",
+                    "name": "Duration"
+                },
+                "state": {
+                    "description": "Alter schedule to this value, for the specified duration",
+                    "name": "Value"
+                }
+            },
+            "name": "Boost schedule"
+        },
+        "dump_schedule": {
+            "description": "Dumps schedule entries to the log file.",
+            "name": "Dump schedule"
+        },
+        "get_schedule": {
+            "description": "Retrieves the configured time ranges of one or multiple schedules.",
+            "name": "Get schedule"
+        },
+        "refresh_schedule": {
+            "description": "Refresh schedule transitions, without reloading YAML.",
+            "name": "Refresh schedule"
+        },
+        "reload": {
+            "description": "Reloads schedules from the YAML-configuration.",
+            "name": "Reload schedules"
+        },
+        "vary_schedule": {
+            "description": "Varies schedule transitions times, within a specifies range, by a specified duration.",
+            "fields": {
+                "lookahead": {
+                    "description": "Duration : the end of the range is this duration after \"Normal\"",
+                    "name": "Lookahead"
+                },
+                "lookbehind": {
+                    "description": "Duration : the start of the range is this duration before \"Normal\"",
+                    "name": "Lookbehind"
+                },
+                "normal": {
+                    "description": "Date/time; specifies the centre point of range",
+                    "name": "Normal"
+                },
+                "variation": {
+                    "description": "Date/time; the difference from \"Normal\" specifies the amount of time to cvary transitions which are with the range",
+                    "name": "Variation"
+                }
+            },
+            "name": "Vary schedule"
+        }
+    },
+    "title": "Schedule",
+    "triggers": {
+        "turned_off": {
+            "description": "Triggers when a schedule block ends.",
+            "fields": {
+                "behavior": {
+                    "name": "Trigger when"
+                }
+            },
+            "name": "Schedule block ended"
+        },
+        "turned_on": {
+            "description": "Triggers when a schedule block starts.",
+            "fields": {
+                "behavior": {
+                    "name": "Trigger when"
+                }
+            },
+            "name": "Schedule block started"
+        }
+    }
+}
