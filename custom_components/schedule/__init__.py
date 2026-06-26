@@ -1143,3 +1143,4 @@ async def async_get_schedule_service(
     LOGGER.warning( f"almacp async_get_schedule_service, {schedule}, {service_call}" )
     LOGGER.warning( f"{rc}" )
     return schedule.get_schedule()
+
