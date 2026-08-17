@@ -67,6 +67,7 @@ from .const import (
     ATTR_LOOKAHEAD,
     ATTR_LOOKBEHIND,
     ATTR_NEXT_EVENT,
+    ATTR_NEXT_STATE,
     ATTR_NORMAL,
     ATTR_TRANSITIONS,
     ATTR_VARIATION,
@@ -532,10 +533,10 @@ class Schedule(CollectionEntity):
         self._attr_unique_id = self._config[CONF_ID]
         self._attr_state = STATE_UNKNOWN
 
-        self._unrecorded_attributes = self.all_custom_data_keys()
         if self._V2:
             LOGGER.warning( f"almacp Schedule.__init__ _config={self._config}" )
             self._attr_extra_state_attributes = self._config.get(CONF_ATTRIBUTES)
+            self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
             self._attr_unit_of_measurement = self._config.get(CONF_UNIT_OF_MEASUREMENT)
             self._unrecorded_attributes |= frozenset( ATTR_TRANSITIONS )
             if CONF_DEVICE_CLASS in self._config:
@@ -543,6 +544,8 @@ class Schedule(CollectionEntity):
                 self._state_is_numeric = self._attr_device_class not in NON_NUMERIC_DEVICE_CLASSES
             else:
                 self._state_is_numeric = False
+        else:
+            self._unrecorded_attributes = self.all_custom_data_keys()
 
         # Exclude any custom attributes that may be present on time ranges from recording.
         self._Entity__combined_unrecorded_attributes = (
@@ -974,11 +977,12 @@ class Schedule(CollectionEntity):
                     LOGGER.warning( f"transitions order is DUFF at {enn}")
             self.dump_schedule()
 
+            next_transition = None
             for transition in self._transitions:
                 if transition.inhibited:
                     continue
                 if transition.datetime >= now:
-                    next_event = transition.datetime
+                    next_transition = transition
                     break
                 want = transition
 
@@ -996,7 +1000,8 @@ class Schedule(CollectionEntity):
             self._attr_state = required_state if not self._is_binary else STATE_ON if cv.boolean( required_state ) else STATE_OFF
             LOGGER.warning( f"{self.name} _attr_state has been set to {self._attr_state} ({type(self._attr_state)})" )
 
-            self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = next_event,
+            self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = next_event = next_transition.datetime
+            self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = next_transition.state
 
             # Arrange to replenish transitions, and update the entity state, sometime...
             self.hass.async_create_task( self._async_replenish_transitions( update=True ) )
