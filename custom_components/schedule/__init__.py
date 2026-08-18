@@ -270,7 +270,11 @@ ENTITY_SCHEMA_V2 = vol.Schema(
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up a schedule."""
   #  LOGGER.warning( f"almacp async_setup now={dt_util.now()} as_utc={dt_util.as_utc(dt_util.now())} tz={dt_util.get_default_time_zone()}" )
-    LOGGER.warning( f"almacp async_setup now={dt_util.now()} as_utc={dt_util.as_utc(dt_util.now())} tz={dt_util.now().tzinfo}" )
+    LOGGER.warning( "almacp async_setup now=%s as_utc=%s tz=%s",
+                   dt_util.now(),
+                   dt_util.as_utc(dt_util.now()),
+                   dt_util.now().tzinfo
+                                  )
     hass.loop.set_debug(True) # almacp
  #   for one in pprint.pformat(config).splitlines() : LOGGER.warning(one)
 
@@ -307,7 +311,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     async def reload_service_handler(service_call: ServiceCall) -> None:
         """Reload yaml entities."""
-        LOGGER.warning( f"almacp reload_service_handler {service_call}" )
+        LOGGER.warning( "almacp reload_service_handler %s", service_call )
         conf = await component.async_prepare_reload(skip_reset=True)
         await yaml_collection.async_load(
             [{CONF_ID: id_, **cfg} for id_, cfg in conf.get(DOMAIN, {}).items()]
@@ -484,7 +488,7 @@ class Transition:
             pre = self.datetime
             self.datetime -= self._variation
             self._variation = None
-            LOGGER.warning( f"UNvaried from {pre} to {self.datetime}" )
+            LOGGER.warning( "UNvaried from %s to %s", pre, self.datetime )
 
         if (start < self.datetime < finish) and self._variation is None:
             # this transition is within range, and is not already varied.
@@ -492,7 +496,7 @@ class Transition:
             pre = self.datetime
             self.datetime += vary
             self._variation = vary
-            LOGGER.warning( f"varied from {pre} to {self.datetime}" )
+            LOGGER.warning( "varied from %s to %s". pre, self.datetime )
 
     def __repr__(self):
         """Generate string representation."""
@@ -534,7 +538,7 @@ class Schedule(CollectionEntity):
         self._attr_state = STATE_UNKNOWN
 
         if self._V2:
-            LOGGER.warning( f"almacp Schedule.__init__ _config={self._config}" )
+            LOGGER.warning( "almacp Schedule.__init__ _config=%s", self._config )
             self._attr_extra_state_attributes = self._config.get(CONF_ATTRIBUTES)
             self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
             self._attr_unit_of_measurement = self._config.get(CONF_UNIT_OF_MEASUREMENT)
@@ -555,7 +559,7 @@ class Schedule(CollectionEntity):
         if self._V2:
             self._transitions : [Transition] = []
 
-        LOGGER.warning( f"almacp Schedule.__init__ for {self.name} exiting" )
+        LOGGER.warning( "almacp Schedule.__init__ for %s exiting", self.name )
 
     @classmethod
     def from_storage(cls, config: ConfigType) -> Schedule:
@@ -575,7 +579,7 @@ class Schedule(CollectionEntity):
         """Handle when the config is updated."""
         self._V2 = CONF_SUB_SCHEDULES in config
         self._is_binary = (not self._V2) or config.get(CONF_BINARY, False)
-        LOGGER.warning( f"almacp Schedule async_update_config {config}" )
+        LOGGER.warning( "almacp Schedule async_update_config %s", config )
         self._config = ENTITY_SCHEMA_V2(config) if self._V2 else ENTITY_SCHEMA(config)
         self._attr_icon = config.get(CONF_ICON)
         self._attr_name = config[CONF_NAME]
@@ -600,7 +604,7 @@ class Schedule(CollectionEntity):
 
         async def temp():
             def dummy() -> list[Transition]:
-                LOGGER.warning( f"subschedule for {when.isoformat()} is missing" )
+                LOGGER.warning( "subschedule for %s is missing", when.isoformat() )
                 return [ Transition( tdate=when, ttime=time( hour=12, tzinfo = dt_util.get_default_time_zone() ) ) ]
 
             # If there is exactly one subschedule specified, then use it.
@@ -634,20 +638,23 @@ class Schedule(CollectionEntity):
                     DOMAIN,
                 )
 
-                LOGGER.warning( f'{self.name} about to run script, sequence= {script.sequence}' )
+                LOGGER.warning( '%s about to run script, sequence= %s',
+                               self.name,
+                               script.sequence)
                 try:
                     result = await script.async_run( context=Context() )
                 except (TemplateError, ServiceNotFound) as e:
                     return dummy()
 
-                LOGGER.warning( f"{self.name} output from script {sname} vars={vars(result)}" )
+                LOGGER.warning( "%s output from script %s vars=%s",
+                               self.name, sname, vars(result) )
 
                 if (subsched_id := result.variables.get('result',{}).get( result_variable )) is None:
                     LOGGER.error( "script %s did not return a sub-schedule id", sname )
                     return dummy()
 
                 if (subsched := self._config[ CONF_SUB_SCHEDULES ].get( subsched_id )) is None:
-                    LOGGER.error( f"sub-schedule %s was requested by script %s for %s, but was not found",
+                    LOGGER.error( "sub-schedule %s was requested by script %s for %s, but was not found",
                         subsched_id, sname, when.isoformat()  )
                     return dummy()
 
@@ -669,7 +676,8 @@ class Schedule(CollectionEntity):
         if not self._V2:
             return
 
-        LOGGER.warning( f'_async_replenish_transitions, for {self.name} until {until} update={update}' )
+        LOGGER.warning( '_async_replenish_transitions, for %s until %s update=%s',
+                       self.name, until, update)
 
         now = dt_util.now()
         if not until:
@@ -687,7 +695,7 @@ class Schedule(CollectionEntity):
     #    LOGGER.warning( f"dt={dt} ({dt.__class__.__name__})" )
         # Add entries for dates not yet in the schedule, but not after "until".
         while self._transitions[-1].date < until:
-            LOGGER.warning( f'adding sched for {dt} for {self.name}' )
+            LOGGER.warning( 'adding sched for %s for %s', dt, self.name )
             self._transitions += await self._async_get_subschedule_for( dt )
             dt += timedelta( days=1 )
     #    LOGGER.warning( f"all days added, update={update}")
@@ -711,13 +719,14 @@ class Schedule(CollectionEntity):
         if update:
             self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = [
                     t.attrib for t in self._transitions ][:self._config.get( CONF_ATTR_TRANSITIONS )]
-            LOGGER.warning( f"About to write_ha_state (of {self._attr_state}), for {self.name}, after replenishing" )
+            LOGGER.warning( f"About to write_ha_state (of %s, for %s, after replenishing",
+                           self._attr_state, self.name)
             self.async_write_ha_state()
 
     async def _async_delayed_replenish_transitions(self,  _: datetime | None = None) -> None:
         """Replenish the list of Transitions, and update the state."""
 
-        LOGGER.warning( f"_async_delayed_replenish_transitions for {self.name}" )
+        LOGGER.warning( "_async_delayed_replenish_transitions for %s", self.name )
        # await self._async_replenish_transitions( update=True)
         await self._async_replenish_transitions()
         self._is_ready = True
@@ -734,10 +743,10 @@ class Schedule(CollectionEntity):
         self.async_on_remove(self._clean_up_listener)
 
         if self._V2:
-            LOGGER.warning( f"A hass state={self.hass.state}")
+            LOGGER.warning( "A hass state=%s", self.hass.state)
 
             if CONF_DELAY_STARTUP in self._config and self.hass.state != CoreState.running:
-                LOGGER.warning( f"listening for hass starting" )
+                LOGGER.warning( "listening for hass starting" )
                 self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, self.async_hass_started)
                 return
 
@@ -748,11 +757,11 @@ class Schedule(CollectionEntity):
         self._update()
 
     async def async_hass_started(self, event: Event) -> None:
-        LOGGER.warning( f"{self.name} hass has started" )
+        LOGGER.warning( "%s hass has started", self.name )
 
         if (startup_delay := self._config.get( CONF_DELAY_STARTUP )):
 
-            LOGGER.warning( f"delaying startup for {startup_delay} seconds" )
+            LOGGER.warning( "delaying startup for %s seconds", startup_delay )
 
             async_track_point_in_utc_time(
                 self.hass,
@@ -847,16 +856,28 @@ class Schedule(CollectionEntity):
             until_index = inx
             until_transition = transition
 
-        LOGGER.warning( f"until={until.day:02}-{until.hour:02}:{until.minute:02}:{until.minute:02} boost_value={boost_value}" )
-        LOGGER.warning( f"duration={duration} now_index={now_index} until_index={until_index}" )
-        LOGGER.warning( f"latest transition is currently {self._transitions[-1].datetime}" )
+        LOGGER.warning( "until=%02d-%02d:%02d:%02d boost_value=%s",
+                       until.day,
+                       until.hour,
+                       until.minute,
+                       until.second,
+                       boost_value)
+        LOGGER.warning( "duration=%s now_index=%s until_index=%s",
+                       duration,
+                       now_index,
+                       until_index)
+        LOGGER.warning( "latest transition is currently %s",
+                       self._transitions[-1].datetime)
 
         # Ensure that the existing  transitions extend beyond the desired boost time...
         while until > self._transitions[-1].datetime:
             await self._async_replenish_transitions()
 
         if (now_index is None) or (until_index is None) or (until_index < now_index):
-            LOGGER.error( f"schedule {self.name} invalid boost until {until} to {boost_value}" )
+            LOGGER.error( "schedule %s invalid boost until %s to %s",
+                         self.name,
+                         until,
+                         boost_value)
             response["msg"] = f"schedule {self.name} invalid boost until {until} to {boost_value}"
 
         elif until_index == now_index:
@@ -883,7 +904,7 @@ class Schedule(CollectionEntity):
     async def refresh(self) -> None:
         """Remove all existing Transitions; generate a new set."""
         if not self._is_ready:
-            LOGGER.warning( f"{self.name} is not ready for refresh yet" )
+            LOGGER.warning( "%s is not ready for refresh yet", self.name )
             return
         self._transitions : [Transition] = []
         await self._async_replenish_transitions()
@@ -903,16 +924,19 @@ class Schedule(CollectionEntity):
         """
 
         if not self._is_ready:
-            LOGGER.warning( f"{self.name} is not ready for vary yet" )
+            LOGGER.warning( "%s is not ready for vary yet", self.name )
             return
 
         vary_by = variation - normal
         vary_by_seconds = vary_by.total_seconds()
         range_start = normal - lookbehind
         range_finish = normal + lookahead
-        LOGGER.warning( f"normal={normal} variation={variation}" )
-        LOGGER.warning( f"lookahead={lookahead} lookbehind={lookbehind}" )
-        LOGGER.warning( f"vary_by={vary_by} ({vary_by_seconds} secs) range={range_start} to {range_finish}" )
+        LOGGER.warning( "normal=%s variation=%s",
+                       normal, variation)
+        LOGGER.warning( "lookahead=%s lookbehind=%s",
+                       lookahead, lookbehind)
+        LOGGER.warning( "vary_by=%s (%s secs) range=%s to %s",
+                       vary_by, vary_by_seconds, range_start, range_finish)
         if not vary_by_seconds:
             return
         self.dump_schedule( msg="pre-vary" )
@@ -923,19 +947,23 @@ class Schedule(CollectionEntity):
             previous_dt = self._transitions[-1].datetime + timedelta(days=1)
             for trans in reversed( self._transitions ):
                 if trans.datetime < previous_dt:
-                    LOGGER.warning( f'good trans.datetime={trans.datetime} previous_dt-{previous_dt}' )
+                    LOGGER.warning( 'good trans.datetime=%s previous_dt=%s',
+                                   trans.datetime, previous_dt)
                     previous_dt = trans.datetime
                 else: #bad
-                    LOGGER.warning( f'BAD trans.datetime={trans.datetime} previous_dt-{previous_dt}' )
+                    LOGGER.warning( 'BAD trans.datetime=%s previous_dt=%s',
+                                   trans.datetime, previous_dt)
                     trans.inhibited=42
         else:
             previous_dt = self._transitions[0].datetime - timedelta(days=1)
             for trans in self._transitions:
                 if trans.datetime > previous_dt:
-                    LOGGER.warning( f'good trans.datetime={trans.datetime} previous_dt-{previous_dt}' )
+                    LOGGER.warning( 'good trans.datetime=%s previous_dt=%s',
+                                   trans.datetime, previous_dt)
                     previous_dt = trans.datetime
                 else: #bad
-                    LOGGER.warning( f'BAD trans.datetime={trans.datetime} previous_dt-{previous_dt}' )
+                    LOGGER.warning( 'BAD trans.datetime%s previous_dt=%s',
+                                   trans.datetime, previous_dt)
                     trans.inhibited=42
 
         self.dump_schedule( msg="post-vary" )
@@ -950,7 +978,11 @@ class Schedule(CollectionEntity):
     def _update(self, _: datetime | None = None) -> None:
         """Update the states of the schedule."""
         now = dt_util.now()
-        LOGGER.warning( f"almacp Schedule {self.name} _update _V2={self._V2} now={now} uom={self.unit_of_measurement}" )
+        LOGGER.warning( "almacp Schedule %s _update _V2=%s now=%s uom=%s",
+                       self.name,
+                       self.V2,
+                       now,
+                       self.unit_of_measurement)
     #    for ent in ('input_boolean.occupied',):
     #        LOGGER.warning( f"ent={ent} state={self.hass.states.get(ent).state}" )
     #        LOGGER.warning( f"ent={ent} is_state={self.hass.states.is_state(ent, 'on')}" )
@@ -962,6 +994,7 @@ class Schedule(CollectionEntity):
             
             ## TEMPORARY - check Transitions are sorted
             if self._transitions:
+                enn = -1
                 orderok = -1
                 for enn, t in enumerate(self._transitions):
                     if enn == 0:
@@ -972,9 +1005,9 @@ class Schedule(CollectionEntity):
                         break
                     whereami = t.datetime
                 if orderok < 0:
-                    LOGGER.warning( f"transitions order is OK")
+                    LOGGER.warning( "transitions order is OK")
                 else:
-                    LOGGER.warning( f"transitions order is DUFF at {enn}")
+                    LOGGER.warning( "transitions order is DUFF at %s", enn)
             self.dump_schedule()
 
             next_transition = None
@@ -998,7 +1031,8 @@ class Schedule(CollectionEntity):
                 required_state = want.state
 
             self._attr_state = required_state if not self._is_binary else STATE_ON if cv.boolean( required_state ) else STATE_OFF
-            LOGGER.warning( f"{self.name} _attr_state has been set to {self._attr_state} ({type(self._attr_state)})" )
+            LOGGER.warning( "%s _attr_state has been set to %s (%s)",
+                           self.name, self._attr_state, type(self._attr_state)
 
             self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = next_event = next_transition.datetime
             self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = next_transition.state
@@ -1080,8 +1114,10 @@ class Schedule(CollectionEntity):
             self.async_write_ha_state()
 
         if next_event:
-            LOGGER.warning( f"{'V2' if self._V2 else 'V1'} waiting until {next_event} ")
-            LOGGER.warning( f"B hass state={self.hass.state}")
+            LOGGER.warning( "%s waiting until %s",
+                           'V2' if self._V2 else 'V1',
+                           next_event)
+            LOGGER.warning( "B hass state=%s", self.hass.state)
             self._unsub_update = async_track_point_in_utc_time(
                 self.hass,
                 self._update,
@@ -1120,23 +1156,23 @@ async def handle_alter(schedule: Schedule, call: ServiceCall) -> ServiceResponse
     """
     return schedule.alter( call.data.get( CONF_STATE ) )
 
-async def handle_advance(schedule: Schedule, call: ServiceCall) -> ServiceResponse:
+async def handle_advance(schedule: Schedule, _: ServiceCall) -> ServiceResponse:
     """Handle advance action."""
     return schedule.advance()
 
-async def handle_dump(schedule : Schedule, call: ServiceCall) -> ServiceResponse:
+async def handle_dump(schedule : Schedule, _: ServiceCall) -> ServiceResponse:
     """Handle dump action."""
     return schedule.dump_schedule()
 
 async def handle_vary(schedule : Schedule, call: ServiceCall) -> ServiceResponse:
     """Handle vary action."""
-    LOGGER.warning( f"handle_vary {call.data}, response {call.return_response}" )
+    LOGGER.warning( "handle_vary %s, response %s", call.data, call.return_response )
     return schedule.vary(   dt_util.as_utc( call.data.get( ATTR_NORMAL ) ),
                             dt_util.as_utc( call.data.get( ATTR_VARIATION )),
                             call.data.get( ATTR_LOOKAHEAD ),
                             call.data.get( ATTR_LOOKBEHIND ) )
 
-async def handle_refresh(schedule : Schedule, call: ServiceCall) -> ServiceResponse:
+async def handle_refresh(schedule : Schedule, _: ServiceCall) -> ServiceResponse:
     """Handle refresh action."""
     return await schedule.refresh()
 
@@ -1145,7 +1181,7 @@ async def async_get_schedule_service(
 ) -> ServiceResponse:
     """Return the schedule configuration."""
     rc = schedule.get_schedule()
-    LOGGER.warning( f"almacp async_get_schedule_service, {schedule}, {service_call}" )
-    LOGGER.warning( f"{rc}" )
+    LOGGER.warning( "almacp async_get_schedule_service, %s, %s", schedule, service_call )
+    LOGGER.warning( "%s", rc )
     return schedule.get_schedule()
 
