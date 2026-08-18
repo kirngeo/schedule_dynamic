@@ -999,7 +999,7 @@ class Schedule(CollectionEntity):
         now = dt_util.now()
         LOGGER.warning( "almacp Schedule %s _update _v2=%s now=%s uom=%s",
                        self.name,
-                       self.v2,
+                       self._v2,
                        now,
                        self.unit_of_measurement)
     #    for ent in ('input_boolean.occupied',):
