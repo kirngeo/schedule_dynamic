@@ -649,12 +649,13 @@ class Schedule(CollectionEntity):
                 LOGGER.warning( "%s output from script %s vars=%s",
                                self.name, sname, vars(result) )
 
-                if (subsched_id := result.variables.get('result',{}).get( result_variable )) is None:
+                if (subsched_id := result.variables.get('result',{}) \
+                                   .get( result_variable )) is None:
                     LOGGER.error( "script %s did not return a sub-schedule id", sname )
                     return dummy()
 
                 if (subsched := self._config[ CONF_SUB_SCHEDULES ].get( subsched_id )) is None:
-                    LOGGER.error( "sub-schedule %s was requested by script %s for %s, but was not found",
+                    LOGGER.error( "sub-schedule %s (script %s) for %s not found",
                         subsched_id, sname, when.isoformat()  )
                     return dummy()
 
@@ -667,10 +668,12 @@ class Schedule(CollectionEntity):
                 ) or dummy()
 
         res = await temp()
-  #      LOGGER.warning( f"{self.name} _async_get_subscheduule_for( {when} ) gave {len(res)} transitions" ) 
-        return res  
+ #LOGGER.warning( f"{self.name} _async_get_subscheduule_for( {when} ) gave {len(res)} transitions" )
+        return res
 
-    async def _async_replenish_transitions(self, until: date | None = None, update: bool = False) -> None:
+    async def _async_replenish_transitions(self,
+                                           until: date | None = None,
+                                           update: bool = False) -> None:
         """Replenish the list of Transitions, filling it until the specified date ."""
 
         if not self._V2:
@@ -686,7 +689,8 @@ class Schedule(CollectionEntity):
         if not self._transitions:
             # Initialise an empty schedule, with yesterday's sub-schedule
   #          LOGGER.warning( 'Initialising %s with schedule for yesterday',self.name )
-            self._transitions = await self._async_get_subschedule_for( now.date() - timedelta( days=1 ) )
+            self._transitions = \
+                    await self._async_get_subschedule_for( now.date() - timedelta( days=1 ) )
 
         # Find the date after the most recent date currently in schedule
         dt = self._transitions[-1].date + timedelta( days=1 )
@@ -702,7 +706,8 @@ class Schedule(CollectionEntity):
 
         keep = 1  # number of past transitions to retain
 
-        # Remove historic entries from the start : only need to leave "keep" transition prior to "now"
+        # Remove historic entries from the start.
+        # Only need to leave "keep" transition prior to "now"
         past = 0  # count of past transitions
         for transition in self._transitions:
             if transition.datetime < now:
@@ -718,7 +723,8 @@ class Schedule(CollectionEntity):
 
         if update:
             self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = [
-                    t.attrib for t in self._transitions ][:self._config.get( CONF_ATTR_TRANSITIONS )]
+                    t.attrib \
+                        for t in self._transitions ][:self._config.get( CONF_ATTR_TRANSITIONS )]
             LOGGER.warning( f"About to write_ha_state (of %s, for %s, after replenishing",
                            self._attr_state, self.name)
             self.async_write_ha_state()
@@ -733,7 +739,8 @@ class Schedule(CollectionEntity):
 
         self._update()
 
-  #      self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = [t.attrib for t in self._transitions ][:10]
+  #      self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = \
+  #        [t.attrib for t in self._transitions ][:10]
   #      self.async_write_ha_state()
 
 
@@ -747,7 +754,8 @@ class Schedule(CollectionEntity):
 
             if CONF_DELAY_STARTUP in self._config and self.hass.state != CoreState.running:
                 LOGGER.warning( "listening for hass starting" )
-                self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, self.async_hass_started)
+                self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED,
+                                                self.async_hass_started)
                 return
 
             # fill with transitions up until end of tomorrow...
@@ -829,7 +837,8 @@ class Schedule(CollectionEntity):
             now_transition.state = value
             self._clean_update()
             tm = next_transition.datetime
-            response["msg"] = f"schedule altered to {value} until {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
+            response["msg"] = f"schedule altered to {value} " \
+                              f"until {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
 
         self.dump_schedule( msg="post-alter" )
 
@@ -883,7 +892,8 @@ class Schedule(CollectionEntity):
         elif until_index == now_index:
             # Insert one additional transition
             current = now_transition.state
-            self._transitions.insert( now_index+1, Transition( tdate=until.date(), ttime=until.time(), state=current ) )
+            self._transitions.insert( now_index+1,
+                              Transition( tdate=until.date(), ttime=until.time(), state=current ) )
             now_transition.state = boost_value
 
         else:
@@ -895,7 +905,8 @@ class Schedule(CollectionEntity):
                 del self._transitions[ now_index+1 : until_index ]
 
         if not response:
-            response["msg"] = f"schedule boosted to {boost_value} until {until.hour:02}:{until.minute:02}:{until.second:02}"
+            response["msg"] = f"schedule boosted to {boost_value} " \
+                              f"until {until.hour:02}:{until.minute:02}:{until.second:02}"
 
         self._clean_update()
         self.dump_schedule( msg="post-boost" )
@@ -910,13 +921,17 @@ class Schedule(CollectionEntity):
         await self._async_replenish_transitions()
         self._clean_update()
 
-    def vary( self, normal: datetime, variation: datetime, lookahead: timedelta, lookbehind: timedelta ) -> dict :
+    def vary( self, normal: datetime,
+             variation: datetime,
+             lookahead: timedelta,
+             lookbehind: timedelta ) -> dict :
         """Vary the schedule.
 
         This means moving a part of the schedule.
 
         "normal" and "variations" define the normal time, and the variation time.
-        For example, if you usually have an alarm at 08:00, but on a particular day you want it at 07:00,
+        For example, if you usually have an alarm at 08:00,
+        but on a particular day you want it at 07:00,
         then set normal to 08:00 and variation to 07:00.
 
         lookahead and lookbehind specify the timescale range (with respect to "normal") of the
@@ -991,7 +1006,7 @@ class Schedule(CollectionEntity):
         next_event = None
 
         if self._V2:
-            
+
             ## TEMPORARY - check Transitions are sorted
             if self._transitions:
                 enn = -1
@@ -1030,13 +1045,17 @@ class Schedule(CollectionEntity):
             else:
                 required_state = want.state
 
-            self._attr_state = required_state if not self._is_binary else STATE_ON if cv.boolean( required_state ) else STATE_OFF
+            self._attr_state = required_state if not self._is_binary \ 
+                               else STATE_ON if cv.boolean( required_state ) \
+                               else STATE_OFF
             LOGGER.warning( "%s _attr_state has been set to %s (%s)",
                            self.name, self._attr_state, type(self._attr_state)
                            )
 
-            self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = next_event = next_transition.datetime
-            self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = next_transition.state
+            self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = \
+                    next_event = next_transition.datetime
+            self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = \
+                    next_transition.state
 
             # Arrange to replenish transitions, and update the entity state, sometime...
             self.hass.async_create_task( self._async_replenish_transitions( update=True ) )
@@ -1185,4 +1204,3 @@ async def async_get_schedule_service(
     LOGGER.warning( "almacp async_get_schedule_service, %s, %s", schedule, service_call )
     LOGGER.warning( "%s", rc )
     return schedule.get_schedule()
-
