@@ -496,7 +496,7 @@ class Transition:
             pre = self.datetime
             self.datetime += vary
             self._variation = vary
-            LOGGER.warning( "varied from %s to %s". pre, self.datetime )
+            LOGGER.warning( "varied from %s to %s", pre, self.datetime )
 
     def __repr__(self):
         """Generate string representation."""
@@ -518,7 +518,7 @@ class Schedule(CollectionEntity):
     _config: ConfigType
     _next: datetime
     _unsub_update: Callable[[], None] | None = None
-    _V2: bool = False
+    _v2: bool = False
     _is_binary: bool
     _transitions: [Transition] = []
     _state_is_numeric: bool = False
@@ -526,10 +526,10 @@ class Schedule(CollectionEntity):
 
     def __init__(self, config: ConfigType, editable: bool) -> None:
         """Initialize a schedule."""
-        self._V2 = CONF_SUB_SCHEDULES in config
-        self._is_binary = config.get(CONF_BINARY, False) or not self._V2
- #       if self._V2 : LOGGER.warning( f"almacp Schedule.__init__ config={config}" )
-        self._config = ENTITY_SCHEMA_V2(config) if self._V2 else ENTITY_SCHEMA(config)
+        self._v2 = CONF_SUB_SCHEDULES in config
+        self._is_binary = config.get(CONF_BINARY, False) or not self._v2
+ #       if self._v2 : LOGGER.warning( f"almacp Schedule.__init__ config={config}" )
+        self._config = ENTITY_SCHEMA_V2(config) if self._v2 else ENTITY_SCHEMA(config)
   #      LOGGER.warning( f"almacp Schedule.__init__ _config={self._config}" )
         self._attr_capability_attributes = {ATTR_EDITABLE: editable}
         self._attr_icon = self._config.get(CONF_ICON)
@@ -537,7 +537,7 @@ class Schedule(CollectionEntity):
         self._attr_unique_id = self._config[CONF_ID]
         self._attr_state = STATE_UNKNOWN
 
-        if self._V2:
+        if self._v2:
             LOGGER.warning( "almacp Schedule.__init__ _config=%s", self._config )
             self._attr_extra_state_attributes = self._config.get(CONF_ATTRIBUTES)
             self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
@@ -552,11 +552,11 @@ class Schedule(CollectionEntity):
             self._unrecorded_attributes = self.all_custom_data_keys()
 
         # Exclude any custom attributes that may be present on time ranges from recording.
-        self._Entity__combined_unrecorded_attributes = (
+        self._entity__combined_unrecorded_attributes = (
             self._entity_component_unrecorded_attributes | self._unrecorded_attributes
         )
 
-        if self._V2:
+        if self._v2:
             self._transitions : [Transition] = []
 
         LOGGER.warning( "almacp Schedule.__init__ for %s exiting", self.name )
@@ -577,14 +577,14 @@ class Schedule(CollectionEntity):
 
     async def async_update_config(self, config: ConfigType) -> None:
         """Handle when the config is updated."""
-        self._V2 = CONF_SUB_SCHEDULES in config
-        self._is_binary = (not self._V2) or config.get(CONF_BINARY, False)
+        self._v2 = CONF_SUB_SCHEDULES in config
+        self._is_binary = (not self._v2) or config.get(CONF_BINARY, False)
         LOGGER.warning( "almacp Schedule async_update_config %s", config )
-        self._config = ENTITY_SCHEMA_V2(config) if self._V2 else ENTITY_SCHEMA(config)
+        self._config = ENTITY_SCHEMA_V2(config) if self._v2 else ENTITY_SCHEMA(config)
         self._attr_icon = config.get(CONF_ICON)
         self._attr_name = config[CONF_NAME]
 
-        if self._V2:
+        if self._v2:
             # fill with transitions up until end of tomorrow...
             self._transitions : [Transition] = []
             await self._async_replenish_transitions()
@@ -605,7 +605,9 @@ class Schedule(CollectionEntity):
         async def temp():
             def dummy() -> list[Transition]:
                 LOGGER.warning( "subschedule for %s is missing", when.isoformat() )
-                return [ Transition( tdate=when, ttime=time( hour=12, tzinfo = dt_util.get_default_time_zone() ) ) ]
+                return [ Transition( tdate=when,
+                                     ttime=time( hour=12, tzinfo = dt_util.get_default_time_zone() ),
+                                    ) ]
 
             # If there is exactly one subschedule specified, then use it.
             sub_schedules = self._config[ CONF_SUB_SCHEDULES ]
@@ -628,7 +630,7 @@ class Schedule(CollectionEntity):
 
                 try:
                     await async_validate_actions_config( self.hass, actions )
-                except ValueError as e:
+                except ValueError as _:
                     return dummy()
 
                 script = Script(
@@ -676,7 +678,7 @@ class Schedule(CollectionEntity):
                                            update: bool = False) -> None:
         """Replenish the list of Transitions, filling it until the specified date ."""
 
-        if not self._V2:
+        if not self._v2:
             return
 
         LOGGER.warning( '_async_replenish_transitions, for %s until %s update=%s',
@@ -725,7 +727,7 @@ class Schedule(CollectionEntity):
             self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = [
                     t.attrib \
                         for t in self._transitions ][:self._config.get( CONF_ATTR_TRANSITIONS )]
-            LOGGER.warning( f"About to write_ha_state (of %s, for %s, after replenishing",
+            LOGGER.warning( "About to write_ha_state (of %s, for %s, after replenishing",
                            self._attr_state, self.name)
             self.async_write_ha_state()
 
@@ -749,7 +751,7 @@ class Schedule(CollectionEntity):
         LOGGER.warning( "Almacp Schedule async_added_to_hass %s",  self.name )
         self.async_on_remove(self._clean_up_listener)
 
-        if self._V2:
+        if self._v2:
             LOGGER.warning( "A hass state=%s", self.hass.state)
 
             if CONF_DELAY_STARTUP in self._config and self.hass.state != CoreState.running:
@@ -764,7 +766,8 @@ class Schedule(CollectionEntity):
         self._is_ready = True
         self._update()
 
-    async def async_hass_started(self, event: Event) -> None:
+    async def async_hass_started(self, _: Event) -> None:
+        """Hass has started"""
         LOGGER.warning( "%s hass has started", self.name )
 
         if (startup_delay := self._config.get( CONF_DELAY_STARTUP )):
@@ -782,7 +785,7 @@ class Schedule(CollectionEntity):
     def get_schedule(self) -> ConfigType:
         """Return the schedule."""
         LOGGER.warning( "Almacp Schedule get_schedule" )
-        if not self._V2:
+        if not self._v2:
             return {d: self._config[d] for d in WEEKDAY_TO_CONF.values()}
         return None
 
@@ -993,9 +996,9 @@ class Schedule(CollectionEntity):
     def _update(self, _: datetime | None = None) -> None:
         """Update the states of the schedule."""
         now = dt_util.now()
-        LOGGER.warning( "almacp Schedule %s _update _V2=%s now=%s uom=%s",
+        LOGGER.warning( "almacp Schedule %s _update _v2=%s now=%s uom=%s",
                        self.name,
-                       self.V2,
+                       self.v2,
                        now,
                        self.unit_of_measurement)
     #    for ent in ('input_boolean.occupied',):
@@ -1005,7 +1008,7 @@ class Schedule(CollectionEntity):
 
         next_event = None
 
-        if self._V2:
+        if self._v2:
 
             ## TEMPORARY - check Transitions are sorted
             if self._transitions:
@@ -1135,7 +1138,7 @@ class Schedule(CollectionEntity):
 
         if next_event:
             LOGGER.warning( "%s waiting until %s",
-                           'V2' if self._V2 else 'V1',
+                           'v2' if self._v2 else 'v1',
                            next_event)
             LOGGER.warning( "B hass state=%s", self.hass.state)
             self._unsub_update = async_track_point_in_utc_time(
