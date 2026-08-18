@@ -12,6 +12,6 @@ CONDITIONS: dict[str, type[Condition]] = {
 }
 
 
-async def async_get_conditions(hass: HomeAssistant) -> dict[str, type[Condition]]:
+async def async_get_conditions(_: HomeAssistant) -> dict[str, type[Condition]]:
     """Return the schedule conditions."""
     return CONDITIONS

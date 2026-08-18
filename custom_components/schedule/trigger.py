@@ -38,6 +38,6 @@ TRIGGERS: dict[str, type[Trigger]] = {
 }
 
 
-async def async_get_triggers(hass: HomeAssistant) -> dict[str, type[Trigger]]:
+async def async_get_triggers(_: HomeAssistant) -> dict[str, type[Trigger]]:
     """Return the triggers for schedules."""
     return TRIGGERS
