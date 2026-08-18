@@ -1045,7 +1045,7 @@ class Schedule(CollectionEntity):
             else:
                 required_state = want.state
 
-            self._attr_state = required_state if not self._is_binary \ 
+            self._attr_state = required_state if not self._is_binary \
                                else STATE_ON if cv.boolean( required_state ) \
                                else STATE_OFF
             LOGGER.warning( "%s _attr_state has been set to %s (%s)",
