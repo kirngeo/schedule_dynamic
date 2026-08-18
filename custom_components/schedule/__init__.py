@@ -27,6 +27,7 @@ from homeassistant.const import (
 from homeassistant.core import (
     Context,
     CoreState,
+    Event,
     HomeAssistant,
     ServiceCall,
     ServiceResponse,
@@ -645,7 +646,7 @@ class Schedule(CollectionEntity):
                                script.sequence)
                 try:
                     result = await script.async_run( context=Context() )
-                except (TemplateError, ServiceNotFound) as e:
+                except (TemplateError, ServiceNotFound) as _:
                     return dummy()
 
                 LOGGER.warning( "%s output from script %s vars=%s",
