@@ -1,7 +1,7 @@
 {
   "domain": "schedule",
   "name": "Dynamic Schedule",
-  "codeowners": ["kirngeo"],
+  "codeowners": ["@kirngeo"],
   "documentation": "https://github.com/kirngeo/schedule_dynamic/README.md",
   "integration_type": "helper",
   "quality_scale": "custom",
