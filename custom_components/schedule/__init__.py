@@ -616,7 +616,7 @@ class Schedule(CollectionEntity):
                 subsched = list(sub_schedules.values())[0]
             else:
                 sname = self._config[CONF_SELECT_SCRIPT]
-                result_variable = "value"
+              #  result_variable = "value"
                 actions = [
                     {"action": f"{'' if '.' in sname else 'script.'}{sname}",
                       "response_variable": "result",
@@ -624,7 +624,7 @@ class Schedule(CollectionEntity):
                           "date"      : when,
                           "entity"    : DOMAIN + '.' + self.unique_id,
                           "choices"   : set( sub_schedules ),
-                          "result_variable" : result_variable,
+                      #    "result_variable" : result_variable,
                           },
                      }
                 ]
@@ -653,7 +653,7 @@ class Schedule(CollectionEntity):
                                self.name, sname, vars(result) )
 
                 if (subsched_id := result.variables.get('result',{}) \
-                                   .get( result_variable )) is None:
+                                   .get( 'subsched' )) is None:
                     LOGGER.error( "script %s did not return a sub-schedule id", sname )
                     return dummy()
 
