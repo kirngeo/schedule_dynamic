@@ -1,7 +1,7 @@
 # schedule_dynamic
 Home Assistant drop-in replacement for schedule integration
 
-## Please note that dynamic schedules can currently only be set up via YAML.
+## dynamic schedules can currently only be set up via YAML.
 
 ## Summary
 
@@ -25,12 +25,18 @@ Note that the sub-schedules do not contain information about day-of-week, or day
  key | mandatory? | description
  --- | --- | ---
 `name` | Y |
-`select_script` | Y | mandatory for new
-`sub_schedules` | Y |
+`select_script` | Y | If missing, the schedule will not be dynamic.
+`sub_schedules` | Y | Each key within `sub_schedules` specifies one sub-schedule. See #sub-schedule definition# below.
 `device_class` | N |
 `delay_startup` | N | The delay (seconds, default 0) between Home Assistant startup and the first `select_script` invocation.
 `unit_of_measurement` | N | 
-`attributes` | N | 
+`attributes` | N | Each key within `attributes` specifies an attribute which will be assigned to the schedule entity
+
+## Sub-schedule definition
+ key | mandatory? | descriptin
+ --- | --- | ---
+ `transitions` | Y | A list of transitions. Each transition comprises (a) an `at` key, which specifies via three sub-keys `hh`, `mm` and `ss` the time (hour/minute/second) of a schedule state transition, and (b) a `state` key, which specifies the required state.  
+`hh` and `state` are mandatory; `mm` and `ss` are optional and default to 0.
 
 ## selector script
 
@@ -44,7 +50,7 @@ The script will receive the following variables as input :
 * `entity` contains the entity id of the schedule
 * `choices` is the set of sub-schedule names defined in the schedule, one of which must be returned from the script.
 
-The script should return the following variables :
+The script should return the following variables as output :
 
 * `subsched` contains the name of the particular sub-schedule which is to be used
 
