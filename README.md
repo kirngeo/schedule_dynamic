@@ -63,13 +63,19 @@ The script should use the variables which are passed as input to determine whuch
 
 ## Example scenario
 
-This is a simple scenario, which controls two thermostatic radiator valves in one room of a hpuse.
+This is a simple scenario, which controls two thermostatic radiator valves in one room of a house.
 
-The temperature setpoint of the valves are adjusted according to the time of day, and the season of the year, and the occupancy of the house.
+The temperature setpoint of the valves are adjusted according to the time of day, and the season of the year, and the occupancy of the area of the house.
 
-There is an `input_boolean` helper called `input_boolean.occupied` which specifies whether the house is occpied or not.
+You could also use the day of the week, or any other properties of the date.
+
+There is a helper called `input_boolean.occupied` which specifies whether the area is occupied or not.
 
 ### Example schedule definition
+
+* for briefness, only the `winter` and `off` subschedules are defined here.
+* schedule entity attribute `trv` is used by the associated automation to specify the TRVs involved.
+* schedule entity attribute `occupied` is used by the `select_script` to determine occupancy of the area.
 
 ```
 ch_temp_lounge:
@@ -152,6 +158,8 @@ ch_temp_lounge:
 
 ### Example schedule-selector script
 
+For briefness, all seasons are classified by this example script to be in `winter`.
+
 ```
 variables:
   results: |
@@ -171,7 +179,7 @@ variables:
 
     {# if area is occupied, pick sub-schedule according to the month #}
     {% if vars.occ %}
-      {% if date.month in [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] %}
+      {% if date.month in [12, 1, 2,     3, 4, 5, 6, 7, 8, 9, 10, 11] %}
         {% set subsched = 'winter' %}
       {% elif date.month in [3, 4, 5] %}
         {% set subsched = 'spring' %}
