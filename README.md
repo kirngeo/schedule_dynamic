@@ -8,6 +8,8 @@ Home Assistant drop-in replacement for schedule integration
 Provides a dynamic scheduling facility.
 
 * dynamic schedule generation
+* for example, vary the schedule according to the day of the week, or the season of the year.
+* can use any type of state (eg numeric), not merely boolean.
 * schedules not restricted to daily / weekly / etc
 * each schedule basically comprises
   * a set of sub-schedules, and
@@ -24,7 +26,7 @@ Note that the sub-schedules do not contain information about day-of-week, or day
 ## Schedule definition
  key | mandatory? | description
  --- | --- | ---
-`name` | Y |
+`name` | Y | descriptive name
 `select_script` | Y | If missing, the schedule will not be dynamic.
 `sub_schedules` | Y | Each key within `sub_schedules` specifies one sub-schedule. See **sub-schedule definition** below.
 `device_class` | N |
