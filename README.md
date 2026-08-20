@@ -1,7 +1,7 @@
 # schedule_dynamic
 Home Assistant drop-in replacement for schedule integration
 
-*** dynamic schedules can currently only be set up via YAML. ***
+** dynamic schedules can currently only be set up via YAML. **
 
 ## Summary
 
@@ -69,7 +69,7 @@ The temperature setpoint of the valves are adjusted according to the time of day
 
 There is an `input_boolean` helper called `input_boolean.occupied` which specifies whether the house is occpied or not.
 
-## Example schedule definition
+### Example schedule definition
 
 ```
 ch_temp_lounge:
@@ -150,7 +150,7 @@ ch_temp_lounge:
           state: 7.5
 ```
 
-## Example schedule-selector script
+### Example schedule-selector script
 
 ```
 variables:
@@ -206,7 +206,7 @@ fields:
     required: true
 ```
 
-## Example automation on schedule value change
+### Example automation on schedule value change
 
 ```
 alias: on CH schedule value change
@@ -233,7 +233,7 @@ mode: parallel
 max: 10
 ```
 
-## Example `script.set_trv_setpoint` as used in above automation
+### Example `script.set_trv_setpoint` as used by above automation
 
 ```
 sequence:
