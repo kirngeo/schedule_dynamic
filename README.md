@@ -76,6 +76,8 @@ There is a helper called `input_boolean.occupied` which specifies whether the ar
 ### Example schedule definition
 
 * for briefness, only the `winter` and `off` subschedules are defined here.
+* the `winter` subschedule varies the TRV temperatures according to personal desires.
+* the `off` sub-schedule flips the TRV temperatures between two low values daily, merely to exercise the TRVs.
 * schedule entity attribute `trv` is used by the associated automation to specify the TRVs involved.
 * schedule entity attribute `occupied` is used by the `select_script` to determine occupancy of the area.
 
@@ -122,9 +124,6 @@ ch_temp_lounge:
           state: 18.5
         - at:
             hh: 14
-          state: 20
-        - at:
-            hh: 16
           state: 20
         - at:
             hh: 17
@@ -218,6 +217,8 @@ fields:
 
 ### Example automation on schedule value change
 
+* note that `schedule.ch_temp_fguest` is not defined in the example schedule definition above.
+
 ```
 alias: on CH schedule value change
 description: ''
@@ -245,6 +246,10 @@ max: 10
 
 ### Example `script.set_trv_setpoint` as used by above automation
 
+This example uses MQTT to send appropriate messages to the TRV.
+
+Your TRVs may require a different method of communication.
+
 ```
 sequence:
   - action: mqtt.publish
@@ -252,7 +257,7 @@ sequence:
     data:
       evaluate_payload: false
       qos: '0'
-      topic: XXX/{{ trv }}/set
+      topic: zigbee2mqtt/{{ trv }}/set
       payload: '{"occupied_heating_setpoint": {{setpoint}} }'
 fields:
   trv:
