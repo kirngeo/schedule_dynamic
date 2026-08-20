@@ -1,7 +1,7 @@
 # schedule_dynamic
 Home Assistant drop-in replacement for schedule integration
 
-** dynamic schedules can currently only be set up via YAML. **
+**dynamic schedules can currently only be set up via YAML.**
 
 ## Summary
 
