@@ -1,7 +1,7 @@
 # schedule_dynamic
 Home Assistant drop-in replacement for schedule integration
 
-## dynamic schedules can currently only be set up via YAML.
+*** dynamic schedules can currently only be set up via YAML. ***
 
 ## Summary
 
@@ -35,13 +35,13 @@ Note that the sub-schedules do not contain information about day-of-week, or day
 ## Sub-schedule definition
  key | mandatory? | descriptin
  --- | --- | ---
- `transitions` | Y | A list of transitions. See ##Transition definition## below.
+ `transitions` | Y | A list of transitions. See **transition definition** below.
 
-### Transition definition
+### transition definition
  key | description
  --- | ---
  `at` | sub-keys `hh` (mandatory), `mm` (default 0) and `mm` (default 0) specify the time of a schedule state transition.
- `state` | specifies the required schedule state at time `at`.
+ `state` | specifies the required schedule state, at time `at`.
 
 ## selector script
 
@@ -60,3 +60,202 @@ The script should return the following variables as output :
 * `subsched` contains the name of the particular sub-schedule which is to be used
 
 The script should use the variables which are passed as input to determine whuch sub-schedule to use for any particular day.
+
+## Example scenario
+
+This is a simple scenario, which controls two thermostatic radiator valves in one room of a hpuse.
+
+The temperature setpoint of the valves are adjusted according to the time of day, and the season of the year, and the occupancy of the house.
+
+There is an `input_boolean` helper called `input_boolean.occupied` which specifies whether the house is occpied or not.
+
+## Example schedule definition
+
+```
+ch_temp_lounge:
+  name: Lounge central heating temp
+  select_script: script.schedule_selector
+  device_class: temperature
+  delay_startup: 10
+  unit_of_measurement: "°C"
+  attributes:
+    trv:
+      - hive_trv_e 
+      - hive_trv_d 
+    occupied: input_boolean.occupied
+  sub_schedules:
+    winter:
+      transitions:
+        - at:
+            hh: 1
+            mm: 3
+          state: 13
+        - at:
+            hh: 7
+            mm: 16
+          state: 17
+        - at:
+            hh: 7
+            mm: 50
+          state: 18
+        - at:
+            hh: 8
+            mm: 25
+          state: 19.5
+        - at:
+            hh: 8
+            mm: 50
+          state: 19
+        - at:
+            hh: 9
+          state: 19
+        - at:
+            hh: 10
+          state: 18.5
+        - at:
+            hh: 14
+          state: 20
+        - at:
+            hh: 16
+          state: 20
+        - at:
+            hh: 17
+            mm: 40
+          state: 19
+        - at:
+            hh: 18
+            mm: 45
+          state: 20
+        - at:
+            hh: 20
+            mm: 5
+          state: 19
+        - at:
+            hh: 21
+          state: 20
+        - at:
+            hh: 22
+          state: 18
+        - at:
+            hh: 22
+            mm: 50
+          state: 13
+    "off":
+      transitions:
+        - at:
+            hh: 4
+          state: 7
+        - at:
+            hh: 16
+          state: 7.5
+```
+
+## Example schedule-selector script
+
+```
+variables:
+  results: |
+    {% set vars = namespace(occ=true, results=[]) %}
+
+    {# iterate occupied switch states #}
+    {# if any are not 'on', this area is not occupied #}
+    {% for sw in state_attr(entity,'occupied') or [] %}
+    {%   if states(sw) != 'on' %}
+    {%     set vars.occ = false %}
+    {%   endif %}
+    {%   set vars.results = vars.results + [(sw, states(sw))] %}
+    {% endfor %}
+
+    {# default sub-schedule is 'off' #}
+    {% set subsched = 'off' %}
+
+    {# if area is occupied, pick sub-schedule according to the month #}
+    {% if vars.occ %}
+      {% if date.month in [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] %}
+        {% set subsched = 'winter' %}
+      {% elif date.month in [3, 4, 5] %}
+        {% set subsched = 'spring' %}
+      {% elif date.month in [6, 7, 8] %}
+        {% set subsched = 'summer' %}
+      {% else %}
+        {% set subsched = 'autumn' %}
+      {% endif %}
+    {% endif %}
+
+    {% set vars.results = vars.results + [('subsched', subsched)] %}
+
+    {{ dict.from_keys( vars.results ) }}
+sequence:
+  - stop: normal
+    response_variable: results
+mode: single
+alias: schedule selector
+description: ''
+fields:
+  date:
+    selector:
+      date: {}
+    required: true
+  entity:
+    selector:
+      text: null
+    required: true
+  choices:
+    selector:
+      object: {}
+    required: true
+```
+
+## Example automation on schedule value change
+
+```
+alias: on CH schedule value change
+description: ''
+triggers:
+  - trigger: state
+    entity_id:
+      - schedule.ch_temp_lounge
+      - schedule.ch_temp_fguest
+conditions: []
+actions:
+  - repeat:
+      for_each: '{{ state_attr(trigger.entity_id,''trv'') or [] }}'
+      sequence:
+        - action: script.turn_on
+          metadata: {}
+          target:
+            entity_id: script.set_trv_setpoint
+          data:
+            variables:
+              trv: '{{ repeat.item }}'
+              setpoint: '{{ states(trigger.entity_id) }}'
+mode: parallel
+max: 10
+```
+
+## Example `script.set_trv_setpoint` as used in above automation
+
+```
+sequence:
+  - action: mqtt.publish
+    metadata: {}
+    data:
+      evaluate_payload: false
+      qos: '0'
+      topic: XXX/{{ trv }}/set
+      payload: '{"occupied_heating_setpoint": {{setpoint}} }'
+fields:
+  trv:
+    selector:
+      text: null
+    name: TRV
+    required: true
+  setpoint:
+    selector:
+      text: {}
+    required: true
+alias: Set TRV setpoint
+description: ''
+mode: parallel
+max: 10
+```
