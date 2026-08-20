@@ -26,7 +26,7 @@ Note that the sub-schedules do not contain information about day-of-week, or day
  --- | --- | ---
 `name` | Y |
 `select_script` | Y | If missing, the schedule will not be dynamic.
-`sub_schedules` | Y | Each key within `sub_schedules` specifies one sub-schedule. See #sub-schedule definition# below.
+`sub_schedules` | Y | Each key within `sub_schedules` specifies one sub-schedule. See **sub-schedule definition** below.
 `device_class` | N |
 `delay_startup` | N | The delay (seconds, default 0) between Home Assistant startup and the first `select_script` invocation.
 `unit_of_measurement` | N | 
@@ -35,8 +35,13 @@ Note that the sub-schedules do not contain information about day-of-week, or day
 ## Sub-schedule definition
  key | mandatory? | descriptin
  --- | --- | ---
- `transitions` | Y | A list of transitions. Each transition comprises (a) an `at` key, which specifies via three sub-keys `hh`, `mm` and `ss` the time (hour/minute/second) of a schedule state transition, and (b) a `state` key, which specifies the required state.  
-`hh` and `state` are mandatory; `mm` and `ss` are optional and default to 0.
+ `transitions` | Y | A list of transitions. See ##Transition definition## below.
+
+### Transition definition
+ key | description
+ --- | ---
+ `at` | sub-keys `hh` (mandatory), `mm` (default 0) and `mm` (default 0) specify the time of a schedule state transition.
+ `state` | specifies the required schedule state at time `at`.
 
 ## selector script
 
