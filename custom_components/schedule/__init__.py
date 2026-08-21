@@ -621,9 +621,9 @@ class Schedule(CollectionEntity):
                     {"action": f"{'' if '.' in sname else 'script.'}{sname}",
                       "response_variable": "result",
                       "data": {       # The input data supplied to the selection script
-                          "date"      : when,
-                          "entity"    : DOMAIN + '.' + self.unique_id,
-                          "choices"   : set( sub_schedules ),
+                          "date"         : when,
+                          "entity_id"    : DOMAIN + '.' + self.unique_id,
+                          "choices"      : set( sub_schedules ),
                       #    "result_variable" : result_variable,
                           },
                      }

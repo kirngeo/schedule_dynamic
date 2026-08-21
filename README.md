@@ -35,7 +35,7 @@ Note that the sub-schedules do not contain information about day-of-week, or day
 `attributes` | N | Each key within `attributes` specifies an attribute which will be assigned to the schedule entity
 
 ## Sub-schedule definition
- key | mandatory? | descriptin
+ key | mandatory? | description
  --- | --- | ---
  `transitions` | Y | A list of transitions. See **transition definition** below.
 
@@ -65,7 +65,7 @@ The script should use the variables which are passed as input to determine whuch
 
 ## Example scenario
 
-This is a simple scenario, which controls two thermostatic radiator valves in one room of a house.
+This is a simple scenario, which controls two Thermostatic Radiator Valves in one room of a house.
 
 The temperature setpoint of the valves are adjusted according to the time of day, and the season of the year, and the occupancy of the area of the house.
 
@@ -161,6 +161,8 @@ ch_temp_lounge:
 
 For briefness, all seasons are classified by this example script to be in `winter`.
 
+This script can be used by multiple schedules - the entity_id of the schedule is passed into the script.
+
 ```
 variables:
   results: |
@@ -168,7 +170,7 @@ variables:
 
     {# iterate occupied switch states #}
     {# if any are not 'on', this area is not occupied #}
-    {% for sw in state_attr(entity,'occupied') or [] %}
+    {% for sw in state_attr(entity_id,'occupied') or [] %}
     {%   if states(sw) != 'on' %}
     {%     set vars.occ = false %}
     {%   endif %}
@@ -205,7 +207,7 @@ fields:
     selector:
       date: {}
     required: true
-  entity:
+  entity_id:
     selector:
       text: null
     required: true
@@ -217,7 +219,10 @@ fields:
 
 ### Example automation on schedule value change
 
-* note that `schedule.ch_temp_fguest` is not defined in the example schedule definition above.
+* note that `schedule.ch_temp_fguest` is not defined in the example schedule definition above. It is merely an exemplar to show that changes in the states of multiple schedules can trigger this same automation.
+
+* This example uses MQTT to send appropriate messages to the TRV. Your TRVs may require a different method of communication.
+
 
 ```
 alias: on CH schedule value change
@@ -232,45 +237,15 @@ actions:
   - repeat:
       for_each: '{{ state_attr(trigger.entity_id,''trv'') or [] }}'
       sequence:
-        - action: script.turn_on
+        - action: mqtt.publish
           metadata: {}
-          target:
-            entity_id: script.set_trv_setpoint
           data:
-            variables:
-              trv: '{{ repeat.item }}'
-              setpoint: '{{ states(trigger.entity_id) }}'
+            evaluate_payload: false
+            qos: '0'
+            retain: false
+            topic: zigbee2mqtt/{{repeat.item}}/set
+            payload: '{"occupied_heating_setpoint": {{states(trigger.entity_id)}}}'
 mode: parallel
 max: 10
 ```
 
-### Example `script.set_trv_setpoint` as used by above automation
-
-This example uses MQTT to send appropriate messages to the TRV.
-
-Your TRVs may require a different method of communication.
-
-```
-sequence:
-  - action: mqtt.publish
-    metadata: {}
-    data:
-      evaluate_payload: false
-      qos: '0'
-      topic: zigbee2mqtt/{{ trv }}/set
-      payload: '{"occupied_heating_setpoint": {{setpoint}} }'
-fields:
-  trv:
-    selector:
-      text: null
-    name: TRV
-    required: true
-  setpoint:
-    selector:
-      text: {}
-    required: true
-alias: Set TRV setpoint
-description: ''
-mode: parallel
-max: 10
-```
