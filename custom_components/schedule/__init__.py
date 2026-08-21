@@ -638,14 +638,8 @@ class Schedule(CollectionEntity):
             except (TemplateError, ServiceNotFound) as _:
                 return dummy()
 
-            LOGGER.warning( "%s A output from script %s vars=%s",
-                           self.name, sname, vars(result))
-
-            try:
-                LOGGER.warning( "%s B output from script %s vars=%s",
-                           self.name, sname, vars(result).get('variables',{}).get(response_variable))
-            except:
-                LOGGER.warning( "B oops" )
+            LOGGER.warning( "%s output from script is %s",
+                           self.name, vars(result).get('variables',{}).get(response_variable))
 
             if (subsched_id := result.variables.get(response_variable,{}).get( 'subsched' )) is None:
                 LOGGER.error( "%s script %s did not return a sub-schedule id", self.name, sname )
