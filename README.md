@@ -33,6 +33,7 @@ Note that the sub-schedules do not contain information about day-of-week, or day
 `delay_startup` | N | The delay (seconds, default 0) between Home Assistant startup and the first `select_script` invocation.
 `unit_of_measurement` | N | 
 `attributes` | N | Each key within `attributes` specifies an attribute which will be assigned to the schedule entity
+`boolean` | N | Default `false`. If `true`, the state of the schedule entity will be either `on` or `off`.
 
 ## Sub-schedule definition
  key | mandatory? | description

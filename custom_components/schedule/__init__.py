@@ -76,7 +76,7 @@ from .const import (
     CONF_AT,
     CONF_ATTRIBUTES,
     CONF_ATTR_TRANSITIONS,
-    CONF_BINARY,
+    CONF_BOOLEAN,
     CONF_DATA,
     CONF_DELAY_STARTUP,
     CONF_FROM,
@@ -112,7 +112,6 @@ def valid_schedule(schedule: list[dict[str, str]]) -> list[dict[str, str]]:
 
     Ensure they have no overlap and the end time is greater than the start time.
     """
- #   LOGGER.warning( f"almacp valid_schedule {schedule}" )
     # Empty schedule is valid
     if not schedule:
         return schedule
@@ -229,7 +228,7 @@ SUBSCHEDS_SCHEMA: VolDictType = {
 SCHEDULE_SCHEMA_V2: VolDictType = {
     vol.Required( CONF_SELECT_SCRIPT, default=" -missing-" ) : vol.Coerce(str),
     vol.Optional( CONF_DELAY_STARTUP ) : vol.All(int, vol.Range(min=0, max=60)),
-    vol.Required( CONF_BINARY, default=False ) : bool,
+    vol.Required( CONF_BOOLEAN, default=False ) : bool,
     vol.Required( CONF_SUB_SCHEDULES ) : SUBSCHEDS_SCHEMA,
     vol.Optional( CONF_DEVICE_CLASS): DEVICE_CLASSES_SCHEMA,
     vol.Optional( CONF_UNIT_OF_MEASUREMENT): cv.string,
@@ -270,14 +269,6 @@ ENTITY_SCHEMA_V2 = vol.Schema(
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up a schedule."""
-  #  LOGGER.warning( f"almacp async_setup now={dt_util.now()} as_utc={dt_util.as_utc(dt_util.now())} tz={dt_util.get_default_time_zone()}" )
-    LOGGER.warning( "almacp async_setup now=%s as_utc=%s tz=%s",
-                   dt_util.now(),
-                   dt_util.as_utc(dt_util.now()),
-                   dt_util.now().tzinfo
-                                  )
-    hass.loop.set_debug(True) # almacp
- #   for one in pprint.pformat(config).splitlines() : LOGGER.warning(one)
 
     component = EntityComponent[Schedule](LOGGER, DOMAIN, hass)
 
@@ -520,7 +511,7 @@ class Schedule(CollectionEntity):
     _next: datetime
     _unsub_update: Callable[[], None] | None = None
     _v2: bool = False
-    _is_binary: bool
+    _is_boolean: bool
     _transitions: [Transition] = []
     _state_is_numeric: bool = False
     _is_ready: bool = False
@@ -528,10 +519,8 @@ class Schedule(CollectionEntity):
     def __init__(self, config: ConfigType, editable: bool) -> None:
         """Initialize a schedule."""
         self._v2 = CONF_SUB_SCHEDULES in config
-        self._is_binary = config.get(CONF_BINARY, False) or not self._v2
- #       if self._v2 : LOGGER.warning( f"almacp Schedule.__init__ config={config}" )
+        self._is_boolean = config.get(CONF_BOOLEAN, False) or not self._v2
         self._config = ENTITY_SCHEMA_V2(config) if self._v2 else ENTITY_SCHEMA(config)
-  #      LOGGER.warning( f"almacp Schedule.__init__ _config={self._config}" )
         self._attr_capability_attributes = {ATTR_EDITABLE: editable}
         self._attr_icon = self._config.get(CONF_ICON)
         self._attr_name = self._config[CONF_NAME]
@@ -565,13 +554,11 @@ class Schedule(CollectionEntity):
     @classmethod
     def from_storage(cls, config: ConfigType) -> Schedule:
         """Return entity instance initialized from storage."""
-   #     LOGGER.warning( f"almacp Schedule from_storage {config}" )
         return cls(config, editable=True)
 
     @classmethod
     def from_yaml(cls, config: ConfigType) -> Schedule:
         """Return entity instance initialized from yaml."""
-   #     LOGGER.warning( f"almacp Schedule from_yaml {config}" )
         schedule = cls(config, editable=False)
         schedule.entity_id = f"{DOMAIN}.{config[CONF_ID]}"
         return schedule
@@ -579,8 +566,7 @@ class Schedule(CollectionEntity):
     async def async_update_config(self, config: ConfigType) -> None:
         """Handle when the config is updated."""
         self._v2 = CONF_SUB_SCHEDULES in config
-        self._is_binary = (not self._v2) or config.get(CONF_BINARY, False)
-        LOGGER.warning( "almacp Schedule async_update_config %s", config )
+        self._is_boolean = (not self._v2) or config.get(CONF_BOOLEAN, False)
         self._config = ENTITY_SCHEMA_V2(config) if self._v2 else ENTITY_SCHEMA(config)
         self._attr_icon = config.get(CONF_ICON)
         self._attr_name = config[CONF_NAME]
@@ -600,79 +586,76 @@ class Schedule(CollectionEntity):
             self._unsub_update = None
 
     async def _async_get_subschedule_for(self, when: date) -> list | None:
+        """ Returns a list of Transitions for the specified date. """
 
-  #      LOGGER.warning( f"async_get_subschedules_for( {when} )" )
+        def dummy() -> list[Transition]:
+            """ Always return at least this dummy list, which has one stateless Transition at Noon. """
+            LOGGER.warning( "subschedule for %s is missing", when.isoformat() )
+            return [ Transition( tdate=when,
+                                 ttime=time( hour=12, tzinfo = dt_util.get_default_time_zone() ),
+                                ) ]
 
-        async def temp():
-            def dummy() -> list[Transition]:
-                LOGGER.warning( "subschedule for %s is missing", when.isoformat() )
-                return [ Transition( tdate=when,
-                                     ttime=time( hour=12, tzinfo = dt_util.get_default_time_zone() ),
-                                    ) ]
+        # If there is exactly one subschedule specified, then use it.
+        sub_schedules = self._config[ CONF_SUB_SCHEDULES ]
+        if len( sub_schedules ) == 1:
+            subsched = list(sub_schedules.values())[0]
+        else:
+            sname = self._config[CONF_SELECT_SCRIPT]
+            actions = [
+                {"action": f"{'' if '.' in sname else 'script.'}{sname}",
+                  "response_variable": "result",
+                  "data": {       # The input data supplied to the selection script
+                      "date"         : when,
+                      "entity_id"    : DOMAIN + '.' + self.unique_id,
+                      "choices"      : set( sub_schedules ),
+                      },
+                 }
+            ]
 
-            # If there is exactly one subschedule specified, then use it.
-            sub_schedules = self._config[ CONF_SUB_SCHEDULES ]
-            if len( sub_schedules ) == 1:
-                subsched = list(sub_schedules.values())[0]
-            else:
-                sname = self._config[CONF_SELECT_SCRIPT]
-              #  result_variable = "value"
-                actions = [
-                    {"action": f"{'' if '.' in sname else 'script.'}{sname}",
-                      "response_variable": "result",
-                      "data": {       # The input data supplied to the selection script
-                          "date"         : when,
-                          "entity_id"    : DOMAIN + '.' + self.unique_id,
-                          "choices"      : set( sub_schedules ),
-                      #    "result_variable" : result_variable,
-                          },
-                     }
-                ]
+            try:
+                await async_validate_actions_config( self.hass, actions )
+            except ValueError as _:
+                return dummy()
 
-                try:
-                    await async_validate_actions_config( self.hass, actions )
-                except ValueError as _:
-                    return dummy()
+            script = Script(
+                self.hass,
+                actions,
+                'get_subschedule_id',
+                DOMAIN,
+            )
 
-                script = Script(
+            LOGGER.warning( '%s about to run script, sequence= %s',
+                           self.name,
+                           script.sequence)
+            try:
+                result = await Script(
                     self.hass,
                     actions,
                     'get_subschedule_id',
                     DOMAIN,
-                )
+                ).async_run( context=Context() )
+            except (TemplateError, ServiceNotFound) as _:
+                return dummy()
 
-                LOGGER.warning( '%s about to run script, sequence= %s',
-                               self.name,
-                               script.sequence)
-                try:
-                    result = await script.async_run( context=Context() )
-                except (TemplateError, ServiceNotFound) as _:
-                    return dummy()
+            LOGGER.warning( "%s output from script %s vars=%s",
+                           self.name, sname, vars(result) )
 
-                LOGGER.warning( "%s output from script %s vars=%s",
-                               self.name, sname, vars(result) )
+            if (subsched_id := result.variables.get('result',{}).get( 'subsched' )) is None:
+                LOGGER.error( "script %s did not return a sub-schedule id", sname )
+                return dummy()
 
-                if (subsched_id := result.variables.get('result',{}) \
-                                   .get( 'subsched' )) is None:
-                    LOGGER.error( "script %s did not return a sub-schedule id", sname )
-                    return dummy()
+            if (subsched := self._config[ CONF_SUB_SCHEDULES ].get( subsched_id )) is None:
+                LOGGER.error( "sub-schedule %s (script %s) for %s not found",
+                    subsched_id, sname, when.isoformat()  )
+                return dummy()
 
-                if (subsched := self._config[ CONF_SUB_SCHEDULES ].get( subsched_id )) is None:
-                    LOGGER.error( "sub-schedule %s (script %s) for %s not found",
-                        subsched_id, sname, when.isoformat()  )
-                    return dummy()
-
-            return sorted(
-                [
-                    Transition( tdate=when, ttime=trans[ CONF_AT ], state=trans.get(CONF_STATE))
-                    for trans in subsched.get( CONF_TRANSITIONS, [] )
-                ],
-                key = lambda t : t.datetime
-                ) or dummy()
-
-        res = await temp()
- #LOGGER.warning( f"{self.name} _async_get_subscheduule_for( {when} ) gave {len(res)} transitions" )
-        return res
+        return sorted(
+            [
+                Transition( tdate=when, ttime=trans[ CONF_AT ], state=trans.get(CONF_STATE))
+                for trans in subsched.get( CONF_TRANSITIONS, [] )
+            ],
+            key = lambda t : t.datetime
+            ) or dummy()
 
     async def _async_replenish_transitions(self,
                                            until: date | None = None,
@@ -682,30 +665,21 @@ class Schedule(CollectionEntity):
         if not self._v2:
             return
 
-        LOGGER.warning( '_async_replenish_transitions, for %s until %s update=%s',
-                       self.name, until, update)
-
         now = dt_util.now()
         if not until:
             until = now.date() + timedelta( days=1 )
 
         if not self._transitions:
             # Initialise an empty schedule, with yesterday's sub-schedule
-  #          LOGGER.warning( 'Initialising %s with schedule for yesterday',self.name )
-            self._transitions = \
-                    await self._async_get_subschedule_for( now.date() - timedelta( days=1 ) )
+            self._transitions = await self._async_get_subschedule_for( now.date() - timedelta( days=1 ) )
 
         # Find the date after the most recent date currently in schedule
         dt = self._transitions[-1].date + timedelta( days=1 )
 
-    #    LOGGER.warning( f"until={until} ({until.__class__.__name__})" )
-    #    LOGGER.warning( f"dt={dt} ({dt.__class__.__name__})" )
         # Add entries for dates not yet in the schedule, but not after "until".
         while self._transitions[-1].date < until:
-            LOGGER.warning( 'adding sched for %s for %s', dt, self.name )
             self._transitions += await self._async_get_subschedule_for( dt )
             dt += timedelta( days=1 )
-    #    LOGGER.warning( f"all days added, update={update}")
 
         keep = 1  # number of past transitions to retain
 
@@ -719,10 +693,7 @@ class Schedule(CollectionEntity):
                 break
 
         if past > keep:
- #           LOGGER.warning( f"removing transitions[0:{past-keep}] for {self.name}" )
             del self._transitions[0:past-keep]
- #       else:
- #           LOGGER.warning( f"no transitions removed. update={update}" )
 
         if update:
             self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = [
@@ -732,31 +703,13 @@ class Schedule(CollectionEntity):
                            self._attr_state, self.name)
             self.async_write_ha_state()
 
-    async def _async_delayed_replenish_transitions(self,  _: datetime | None = None) -> None:
-        """Replenish the list of Transitions, and update the state."""
-
-        LOGGER.warning( "_async_delayed_replenish_transitions for %s", self.name )
-       # await self._async_replenish_transitions( update=True)
-        await self._async_replenish_transitions()
-        self._is_ready = True
-
-        self._update()
-
-  #      self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = \
-  #        [t.attrib for t in self._transitions ][:10]
-  #      self.async_write_ha_state()
-
-
     async def async_added_to_hass(self) -> None:
         """Run when entity about to be added to hass."""
-        LOGGER.warning( "Almacp Schedule async_added_to_hass %s",  self.name )
         self.async_on_remove(self._clean_up_listener)
 
         if self._v2:
-            LOGGER.warning( "A hass state=%s", self.hass.state)
 
             if CONF_DELAY_STARTUP in self._config and self.hass.state != CoreState.running:
-                LOGGER.warning( "listening for hass starting" )
                 self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED,
                                                 self.async_hass_started)
                 return
@@ -769,11 +722,8 @@ class Schedule(CollectionEntity):
 
     async def async_hass_started(self, _: Event) -> None:
         """Hass has started"""
-        LOGGER.warning( "%s hass has started", self.name )
 
         if (startup_delay := self._config.get( CONF_DELAY_STARTUP )):
-
-            LOGGER.warning( "delaying startup for %s seconds", startup_delay )
 
             async_track_point_in_utc_time(
                 self.hass,
@@ -783,9 +733,21 @@ class Schedule(CollectionEntity):
         else:
             await self._async_delayed_replenish_transitions()
 
+    async def _async_delayed_replenish_transitions(self,  _: datetime | None = None) -> None:
+        """Replenish the list of Transitions, and update the state."""
+
+        await self._async_replenish_transitions()
+        self._is_ready = True
+
+        self._update()
+
+  #      self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = \
+  #        [t.attrib for t in self._transitions ][:10]
+  #      self.async_write_ha_state()
+
+
     def get_schedule(self) -> ConfigType:
         """Return the schedule."""
-        LOGGER.warning( "Almacp Schedule get_schedule" )
         if not self._v2:
             return {d: self._config[d] for d in WEEKDAY_TO_CONF.values()}
         return None
@@ -997,16 +959,6 @@ class Schedule(CollectionEntity):
     def _update(self, _: datetime | None = None) -> None:
         """Update the states of the schedule."""
         now = dt_util.now()
-        LOGGER.warning( "almacp Schedule %s _update _v2=%s now=%s uom=%s",
-                       self.name,
-                       self._v2,
-                       now,
-                       self.unit_of_measurement)
-    #    for ent in ('input_boolean.occupied',):
-    #        LOGGER.warning( f"ent={ent} state={self.hass.states.get(ent).state}" )
-    #        LOGGER.warning( f"ent={ent} is_state={self.hass.states.is_state(ent, 'on')}" )
-    #        LOGGER.warning( f"ent={ent} dir_state={dir(self.hass.states.get(ent))}" )
-
         next_event = None
 
         if self._v2:
@@ -1049,7 +1001,7 @@ class Schedule(CollectionEntity):
             else:
                 required_state = want.state
 
-            self._attr_state = required_state if not self._is_binary \
+            self._attr_state = required_state if not self._is_boolean \
                                else STATE_ON if cv.boolean( required_state ) \
                                else STATE_OFF
             LOGGER.warning( "%s _attr_state has been set to %s (%s)",
