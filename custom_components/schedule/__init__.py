@@ -627,9 +627,12 @@ class Schedule(CollectionEntity):
             except (TemplateError, ServiceNotFound) as _:
                 return dummy()
 
-            LOGGER.error( "%s IN=%s OUT=%s",
+            LOGGER.error( "%s  IN=%s",
                            self._attr_unique_id,
                            actions[0].get('data'),
+                         )
+            LOGGER.error( "%s OUT=%s",
+                           self._attr_unique_id,
                            vars(result).get('variables',{}).get(response_variable),
                          )
 
