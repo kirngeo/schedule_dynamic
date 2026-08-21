@@ -692,9 +692,9 @@ class Schedule(CollectionEntity):
             del self._transitions[0:past-keep]
 
         if update:
-            self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = [
-                    t.attrib \
-                        for t in self._transitions ][:self._config.get( CONF_ATTR_TRANSITIONS )]
+            self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = \
+                    [ t.attrib for t in self._transitions ] \
+                    [ :self._config.get( CONF_ATTR_TRANSITIONS ) ]
             LOGGER.warning( "About to write_ha_state (of %s, for %s, after replenishing",
                            self._attr_state, self.name)
             self.async_write_ha_state()
