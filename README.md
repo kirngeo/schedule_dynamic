@@ -40,6 +40,8 @@ Note that the sub-schedules do not contain information about day-of-week, or day
  --- | --- | ---
  `transitions` | Y | A list of transitions. See **transition definition** below.
 
+If there is only one sub-schedule, then it is always used, without invocation of `select_script`.
+
 ### transition definition
  key | description
  --- | ---
@@ -51,6 +53,8 @@ Note that the sub-schedules do not contain information about day-of-week, or day
 The name of the selector script is defined in the schedule definition.
 
 The selector script itself is not defined with the schedule definition : this allows multiple schedule definitions to use the same script.
+
+The selector script is not invoked if there is only one sub-schedule specified : that single sub-schedule is always used.
 
 The script will receive the following variables as input :
 

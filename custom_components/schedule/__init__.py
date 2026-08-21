@@ -411,7 +411,7 @@ class Transition:
 
     _dt: datetime
 
-    def __init__( self, tdate:date, ttime:time, state: StateType = STATE_UNKNOWN ) -> None:
+    def __init__( self, tdate:date, ttime:time, state: StateType = None ) -> None:
         """Initialise a Transition."""
         tz = dt_util.now().tzinfo
         if isinstance( ttime, dict ):
@@ -528,7 +528,7 @@ class Schedule(CollectionEntity):
         self._attr_state = STATE_UNKNOWN
 
         if self._v2:
-            LOGGER.warning( "almacp Schedule.__init__ _config=%s", self._config )
+         #   LOGGER.warning( "almacp Schedule.__init__ _config=%s", self._config )
             self._attr_extra_state_attributes = self._config.get(CONF_ATTRIBUTES)
             self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
             self._attr_unit_of_measurement = self._config.get(CONF_UNIT_OF_MEASUREMENT)
@@ -548,8 +548,6 @@ class Schedule(CollectionEntity):
 
         if self._v2:
             self._transitions : [Transition] = []
-
-        LOGGER.warning( "almacp Schedule.__init__ for %s exiting", self.name )
 
     @classmethod
     def from_storage(cls, config: ConfigType) -> Schedule:
@@ -595,9 +593,10 @@ class Schedule(CollectionEntity):
                                  ttime=time( hour=12, tzinfo = dt_util.get_default_time_zone() ),
                                 ) ]
 
-        # If there is exactly one subschedule specified, then use it.
         sub_schedules = self._config[ CONF_SUB_SCHEDULES ]
+
         if len( sub_schedules ) == 1:
+            # If there is exactly one subschedule specified, then use it.
             subsched = list(sub_schedules.values())[0]
         else:
             sname = self._config[CONF_SELECT_SCRIPT]
@@ -608,7 +607,7 @@ class Schedule(CollectionEntity):
                   "data": {       # The input data supplied to the selection script
                       "date"         : when,
                       "entity_id"    : DOMAIN + '.' + self.unique_id,
-                      "choices"      : set( sub_schedules ),
+                      "choices"      : set( sub_schedules.keys() ),
                       },
                  }
             ]
@@ -618,28 +617,21 @@ class Schedule(CollectionEntity):
             except ValueError as _:
                 return dummy()
 
-            script = Script(
-                self.hass,
-                actions,
-                'get_subschedule_id',
-                DOMAIN,
-            )
-
-            LOGGER.warning( '%s about to run script, sequence= %s',
-                           self.name,
-                           script.sequence)
             try:
                 result = await Script(
                     self.hass,
                     actions,
-                    'get_subschedule_id',
+                    "get_subschedule_id",
                     DOMAIN,
                 ).async_run( context=Context() )
             except (TemplateError, ServiceNotFound) as _:
                 return dummy()
 
-            LOGGER.warning( "%s output from script is %s",
-                           self.name, vars(result).get('variables',{}).get(response_variable))
+            LOGGER.error( "%s IN=%s OUT=%s",
+                           self._attr_unique_id,
+                           actions[0].get('data'),
+                           vars(result).get('variables',{}).get(response_variable),
+                         )
 
             if (subsched_id := result.variables.get(response_variable,{}).get( 'subsched' )) is None:
                 LOGGER.error( "%s script %s did not return a sub-schedule id", self.name, sname )
@@ -991,23 +983,24 @@ class Schedule(CollectionEntity):
                     break
                 want = transition
 
-            if self._state_is_numeric:
+            required_state = want.state
+            if self._state_is_numeric     and     required_state is not None:
+                required_state = str( required_state )
                 try:
-                    required_state = int( str(want.state) )
+                    required_state = int( required_state )
                 except ValueError:
                     try:
-                        required_state = float( str(want.state) )
+                        required_state = float( required_state )
                     except ValueError:
                         required_state = STATE_UNKNOWN
-            else:
-                required_state = want.state
 
-            self._attr_state = required_state if not self._is_boolean \
-                               else STATE_ON if cv.boolean( required_state ) \
-                               else STATE_OFF
-            LOGGER.warning( "%s _attr_state has been set to %s (%s)",
-                           self.name, self._attr_state, type(self._attr_state)
-                           )
+            if required_state is not None:
+                self._attr_state = required_state if not self._is_boolean \
+                                   else STATE_ON if cv.boolean( required_state ) \
+                                   else STATE_OFF
+                LOGGER.warning( "%s _attr_state has been set to %s (%s)",
+                               self.name, self._attr_state, type(self._attr_state)
+                               )
 
             self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = \
                     next_event = next_transition.datetime
