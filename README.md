@@ -78,7 +78,7 @@ You could also use the day of the week, or any other properties of the date.
 
 There is a helper called `input_boolean.occupied` which specifies whether the area is occupied or not.
 
-### Example schedule definition
+#### Example schedule definition
 
 * for briefness, only the `winter` and `off` subschedules are defined here.
 * the `winter` subschedule varies the TRV temperatures according to personal desires.
@@ -162,7 +162,7 @@ ch_temp_lounge:
           state: 7.5
 ```
 
-### Example schedule-selector script
+#### Example schedule-selector script
 
 For briefness, all seasons are classified by this example script to be in `winter`.
 
@@ -222,11 +222,11 @@ fields:
     required: true
 ```
 
-### Example automation on schedule value change
+#### Example automation on schedule value change
 
 * note that `schedule.ch_temp_fguest` is not defined in the example schedule definition above. It is merely an exemplar to show that changes in the states of multiple schedules can trigger this same automation.
 
-* This example uses MQTT to send appropriate messages to the TRV. Your TRVs may require a different method of communication.
+* This example publishes appropriate MQTT messages to the TRV. Your TRVs may require a different method of communication.
 
 
 ```

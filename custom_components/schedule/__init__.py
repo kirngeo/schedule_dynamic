@@ -971,10 +971,10 @@ class Schedule(CollectionEntity):
                         orderok = enn
                         break
                     whereami = t.datetime
-                if orderok < 0:
-                    LOGGER.warning( "transitions order is OK")
-                else:
+                if orderok >= 0:
                     LOGGER.warning( "transitions order is DUFF at %s", enn)
+             #   else:
+             #       LOGGER.warning( "transitions order is OK")
             self.dump_schedule()
 
             next_transition = None
