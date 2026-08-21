@@ -643,7 +643,7 @@ class Schedule(CollectionEntity):
 
             try:
                 LOGGER.warning( "%s B output from script %s vars=%s",
-                           self.name, sname, vars(result.get('variables',{}).get(response_variable)))
+                           self.name, sname, vars(result).get('variables',{}).get(response_variable))
             except:
                 LOGGER.warning( "B oops" )
 
