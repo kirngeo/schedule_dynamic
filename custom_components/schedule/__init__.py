@@ -601,9 +601,10 @@ class Schedule(CollectionEntity):
             subsched = list(sub_schedules.values())[0]
         else:
             sname = self._config[CONF_SELECT_SCRIPT]
+            response_variable = "result"
             actions = [
                 {"action": f"{'' if '.' in sname else 'script.'}{sname}",
-                  "response_variable": "result",
+                  "response_variable": response_variable,
                   "data": {       # The input data supplied to the selection script
                       "date"         : when,
                       "entity_id"    : DOMAIN + '.' + self.unique_id,
@@ -638,15 +639,15 @@ class Schedule(CollectionEntity):
                 return dummy()
 
             LOGGER.warning( "%s output from script %s vars=%s",
-                           self.name, sname, vars(result) )
+                           self.name, sname, vars(result.get('variables',{}).get(response_variable)))
 
-            if (subsched_id := result.variables.get('result',{}).get( 'subsched' )) is None:
-                LOGGER.error( "script %s did not return a sub-schedule id", sname )
+            if (subsched_id := result.variables.get(response_variable,{}).get( 'subsched' )) is None:
+                LOGGER.error( "%s script %s did not return a sub-schedule id", self.name, sname )
                 return dummy()
 
             if (subsched := self._config[ CONF_SUB_SCHEDULES ].get( subsched_id )) is None:
-                LOGGER.error( "sub-schedule %s (script %s) for %s not found",
-                    subsched_id, sname, when.isoformat()  )
+                LOGGER.error( "%s sub-schedule %s (script %s) for %s not found",
+                    self.name, subsched_id, sname, when.isoformat()  )
                 return dummy()
 
         return sorted(
@@ -1090,10 +1091,6 @@ class Schedule(CollectionEntity):
             self.async_write_ha_state()
 
         if next_event:
-            LOGGER.warning( "%s waiting until %s",
-                           'v2' if self._v2 else 'v1',
-                           next_event)
-            LOGGER.warning( "B hass state=%s", self.hass.state)
             self._unsub_update = async_track_point_in_utc_time(
                 self.hass,
                 self._update,
