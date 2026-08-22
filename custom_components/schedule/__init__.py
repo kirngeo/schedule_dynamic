@@ -12,6 +12,7 @@ import voluptuous as vol
 
 from homeassistant.const import (
     ATTR_EDITABLE,
+    CONF_DEBUG,
     CONF_DEVICE_CLASS,
     CONF_ICON,
     CONF_ID,
@@ -230,6 +231,7 @@ SCHEDULE_SCHEMA_V2: VolDictType = {
     vol.Optional( CONF_DELAY_STARTUP ) : vol.All(int, vol.Range(min=0, max=60)),
     vol.Required( CONF_BOOLEAN, default=False ) : bool,
     vol.Required( CONF_SUB_SCHEDULES ) : SUBSCHEDS_SCHEMA,
+    vol.Optional( CONF_DEBUG ) : bool,
     vol.Optional( CONF_DEVICE_CLASS): DEVICE_CLASSES_SCHEMA,
     vol.Optional( CONF_UNIT_OF_MEASUREMENT): cv.string,
     vol.Required( CONF_ATTRIBUTES, default={}): CUSTOM_ATTR_SCHEMA_LIST,
@@ -526,6 +528,7 @@ class Schedule(CollectionEntity):
         self._attr_name = self._config[CONF_NAME]
         self._attr_unique_id = self._config[CONF_ID]
         self._attr_state = STATE_UNKNOWN
+        self._debug = self._config.get(CONF_DEBUG)
 
         if self._v2:
          #   LOGGER.warning( "almacp Schedule.__init__ _config=%s", self._config )
@@ -627,14 +630,15 @@ class Schedule(CollectionEntity):
             except (TemplateError, ServiceNotFound) as _:
                 return dummy()
 
-            LOGGER.error( "%s  IN=%s",
-                           self._attr_unique_id,
-                           actions[0].get('data'),
-                         )
-            LOGGER.error( "%s OUT=%s",
-                           self._attr_unique_id,
-                           vars(result).get('variables',{}).get(response_variable),
-                         )
+            if self._debug:
+                LOGGER.warning( "%s I=%s",
+                               self._attr_unique_id,
+                               actions[0].get('data'),
+                             )
+                LOGGER.warning( "%s O=%s",
+                               self._attr_unique_id,
+                               vars(result).get('variables',{}).get(response_variable),
+                             )
 
             if (subsched_id := result.variables.get(response_variable,{}).get( 'subsched' )) is None:
                 LOGGER.error( "%s script %s did not return a sub-schedule id", self.name, sname )
@@ -750,6 +754,7 @@ class Schedule(CollectionEntity):
 
     def dump_schedule(self, msg: str | None = None) -> None:
         """Log schedule Transitions."""
+        if not self._debug : return
         if msg:
             LOGGER.warning( "Dump_schedule %s", msg )
         for dt in self._transitions:
@@ -827,18 +832,19 @@ class Schedule(CollectionEntity):
             until_index = inx
             until_transition = transition
 
-        LOGGER.warning( "until=%02d-%02d:%02d:%02d boost_value=%s",
-                       until.day,
-                       until.hour,
-                       until.minute,
-                       until.second,
-                       boost_value)
-        LOGGER.warning( "duration=%s now_index=%s until_index=%s",
-                       duration,
-                       now_index,
-                       until_index)
-        LOGGER.warning( "latest transition is currently %s",
-                       self._transitions[-1].datetime)
+        if self._debug:
+            LOGGER.warning( "until=%02d-%02d:%02d:%02d boost_value=%s",
+                           until.day,
+                           until.hour,
+                           until.minute,
+                           until.second,
+                           boost_value)
+            LOGGER.warning( "duration=%s now_index=%s until_index=%s",
+                           duration,
+                           now_index,
+                           until_index)
+            LOGGER.warning( "latest transition is currently %s",
+                           self._transitions[-1].datetime)
 
         # Ensure that the existing  transitions extend beyond the desired boost time...
         while until > self._transitions[-1].datetime:
@@ -877,7 +883,7 @@ class Schedule(CollectionEntity):
     async def refresh(self) -> None:
         """Remove all existing Transitions; generate a new set."""
         if not self._is_ready:
-            LOGGER.warning( "%s is not ready for refresh yet", self.name )
+            if self._debug : LOGGER.warning( "%s is not ready for refresh yet", self.name )
             return
         self._transitions : [Transition] = []
         await self._async_replenish_transitions()
@@ -901,19 +907,20 @@ class Schedule(CollectionEntity):
         """
 
         if not self._is_ready:
-            LOGGER.warning( "%s is not ready for vary yet", self.name )
+            if self._debug : LOGGER.warning( "%s is not ready for vary yet", self.name )
             return
 
         vary_by = variation - normal
         vary_by_seconds = vary_by.total_seconds()
         range_start = normal - lookbehind
         range_finish = normal + lookahead
-        LOGGER.warning( "normal=%s variation=%s",
-                       normal, variation)
-        LOGGER.warning( "lookahead=%s lookbehind=%s",
-                       lookahead, lookbehind)
-        LOGGER.warning( "vary_by=%s (%s secs) range=%s to %s",
-                       vary_by, vary_by_seconds, range_start, range_finish)
+        if self._debug:
+            LOGGER.warning( "normal=%s variation=%s",
+                           normal, variation)
+            LOGGER.warning( "lookahead=%s lookbehind=%s",
+                           lookahead, lookbehind)
+            LOGGER.warning( "vary_by=%s (%s secs) range=%s to %s",
+                           vary_by, vary_by_seconds, range_start, range_finish)
         if not vary_by_seconds:
             return
         self.dump_schedule( msg="pre-vary" )
@@ -924,22 +931,26 @@ class Schedule(CollectionEntity):
             previous_dt = self._transitions[-1].datetime + timedelta(days=1)
             for trans in reversed( self._transitions ):
                 if trans.datetime < previous_dt:
-                    LOGGER.warning( 'good trans.datetime=%s previous_dt=%s',
+                    if self._debug:
+                        LOGGER.warning( 'good trans.datetime=%s previous_dt=%s',
                                    trans.datetime, previous_dt)
                     previous_dt = trans.datetime
                 else: #bad
-                    LOGGER.warning( 'BAD trans.datetime=%s previous_dt=%s',
+                    if self._debug:
+                        LOGGER.warning( 'BAD trans.datetime=%s previous_dt=%s',
                                    trans.datetime, previous_dt)
                     trans.inhibited=42
         else:
             previous_dt = self._transitions[0].datetime - timedelta(days=1)
             for trans in self._transitions:
                 if trans.datetime > previous_dt:
-                    LOGGER.warning( 'good trans.datetime=%s previous_dt=%s',
+                    if self._debug:
+                        LOGGER.warning( 'good trans.datetime=%s previous_dt=%s',
                                    trans.datetime, previous_dt)
                     previous_dt = trans.datetime
                 else: #bad
-                    LOGGER.warning( 'BAD trans.datetime%s previous_dt=%s',
+                    if self._debug:
+                        LOGGER.warning( 'BAD trans.datetime%s previous_dt=%s',
                                    trans.datetime, previous_dt)
                     trans.inhibited=42
 
@@ -1001,7 +1012,8 @@ class Schedule(CollectionEntity):
                 self._attr_state = required_state if not self._is_boolean \
                                    else STATE_ON if cv.boolean( required_state ) \
                                    else STATE_OFF
-                LOGGER.warning( "%s _attr_state has been set to %s (%s)",
+                if self._debug:
+                    LOGGER.warning( "%s _attr_state has been set to %s (%s)",
                                self.name, self._attr_state, type(self._attr_state)
                                )
 
