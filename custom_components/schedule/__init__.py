@@ -627,7 +627,8 @@ class Schedule(CollectionEntity):
                     "get_subschedule_id",
                     DOMAIN,
                 ).async_run( context=Context() )
-            except (TemplateError, ServiceNotFound) as _:
+            except (TemplateError, ServiceNotFound) as e:
+                LOGGER.error( "%s script %s execution failed %s", self.name, sname, e )
                 return dummy()
 
             if self._debug:
@@ -699,7 +700,8 @@ class Schedule(CollectionEntity):
             self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = \
                     [ t.attrib for t in self._transitions ] \
                     [ :self._config.get( CONF_ATTR_TRANSITIONS ) ]
-            LOGGER.warning( "About to write_ha_state (of %s, for %s, after replenishing",
+            if self._debug:
+                LOGGER.warning( "About to write_ha_state (of %s, for %s, after replenishing",
                            self._attr_state, self.name)
             self.async_write_ha_state()
 
