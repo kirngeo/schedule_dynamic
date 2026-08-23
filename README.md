@@ -68,7 +68,7 @@ The script should return the following variables as output :
 
 The script should use the variables which are passed as input to determine whuch sub-schedule to use for any particular day.
 
-## Example scenario
+## Example 1 scenario
 
 This is a simple scenario, which controls two Thermostatic Radiator Valves in one room of a house.
 
@@ -162,7 +162,7 @@ ch_temp_lounge:
           state: 7.5
 ```
 
-#### Example schedule-selector script
+#### Example 1 schedule-selector script
 
 For briefness, all seasons are classified by this example script to be in `winter`.
 
@@ -204,30 +204,16 @@ variables:
 sequence:
   - stop: normal
     response_variable: results
-mode: single
+mode: parallel
 alias: schedule selector
 description: ''
-fields:
-  date:
-    selector:
-      date: {}
-    required: true
-  entity_id:
-    selector:
-      text: null
-    required: true
-  choices:
-    selector:
-      object: {}
-    required: true
 ```
 
-#### Example automation on schedule value change
+#### Example 1 automation on schedule value change
 
 * note that `schedule.ch_temp_fguest` is not defined in the example schedule definition above. It is merely an exemplar to show that changes in the states of multiple schedules can trigger this same automation.
 
 * This example publishes appropriate MQTT messages to the TRV. Your TRVs may require a different method of communication.
-
 
 ```
 alias: on CH schedule value change

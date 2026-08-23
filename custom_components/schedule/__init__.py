@@ -200,17 +200,7 @@ AT_SCHEMA: VolDictType = {
     vol.Optional( CONF_SS, default=0 ) : vol.All(vol.Coerce(int), vol.Range(min=0, max=59)),
 }
 
-TRANSITION_SCHEMA: vol.Schema({
-    vol.Required( CONF_AT ) : vol.Schema({
-        vol.Required( CONF_HH ) :vol.All(vol.Coerce(int), vol.Range(min=0, max=23)),
-        vol.Optional( CONF_MM, default=0 ) : vol.All(vol.Coerce(int), vol.Range(min=0, max=59)),
-        vol.Optional( CONF_SS, default=0 ) : vol.All(vol.Coerce(int), vol.Range(min=0, max=59)),
-    }),
-    vol.Optional( CONF_STATE, default=0 ) : vol.Any( int, float, bool, str),
-})
-
 SUBSCHED_SCHEMA: VolDictType = {
-  #  vol.Required( CONF_TRANSITIONS ) : vol.All( cv.ensure_list, [TRANSITION_SCHEMA] ),
     vol.Required( CONF_TRANSITIONS ) : vol.All( cv.ensure_list, [
         vol.Schema({
             vol.Required( CONF_AT ) : vol.Schema({
@@ -598,10 +588,11 @@ class Schedule(CollectionEntity):
         """ Returns a list of Transitions for the specified date. """
 
         def dummy() -> list[Transition]:
-            """ Always return at least this dummy list, which has one stateless Transition at Noon. """
+            """ Always return at least this dummy list, which has one Transition at start of day. """
             LOGGER.warning( "subschedule for %s is missing", when.isoformat() )
-            return [ Transition( tdate=when,
-                                 ttime=time( hour=12, tzinfo = dt_util.get_default_time_zone() ),
+            return [ Transition( tdate = when,
+                                 ttime = time( tzinfo = dt_util.get_default_time_zone() ),
+                                 state = STATE_OFF if self._is_boolean else None,
                                 ) ]
 
         sub_schedules = self._config[ CONF_SUB_SCHEDULES ]
@@ -1050,17 +1041,17 @@ class Schedule(CollectionEntity):
                 want = transition
 
             required_state = want.state
-            if self._state_is_numeric     and     required_state is not None:
-                required_state = str( required_state )
-                try:
-                    required_state = int( required_state )
-                except ValueError:
-                    try:
-                        required_state = float( required_state )
-                    except ValueError:
-                        required_state = STATE_UNKNOWN
-
             if required_state is not None:
+                if self._state_is_numeric:
+                    required_state = str( required_state )
+                    try:
+                        required_state = int( required_state )
+                    except ValueError:
+                        try:
+                            required_state = float( required_state )
+                        except ValueError:
+                            required_state = STATE_UNKNOWN
+
                 self._attr_state = required_state if not self._is_boolean \
                                    else STATE_ON if cv.boolean( required_state ) \
                                    else STATE_OFF
