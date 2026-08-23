@@ -762,7 +762,7 @@ class Schedule(CollectionEntity):
             return {d: self._config[d] for d in WEEKDAY_TO_CONF.values()}
         return None
 
-    def debug_schedule(self, msg: str | None = None) -> None:
+    async def debug_schedule(self, msg: str | None = None) -> None:
         """Debug schedule."""
         if msg:
             LOGGER.warning( "Debug_schedule %s", msg )
@@ -1199,7 +1199,7 @@ async def handle_dump(schedule : Schedule, _: ServiceCall) -> ServiceResponse:
 
 async def handle_debug(schedule : Schedule, _: ServiceCall) -> ServiceResponse:
     """Handle debug action."""
-    return schedule.debug_schedule()
+    return await schedule.debug_schedule()
 
 async def handle_vary(schedule : Schedule, call: ServiceCall) -> ServiceResponse:
     """Handle vary action."""
