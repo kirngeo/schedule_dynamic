@@ -776,7 +776,7 @@ class Schedule(CollectionEntity):
               "data": {       # The input data supplied to the selection script
                   "date"         : date.today(),
                   "entity_id"    : DOMAIN + '.' + self.unique_id,
-                  "choices"      : set( 'aa', 'bb', 'cc' ),
+                  "choices"      : set( ['aa', 'bb', 'cc'] ),
                   },
              }
         ]
