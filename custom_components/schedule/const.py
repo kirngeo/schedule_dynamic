@@ -62,6 +62,7 @@ WEEKDAY_TO_CONF: Final = {
 SERVICE_ADVANCE: Final = "advance_schedule"
 SERVICE_ALTER: Final = "alter_schedule"
 SERVICE_BOOST: Final = "boost_schedule"
+SERVICE_DEBUG: Final = "debug_schedule"
 SERVICE_DUMP: Final = "dump_schedule"
 SERVICE_GET: Final = "get_schedule"
 SERVICE_REFRESH: Final = "refresh_schedule"

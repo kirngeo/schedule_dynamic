@@ -30,6 +30,10 @@ boost_schedule:
       required: true
       selector:
         text:
+debug_schedule:
+  target:
+    entity:
+      domain: schedule
 dump_schedule:
   target:
     entity:

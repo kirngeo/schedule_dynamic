@@ -93,6 +93,7 @@ from .const import (
     SERVICE_ADVANCE,
     SERVICE_ALTER,
     SERVICE_BOOST,
+    SERVICE_DEBUG,
     SERVICE_DUMP,
     SERVICE_GET,
     SERVICE_REFRESH,
@@ -348,6 +349,13 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         SERVICE_DUMP,
         {},
         handle_dump,
+        supports_response=SupportsResponse.ONLY,
+    )
+
+    component.async_register_entity_service(
+        SERVICE_DEBUG,
+        {},
+        handle_debug,
         supports_response=SupportsResponse.ONLY,
     )
 
@@ -754,6 +762,48 @@ class Schedule(CollectionEntity):
             return {d: self._config[d] for d in WEEKDAY_TO_CONF.values()}
         return None
 
+    def debug_schedule(self, msg: str | None = None) -> None:
+        """Debug schedule."""
+        if msg:
+            LOGGER.warning( "Debug_schedule %s", msg )
+
+        response = {}
+        sname = 'debug_script'
+        response_variable = "result"
+        actions = [
+            {"action": f"{'' if '.' in sname else 'script.'}{sname}",
+              "response_variable": response_variable,
+              "data": {       # The input data supplied to the selection script
+                  "date"         : date.today(),
+                  "entity_id"    : DOMAIN + '.' + self.unique_id,
+                  "choices"      : set( 'aa', 'bb', 'cc' ),
+                  },
+             }
+        ]
+
+        await async_validate_actions_config( self.hass, actions )
+
+        try:
+            result = await Script(
+                self.hass,
+                actions,
+                "get_subschedule_id",
+                DOMAIN,
+            ).async_run( context=Context() )
+        except (TemplateError, ServiceNotFound) as e:
+            LOGGER.error( "%s script %s execution failed %s", self.name, sname, e )
+            return
+
+        LOGGER.error( "%s I=%s",
+                       self._attr_unique_id,
+                       actions[0].get('data'),
+                     )
+        LOGGER.error( "%s O=%s",
+                       self._attr_unique_id,
+                       vars(result).get('variables',{}).get(response_variable),
+                     )
+
+
     def dump_schedule(self, msg: str | None = None) -> None:
         """Log schedule Transitions."""
         if not self._debug : return
@@ -1146,6 +1196,10 @@ async def handle_advance(schedule: Schedule, _: ServiceCall) -> ServiceResponse:
 async def handle_dump(schedule : Schedule, _: ServiceCall) -> ServiceResponse:
     """Handle dump action."""
     return schedule.dump_schedule()
+
+async def handle_debug(schedule : Schedule, _: ServiceCall) -> ServiceResponse:
+    """Handle debug action."""
+    return schedule.debug_schedule()
 
 async def handle_vary(schedule : Schedule, call: ServiceCall) -> ServiceResponse:
     """Handle vary action."""
