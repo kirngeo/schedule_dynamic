@@ -584,7 +584,7 @@ class Schedule(CollectionEntity):
             self._unsub_update()
             self._unsub_update = None
 
-    async def _async_get_subschedule_for(self, offset: int = 0, when: date) -> list | None:
+    async def _async_get_subschedule_for(self, offset: int = 0, when: date = None) -> list | None:
         """ Returns a list of Transitions for the specified date. """
 
         def dummy() -> list[Transition]:
