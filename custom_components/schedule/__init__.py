@@ -411,7 +411,7 @@ class Transition:
 
     _dt: datetime
 
-    def __init__( self, tdate:date, ttime:time, state: StateType = None ) -> None:
+    def __init__( self, tdate:date, ttime:time, state: StateType = None, offset: int = 0 ) -> None:
         """Initialise a Transition."""
         tz = dt_util.now().tzinfo
         if isinstance( ttime, dict ):
@@ -428,6 +428,11 @@ class Transition:
                             )
 
         self._date: date = tdate
+
+        if offset:
+            self._dt += timedelta( minutes=offset )
+            self._date = self._dt.date()
+
         self._state: StateType = state
         self._variation: timedelta | None = None
         self.inhibited = 0
