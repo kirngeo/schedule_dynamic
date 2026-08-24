@@ -45,12 +45,12 @@ refresh_schedule:
   fields:
     offset_minutes:
       required: true
-      default: 0
-      min: -360
-      max: 360
-      unit_of_measurement: "min"
       selector:
         number:
+          default: 0
+          min: -360
+          max: 360
+          unit_of_measurement: "min"
 vary_schedule:
   target:
     entity:
