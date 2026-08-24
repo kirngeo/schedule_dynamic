@@ -45,7 +45,6 @@ refresh_schedule:
   fields:
     offset_minutes:
       selector:
-        label: "offset, minutes"
         number:
           required: true
           default: 0
