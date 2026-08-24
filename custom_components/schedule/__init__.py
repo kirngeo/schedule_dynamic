@@ -584,7 +584,7 @@ class Schedule(CollectionEntity):
             self._unsub_update()
             self._unsub_update = None
 
-    async def _async_get_subschedule_for(self, when: date) -> list | None:
+    async def _async_get_subschedule_for(self, offset: int = 0, when: date) -> list | None:
         """ Returns a list of Transitions for the specified date. """
 
         def dummy() -> list[Transition]:
@@ -659,7 +659,8 @@ class Schedule(CollectionEntity):
 
     async def _async_replenish_transitions(self,
                                            until: date | None = None,
-                                           update: bool = False) -> None:
+                                           update: bool = False,
+                                           offset: int = 0 ) -> None:
         """Replenish the list of Transitions, filling it until the specified date ."""
 
         if not self._v2:
@@ -671,14 +672,20 @@ class Schedule(CollectionEntity):
 
         if not self._transitions:
             # Initialise an empty schedule, with yesterday's sub-schedule
-            self._transitions = await self._async_get_subschedule_for( now.date() - timedelta( days=1 ) )
+            self._transitions = await self._async_get_subschedule_for(
+                    when = now.date() - timedelta( days=1 ),
+                    offset = offset,
+                    )
 
         # Find the date after the most recent date currently in schedule
         dt = self._transitions[-1].date + timedelta( days=1 )
 
         # Add entries for dates not yet in the schedule, but not after "until".
         while self._transitions[-1].date < until:
-            self._transitions += await self._async_get_subschedule_for( dt )
+            self._transitions += await self._async_get_subschedule_for(
+                    when = dt,
+                    offset = offset,
+                    )
             dt += timedelta( days=1 )
 
         keep = 1  # number of past transitions to retain
@@ -923,13 +930,13 @@ class Schedule(CollectionEntity):
         self.dump_schedule( msg="post-boost" )
         return response
 
-    async def refresh(self) -> None:
+    async def refresh(self, offset_minutes: int) -> None:
         """Remove all existing Transitions; generate a new set."""
         if not self._is_ready:
             if self._debug : LOGGER.warning( "%s is not ready for refresh yet", self.name )
             return
         self._transitions : [Transition] = []
-        await self._async_replenish_transitions()
+        await self._async_replenish_transitions( offset=offset_minutes )
         self._clean_update()
 
     def vary( self, normal: datetime,

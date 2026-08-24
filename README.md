@@ -68,6 +68,13 @@ The script should return the following variables as output :
 
 The script should use the variables which are passed as input to determine whuch sub-schedule to use for any particular day.
 
+## Services
+
+### `advance_schedule`
+### `alter_schedule`
+### `boost_schedule`
+### `refresh_schedule`
+
 ## Example 1 scenario
 
 This is a simple scenario, which controls two Thermostatic Radiator Valves in one room of a house.
