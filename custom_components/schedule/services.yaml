@@ -44,11 +44,14 @@ refresh_schedule:
       domain: schedule
   fields:
     offset_minutes:
-      required: true
-      default: 0
-      min: -360
-      max: 360
-      unit_of_measurement: "min"
+      selector:
+        label: "offset, minutes"
+        number:
+          required: true
+          default: 0
+          min: -360
+          max: 360
+          unit_of_measurement: "min"
 vary_schedule:
   target:
     entity:
