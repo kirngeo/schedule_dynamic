@@ -944,6 +944,7 @@ class Schedule(CollectionEntity):
         if not self._is_ready:
             if self._debug : LOGGER.warning( "%s is not ready for refresh yet", self.name )
             return
+        LOGGER.ERROR( '%s refresh offset_minutes=%s', self.name, offset_minutes)
         self._transitions : [Transition] = []
         await self._async_replenish_transitions( offset=offset_minutes )
         self._clean_update()
@@ -1218,6 +1219,7 @@ async def handle_vary(schedule : Schedule, call: ServiceCall) -> ServiceResponse
 
 async def handle_refresh(schedule : Schedule, call: ServiceCall) -> ServiceResponse:
     """Handle refresh action."""
+    LOGGER.warning( "almacp handle_refresh %s, %s", schedule, service_call )
     return await schedule.refresh( call.data.get( ATTR_OFFSET_MINUTES ))
 
 async def async_get_schedule_service(
