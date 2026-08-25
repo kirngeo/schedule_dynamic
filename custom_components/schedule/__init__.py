@@ -1217,7 +1217,7 @@ async def handle_vary(schedule : Schedule, call: ServiceCall) -> ServiceResponse
                             call.data.get( ATTR_LOOKAHEAD ),
                             call.data.get( ATTR_LOOKBEHIND ) )
 
-async def handle_refresh(schedule : Schedule, call: ServiceCall) -> ServiceResponse:
+async def handle_refresh(schedule : Schedule, service_call: ServiceCall) -> ServiceResponse:
     """Handle refresh action."""
     LOGGER.warning( "almacp handle_refresh %s, %s", schedule, service_call )
     return await schedule.refresh( call.data.get( ATTR_OFFSET_MINUTES ))
