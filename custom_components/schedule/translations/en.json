@@ -98,7 +98,11 @@
         },
         "refresh_schedule": {
             "description": "Refresh schedule transitions, without reloading YAML.",
-            "name": "Refresh schedule"
+            "name": "Refresh schedule",
+            "fields" : {
+                "offset_minutes" : {"description" : "Integer minutes; specifies the adjustment to be made to teh scedule, on refresh",
+                "name" : "Offset minutes"}
+            }
         },
         "reload": {
             "description": "Reloads schedules from the YAML-configuration.",
