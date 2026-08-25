@@ -944,7 +944,7 @@ class Schedule(CollectionEntity):
         if not self._is_ready:
             if self._debug : LOGGER.warning( "%s is not ready for refresh yet", self.name )
             return
-        LOGGER.ERROR( '%s refresh offset_minutes=%s', self.name, offset_minutes)
+        LOGGER.error( '%s refresh offset_minutes=%s', self.name, offset_minutes)
         self._transitions : [Transition] = []
         await self._async_replenish_transitions( offset=offset_minutes )
         self._clean_update()
