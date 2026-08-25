@@ -360,7 +360,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     component.async_register_entity_service(
         SERVICE_REFRESH,
         {
-            vol.Required(ATTR_OFFSET_MINUTES, default=0): vol.All(_int, vol.Clamp( max=360, min=-360 )),
+            vol.Required(ATTR_OFFSET_MINUTES, default=0): vol.All(int, vol.Clamp( max=360, min=-360 )),
         },
         handle_refresh,
         supports_response=SupportsResponse.ONLY,
