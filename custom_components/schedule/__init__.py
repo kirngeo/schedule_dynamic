@@ -431,7 +431,7 @@ class Transition:
 
         if offset:
             self._dt += timedelta( minutes=offset )
-            self._date = self._dt.date()
+         #   self._date = self._dt.date()
 
         self._state: StateType = state
         self._variation: timedelta | None = None
