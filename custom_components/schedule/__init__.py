@@ -1216,9 +1216,9 @@ async def handle_vary(schedule : Schedule, call: ServiceCall) -> ServiceResponse
                             call.data.get( ATTR_LOOKAHEAD ),
                             call.data.get( ATTR_LOOKBEHIND ) )
 
-async def handle_refresh(schedule : Schedule, _: ServiceCall) -> ServiceResponse:
+async def handle_refresh(schedule : Schedule, call: ServiceCall) -> ServiceResponse:
     """Handle refresh action."""
-    return await schedule.refresh()
+    return await schedule.refresh( call.data.get( ATTR_OFFSET_MINUTES ))
 
 async def async_get_schedule_service(
     schedule: Schedule, service_call: ServiceCall
