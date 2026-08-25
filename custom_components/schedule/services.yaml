@@ -48,9 +48,10 @@ refresh_schedule:
       default: 0
       selector:
         number:
+          mode: "box"
           min: -360
           max: 360
-          unit_of_measurement: "min"
+          unit_of_measurement: minutes
 vary_schedule:
   target:
     entity:
