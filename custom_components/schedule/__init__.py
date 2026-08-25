@@ -662,7 +662,11 @@ class Schedule(CollectionEntity):
 
         return sorted(
             [
-                Transition( tdate=when, ttime=trans[ CONF_AT ], state=trans.get(CONF_STATE))
+                Transition( tdate=when,
+                            ttime=trans[ CONF_AT ],
+                            state=trans.get(CONF_STATE),
+                            offset=offset,
+                           )
                 for trans in subsched.get( CONF_TRANSITIONS, [] )
             ],
             key = lambda t : t.datetime
