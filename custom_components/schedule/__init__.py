@@ -596,6 +596,8 @@ class Schedule(CollectionEntity):
     async def _async_get_subschedule_for(self, offset: int = 0, when: date = None) -> list | None:
         """ Returns a list of Transitions for the specified date. """
 
+        LOGGER.error( 'get_for when=%s offset=%s', when, offset )
+
         def dummy() -> list[Transition]:
             """ Always return at least this dummy list, which has one Transition at start of day. """
             LOGGER.warning( "subschedule for %s is missing", when.isoformat() )
@@ -674,6 +676,8 @@ class Schedule(CollectionEntity):
 
         if not self._v2:
             return
+
+        LOGGER.error( 'replenish until=%s update=%s offset=%s', until, update, offset)
 
         now = dt_util.now()
         if not until:
@@ -944,7 +948,7 @@ class Schedule(CollectionEntity):
         if not self._is_ready:
             if self._debug : LOGGER.warning( "%s is not ready for refresh yet", self.name )
             return
-        LOGGER.error( '%s refresh offset_minutes=%s', self.name, offset_minutes)
+        LOGGER.error( '%s refresh( offset_minutes=%s )', self.name, offset_minutes)
         self._transitions : [Transition] = []
         await self._async_replenish_transitions( offset=offset_minutes )
         self._clean_update()
