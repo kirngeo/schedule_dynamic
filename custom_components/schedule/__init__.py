@@ -17,6 +17,7 @@ from homeassistant.const import (
     CONF_ICON,
     CONF_ID,
     CONF_NAME,
+    CONF_OFFSET,
     CONF_STATE,
     CONF_UNIT_OF_MEASUREMENT,
     EVENT_HOMEASSISTANT_STARTED,
@@ -71,7 +72,6 @@ from .const import (
     ATTR_NEXT_EVENT,
     ATTR_NEXT_STATE,
     ATTR_NORMAL,
-    ATTR_OFFSET_MINUTES,
     ATTR_TRANSITIONS,
     ATTR_VARIATION,
     CONF_ALL_DAYS,
@@ -360,7 +360,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     component.async_register_entity_service(
         SERVICE_REFRESH,
         {
-            vol.Required(ATTR_OFFSET_MINUTES, default=0): vol.All(int, vol.Clamp( max=360, min=-360 )),
+            vol.Required(CONF_OFFSET, default=0): vol.All( cv.time_period,
+                                                           vol.Clamp( max=timedelta(hours=6), min=-timedelta(hours-6) )),
         },
         handle_refresh,
         supports_response=SupportsResponse.ONLY,
@@ -415,7 +416,7 @@ class Transition:
 
     _dt: datetime
 
-    def __init__( self, tdate:date, ttime:time, state: StateType = None, offset: int = 0 ) -> None:
+    def __init__( self, tdate:date, ttime:time, state: StateType = None, offset: timedelta = None ) -> None:
         """Initialise a Transition."""
         tz = dt_util.now().tzinfo
         if isinstance( ttime, dict ):
@@ -433,8 +434,8 @@ class Transition:
 
         self._date: date = tdate
 
-        if offset:
-            self._dt += timedelta( minutes=offset )
+        if offset is not None:
+            self._dt += offset
          #   self._date = self._dt.date()
 
         self._state: StateType = state
@@ -593,10 +594,11 @@ class Schedule(CollectionEntity):
             self._unsub_update()
             self._unsub_update = None
 
-    async def _async_get_subschedule_for(self, offset: int = 0, when: date = None) -> list | None:
+    async def _async_get_subschedule_for(self, offset: timedelta = None, when: date = None) -> list | None:
         """ Returns a list of Transitions for the specified date. """
 
-        LOGGER.error( 'get_for when=%s offset=%s', when, offset )
+        if self.debug:
+            LOGGER.error( 'get_for when=%s offset=%s', when, offset)
 
         def dummy() -> list[Transition]:
             """ Always return at least this dummy list, which has one Transition at start of day. """
@@ -675,13 +677,11 @@ class Schedule(CollectionEntity):
     async def _async_replenish_transitions(self,
                                            until: date | None = None,
                                            update: bool = False,
-                                           offset: int = 0 ) -> None:
+                                           offset: timedelta = None ) -> None:
         """Replenish the list of Transitions, filling it until the specified date ."""
 
         if not self._v2:
             return
-
-        LOGGER.error( 'replenish until=%s update=%s offset=%s', until, update, offset)
 
         now = dt_util.now()
         if not until:
@@ -947,14 +947,13 @@ class Schedule(CollectionEntity):
         self.dump_schedule( msg="post-boost" )
         return response
 
-    async def refresh(self, offset_minutes: int) -> None:
+    async def refresh(self, offset: timedelta) -> None:
         """Remove all existing Transitions; generate a new set."""
         if not self._is_ready:
             if self._debug : LOGGER.warning( "%s is not ready for refresh yet", self.name )
             return
-        LOGGER.error( '%s refresh( offset_minutes=%s )', self.name, offset_minutes)
         self._transitions : [Transition] = []
-        await self._async_replenish_transitions( offset=offset_minutes )
+        await self._async_replenish_transitions( offset=offset )
         self._clean_update()
 
     def vary( self, normal: datetime,
@@ -1227,8 +1226,7 @@ async def handle_vary(schedule : Schedule, call: ServiceCall) -> ServiceResponse
 
 async def handle_refresh(schedule : Schedule, service_call: ServiceCall) -> ServiceResponse:
     """Handle refresh action."""
-    LOGGER.warning( "almacp handle_refresh %s, %s", schedule, service_call )
-    return await schedule.refresh( service_call.data.get( ATTR_OFFSET_MINUTES ))
+    return await schedule.refresh( service_call.data.get( CONF_OFFSET ))
 
 async def async_get_schedule_service(
     schedule: Schedule, service_call: ServiceCall

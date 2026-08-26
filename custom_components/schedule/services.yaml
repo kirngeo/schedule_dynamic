@@ -43,15 +43,20 @@ refresh_schedule:
     entity:
       domain: schedule
   fields:
-    offset_minutes:
+    offset:
       required: true
-      default: 0
+      default:
+        days: 0
+        hours: 0
+        minutes: 0
+        seconds: 0
       selector:
-        number:
-          mode: "box"
-          min: -360
-          max: 360
-          unit_of_measurement: minutes
+        duration:
+          allow_negative: true
+          min:
+            minutes: -360
+          max:
+            minutes:  360
 vary_schedule:
   target:
     entity:
