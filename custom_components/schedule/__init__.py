@@ -699,10 +699,19 @@ class Schedule(CollectionEntity):
 
         # Add entries for dates not yet in the schedule, but not after "until".
         while self._transitions[-1].date < until:
-            self._transitions += await self._async_get_subschedule_for(
+            latest = self._transitions[-1].datatime
+
+            transitions = await self._async_get_subschedule_for(
                     when = dt,
                     offset = offset,
                     )
+
+            while transitions and transitions[0].datetime <= latest:
+                removed = transitions.pop(0)
+                if self._debug:
+                    LOGGER.error( '%s removed for %s %s', self.name, dt, removed )
+
+            self._transitions += transitions
             dt += timedelta( days=1 )
 
         keep = 1  # number of past transitions to retain
