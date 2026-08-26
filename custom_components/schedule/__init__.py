@@ -699,7 +699,7 @@ class Schedule(CollectionEntity):
 
         # Add entries for dates not yet in the schedule, but not after "until".
         while self._transitions[-1].date < until:
-            latest = self._transitions[-1].datatime
+            latest = self._transitions[-1].datetime
 
             transitions = await self._async_get_subschedule_for(
                     when = dt,
