@@ -361,7 +361,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         SERVICE_REFRESH,
         {
             vol.Required(CONF_OFFSET, default=0): vol.All( cv.time_period,
-                                                           vol.Clamp( max=timedelta(hours=6), min=-timedelta(hours-6) )),
+                                                           vol.Clamp( max=timedelta(hours=6), min=-timedelta(hours=-6) )),
         },
         handle_refresh,
         supports_response=SupportsResponse.ONLY,
