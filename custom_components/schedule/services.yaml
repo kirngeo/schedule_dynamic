@@ -53,10 +53,10 @@ refresh_schedule:
       selector:
         duration:
           allow_negative: true
-          min:
-            minutes: -360
-          max:
-            minutes:  360
+            #       min:
+            #            minutes: -360
+            #          max:
+            #            minutes:  360
 vary_schedule:
   target:
     entity:
