@@ -100,7 +100,7 @@
             "description": "Refresh schedule transitions, without reloading YAML.",
             "name": "Refresh schedule",
             "fields" : {
-                "offset" : {"description" : "Time delta specifies the adjustment to be made to teh scedule, on refresh",
+                "offset" : {"description" : "Time delta specifies the adjustment to be made to the schedule, on refresh",
                 "name" : "Offset"}
             }
         },
