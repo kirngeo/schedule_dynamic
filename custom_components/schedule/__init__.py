@@ -597,7 +597,7 @@ class Schedule(CollectionEntity):
     async def _async_get_subschedule_for(self, offset: timedelta = None, when: date = None) -> list | None:
         """ Returns a list of Transitions for the specified date. """
 
-        if self.debug:
+        if self._debug:
             LOGGER.error( 'get_for when=%s offset=%s', when, offset)
 
         def dummy() -> list[Transition]:
