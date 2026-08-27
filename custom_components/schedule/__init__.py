@@ -72,6 +72,7 @@ from .const import (
     ATTR_NEXT_EVENT,
     ATTR_NEXT_STATE,
     ATTR_NORMAL,
+    ATTR_OFFSET,
     ATTR_TRANSITIONS,
     ATTR_VARIATION,
     CONF_ALL_DAYS,
@@ -402,6 +403,7 @@ class Transition:
     """A transition of a sub-schedule."""
 
     _dt: datetime
+    _is_offset: bool
 
     def __init__( self, tdate:date, ttime:time, state: StateType = None, offset: timedelta = None ) -> None:
         """Initialise a Transition."""
@@ -419,15 +421,23 @@ class Transition:
                             tzinfo=tz
                             )
 
+        self._is_offset = False
         self._date: date = tdate
 
         if offset is not None:
             self._dt += offset
+            if offset : self._is_offset = true
+
          #   self._date = self._dt.date()
 
         self._state: StateType = state
         self._variation: timedelta | None = None
         self.inhibited = 0
+
+    @property
+    def is_offset(self) -> bool:
+        """Returns true if the Transition has been offset."""
+        return self._is_offset
 
     @property
     def attrib(self) -> dict:
@@ -514,6 +524,7 @@ class Schedule(CollectionEntity):
             self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
             self._attr_unit_of_measurement = self._config.get(CONF_UNIT_OF_MEASUREMENT)
             self._unrecorded_attributes |= frozenset( ATTR_TRANSITIONS )
+            self._attr_extra_state_attributes[ ATTR_OFFSET ] = False
             if CONF_DEVICE_CLASS in self._config:
                 self._attr_device_class = self._config[CONF_DEVICE_CLASS]
                 self._state_is_numeric = self._attr_device_class not in NON_NUMERIC_DEVICE_CLASSES
@@ -997,10 +1008,9 @@ class Schedule(CollectionEntity):
                                self.name, self._attr_state, type(self._attr_state)
                                )
 
-            self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = \
-                    next_event = next_transition.datetime
-            self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = \
-                    next_transition.state
+            self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = next_event = next_transition.datetime
+            self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = next_transition.state
+            self._attr_extra_state_attributes[ ATTR_OFFSET ]     = want.is_offset
 
             # Arrange to replenish transitions, and update the entity state, sometime...
             self.hass.async_create_task( self._async_replenish_transitions( update=True ) )
