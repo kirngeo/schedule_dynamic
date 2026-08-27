@@ -485,6 +485,7 @@ class Schedule(CollectionEntity):
     _attr_should_poll = False
  #   _attr_state: Literal["on", "off"]
     _attr_state: StateType
+    _attr_offset: timedelta
     _config: ConfigType
     _next: datetime
     _unsub_update: Callable[[], None] | None = None
@@ -504,6 +505,7 @@ class Schedule(CollectionEntity):
         self._attr_name = self._config[CONF_NAME]
         self._attr_unique_id = self._config[CONF_ID]
         self._attr_state = STATE_UNKNOWN
+        self._attr_offset = timedelta()
         self._debug = self._config.get(CONF_DEBUG)
 
         if self._v2:
@@ -932,6 +934,7 @@ class Schedule(CollectionEntity):
             return
         self._transitions : [Transition] = []
         await self._async_replenish_transitions( offset=offset )
+        self._attr_offset = offset
         self._clean_update()
 
     @callback
