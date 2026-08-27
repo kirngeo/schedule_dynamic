@@ -426,7 +426,7 @@ class Transition:
 
         if offset is not None:
             self._dt += offset
-            if offset : self._is_offset = true
+            if offset : self._is_offset = True
 
          #   self._date = self._dt.date()
 
