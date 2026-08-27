@@ -98,7 +98,6 @@ from .const import (
     SERVICE_DUMP,
     SERVICE_GET,
     SERVICE_REFRESH,
-    SERVICE_VARY,
     WEEKDAY_TO_CONF,
 )
 
@@ -367,18 +366,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         supports_response=SupportsResponse.ONLY,
     )
 
-    component.async_register_entity_service(
-        SERVICE_VARY,
-        {
-            vol.Required(ATTR_NORMAL): cv.datetime,
-            vol.Required(ATTR_VARIATION): cv.datetime,
-            vol.Required(ATTR_LOOKAHEAD, default=timedelta(hours=1)): vol.All( cv.time_period, vol.Clamp( max=timedelta(hours=4) ) ),
-            vol.Required(ATTR_LOOKBEHIND, default=timedelta(hours=1)): vol.All( cv.time_period, vol.Clamp( max=timedelta(hours=4) ) ),
-        },
-        handle_vary,
-        supports_response=SupportsResponse.ONLY,
-    )
-
     await component.async_setup(config)
 
     return True
@@ -481,25 +468,6 @@ class Transition:
         """Set the state for this transition."""
         self._state = state
 
-    def vary(self, vary: timedelta, start: datetime, finish: datetime) -> None:
-        """Vary."""
-
-        if (start < self.datetime < finish) and self._variation is not None:
-            # this transition is within range, but is already varied.
-            # So UNvary this transition.
-            pre = self.datetime
-            self.datetime -= self._variation
-            self._variation = None
-            LOGGER.warning( "UNvaried from %s to %s", pre, self.datetime )
-
-        if (start < self.datetime < finish) and self._variation is None:
-            # this transition is within range, and is not already varied.
-            # So vary this transition.
-            pre = self.datetime
-            self.datetime += vary
-            self._variation = vary
-            LOGGER.warning( "varied from %s to %s", pre, self.datetime )
-
     def __repr__(self):
         """Generate string representation."""
         return (f"{self.date.day:02}-{self.datetime.hour:02}:{self.datetime.minute:02}:{self.datetime.second:02}"
@@ -594,19 +562,19 @@ class Schedule(CollectionEntity):
             self._unsub_update()
             self._unsub_update = None
 
+    def _dummy( self, when: date, at: int=0 ) -> list[Transition]:
+        """ Retuens a dummy daily transition list, containing just one transition. """
+        if not at : LOGGER.warning( "subschedule for %s is missing", when.isoformat() )
+        return [ Transition( tdate = when,
+                             ttime = time( hour=at, tzinfo = dt_util.get_default_time_zone() ),
+                             state = STATE_OFF if self._is_boolean else None,
+                            ) ]
+
     async def _async_get_subschedule_for(self, offset: timedelta = None, when: date = None) -> list | None:
         """ Returns a list of Transitions for the specified date. """
 
         if self._debug:
             LOGGER.error( 'get_for when=%s offset=%s', when, offset)
-
-        def dummy() -> list[Transition]:
-            """ Always return at least this dummy list, which has one Transition at start of day. """
-            LOGGER.warning( "subschedule for %s is missing", when.isoformat() )
-            return [ Transition( tdate = when,
-                                 ttime = time( tzinfo = dt_util.get_default_time_zone() ),
-                                 state = STATE_OFF if self._is_boolean else None,
-                                ) ]
 
         sub_schedules = self._config[ CONF_SUB_SCHEDULES ]
 
@@ -630,7 +598,7 @@ class Schedule(CollectionEntity):
             try:
                 await async_validate_actions_config( self.hass, actions )
             except ValueError as _:
-                return dummy()
+                return self._dummy( when=when )
 
             try:
                 result = await Script(
@@ -641,7 +609,7 @@ class Schedule(CollectionEntity):
                 ).async_run( context=Context() )
             except (TemplateError, ServiceNotFound) as e:
                 LOGGER.error( "%s script %s execution failed %s", self.name, sname, e )
-                return dummy()
+                return self._dummy( when=when )
 
             if self._debug:
                 LOGGER.warning( "%s I=%s",
@@ -655,12 +623,12 @@ class Schedule(CollectionEntity):
 
             if (subsched_id := result.variables.get(response_variable,{}).get( 'subsched' )) is None:
                 LOGGER.error( "%s script %s did not return a sub-schedule id", self.name, sname )
-                return dummy()
+                return self._dummy( when=when )
 
             if (subsched := self._config[ CONF_SUB_SCHEDULES ].get( subsched_id )) is None:
                 LOGGER.error( "%s sub-schedule %s (script %s) for %s not found",
                     self.name, subsched_id, sname, when.isoformat()  )
-                return dummy()
+                return self._dummy( when=when )
 
         return sorted(
             [
@@ -672,7 +640,7 @@ class Schedule(CollectionEntity):
                 for trans in subsched.get( CONF_TRANSITIONS, [] )
             ],
             key = lambda t : t.datetime
-            ) or dummy()
+            ) or self._dummy( when=when )
 
     async def _async_replenish_transitions(self,
                                            until: date | None = None,
@@ -701,17 +669,18 @@ class Schedule(CollectionEntity):
         while self._transitions[-1].date < until:
             latest = self._transitions[-1].datetime
 
+            # get transitions for the next day
             transitions = await self._async_get_subschedule_for(
                     when = dt,
                     offset = offset,
                     )
 
+            # existing  transitions might have moved into the next day, e.g. if refreshed with an offset.
+            # ignore new transitions which are earlier than the latest existing transition
             while transitions and transitions[0].datetime <= latest:
-                removed = transitions.pop(0)
-                if self._debug:
-                    LOGGER.error( '%s removed for %s %s', self.name, dt, removed )
+                transitions.pop(0)
 
-            self._transitions += transitions
+            self._transitions += ( transitions or self._dummy( when=dt, hh=12 ) )
             dt += timedelta( days=1 )
 
         keep = 1  # number of past transitions to retain
@@ -965,74 +934,6 @@ class Schedule(CollectionEntity):
         await self._async_replenish_transitions( offset=offset )
         self._clean_update()
 
-    def vary( self, normal: datetime,
-             variation: datetime,
-             lookahead: timedelta,
-             lookbehind: timedelta ) -> dict :
-        """Vary the schedule.
-
-        This means moving a part of the schedule.
-
-        "normal" and "variations" define the normal time, and the variation time.
-        For example, if you usually have an alarm at 08:00,
-        but on a particular day you want it at 07:00,
-        then set normal to 08:00 and variation to 07:00.
-
-        lookahead and lookbehind specify the timescale range (with respect to "normal") of the
-        Transitions which will be moved.
-        """
-
-        if not self._is_ready:
-            if self._debug : LOGGER.warning( "%s is not ready for vary yet", self.name )
-            return
-
-        vary_by = variation - normal
-        vary_by_seconds = vary_by.total_seconds()
-        range_start = normal - lookbehind
-        range_finish = normal + lookahead
-        if self._debug:
-            LOGGER.warning( "normal=%s variation=%s",
-                           normal, variation)
-            LOGGER.warning( "lookahead=%s lookbehind=%s",
-                           lookahead, lookbehind)
-            LOGGER.warning( "vary_by=%s (%s secs) range=%s to %s",
-                           vary_by, vary_by_seconds, range_start, range_finish)
-        if not vary_by_seconds:
-            return
-        self.dump_schedule( msg="pre-vary" )
-        [trans.vary( vary_by, range_start, range_finish ) for trans in self._transitions]
-
-        # iterate upwards, mark out-of-order transitions as inhibited...
-        if vary_by_seconds < 0:
-            previous_dt = self._transitions[-1].datetime + timedelta(days=1)
-            for trans in reversed( self._transitions ):
-                if trans.datetime < previous_dt:
-                    if self._debug:
-                        LOGGER.warning( 'good trans.datetime=%s previous_dt=%s',
-                                   trans.datetime, previous_dt)
-                    previous_dt = trans.datetime
-                else: #bad
-                    if self._debug:
-                        LOGGER.warning( 'BAD trans.datetime=%s previous_dt=%s',
-                                   trans.datetime, previous_dt)
-                    trans.inhibited=42
-        else:
-            previous_dt = self._transitions[0].datetime - timedelta(days=1)
-            for trans in self._transitions:
-                if trans.datetime > previous_dt:
-                    if self._debug:
-                        LOGGER.warning( 'good trans.datetime=%s previous_dt=%s',
-                                   trans.datetime, previous_dt)
-                    previous_dt = trans.datetime
-                else: #bad
-                    if self._debug:
-                        LOGGER.warning( 'BAD trans.datetime%s previous_dt=%s',
-                                   trans.datetime, previous_dt)
-                    trans.inhibited=42
-
-        self.dump_schedule( msg="post-vary" )
-        return
-
     @callback
     def _clean_update(self) -> None:
         self._clean_up_listener()
@@ -1224,14 +1125,6 @@ async def handle_dump(schedule : Schedule, _: ServiceCall) -> ServiceResponse:
 async def handle_debug(schedule : Schedule, _: ServiceCall) -> ServiceResponse:
     """Handle debug action."""
     return await schedule.debug_schedule()
-
-async def handle_vary(schedule : Schedule, call: ServiceCall) -> ServiceResponse:
-    """Handle vary action."""
-    LOGGER.warning( "handle_vary %s, response %s", call.data, call.return_response )
-    return schedule.vary(   dt_util.as_utc( call.data.get( ATTR_NORMAL ) ),
-                            dt_util.as_utc( call.data.get( ATTR_VARIATION )),
-                            call.data.get( ATTR_LOOKAHEAD ),
-                            call.data.get( ATTR_LOOKBEHIND ) )
 
 async def handle_refresh(schedule : Schedule, service_call: ServiceCall) -> ServiceResponse:
     """Handle refresh action."""

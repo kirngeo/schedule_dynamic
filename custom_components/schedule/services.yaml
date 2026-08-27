@@ -53,30 +53,3 @@ refresh_schedule:
       selector:
         duration:
           allow_negative: true
-            #       min:
-            #            minutes: -360
-            #          max:
-            #            minutes:  360
-vary_schedule:
-  target:
-    entity:
-      domain: schedule
-  fields:
-    lookahead:
-      example: "00:01:00 or 60"
-      required: true
-      selector:
-        duration:
-    lookbehind:
-      example: "00:01:00 or 60"
-      required: true
-      selector:
-        duration:
-    normal:
-      required: true
-      selector:
-        datetime:
-    variation:
-      required: true
-      selector:
-        datetime:

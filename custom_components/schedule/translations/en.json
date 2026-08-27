@@ -100,7 +100,7 @@
             "description": "Refresh schedule transitions, without reloading YAML.",
             "name": "Refresh schedule",
             "fields" : {
-                "offset" : {"description" : "Time delta specifies the adjustment to be made to the schedule, on refresh",
+                "offset" : {"description" : "Specifies the adjustment to be made throughout the schedule, on refresh",
                 "name" : "Offset"}
             }
         },
@@ -108,28 +108,6 @@
             "description": "Reloads schedules from the YAML-configuration.",
             "name": "Reload schedules"
         },
-        "vary_schedule": {
-            "description": "Varies schedule transitions times, within a specifies range, by a specified duration.",
-            "fields": {
-                "lookahead": {
-                    "description": "Duration : the end of the range is this duration after \"Normal\"",
-                    "name": "Lookahead"
-                },
-                "lookbehind": {
-                    "description": "Duration : the start of the range is this duration before \"Normal\"",
-                    "name": "Lookbehind"
-                },
-                "normal": {
-                    "description": "Date/time; specifies the centre point of range",
-                    "name": "Normal"
-                },
-                "variation": {
-                    "description": "Date/time; the difference from \"Normal\" specifies the amount of time to cvary transitions which are with the range",
-                    "name": "Variation"
-                }
-            },
-            "name": "Vary schedule"
-        }
     },
     "title": "Schedule",
     "triggers": {
