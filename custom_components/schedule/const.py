@@ -28,7 +28,7 @@ CONF_ALL_DAYS: Final = {
 
 CONF_AT: Final = "at"
 CONF_ATTRIBUTES: Final = "attributes"
-CONF_ATTR_TRANSITIONS = "number_of_attribute_transitions"
+CONF_ATTR_TRANSITIONS = "n_attr_transitions"
 CONF_BOOLEAN: Final = "boolean"
 CONF_DELAY_STARTUP: Final = "delay_startup"
 CONF_HH: Final = "hh"

@@ -27,13 +27,14 @@ Note that the sub-schedules do not contain information about day-of-week, or day
  key | mandatory? | description
  --- | --- | ---
 `name` | Y | descriptive name
-`select_script` | Y | If missing, the schedule will not be dynamic.
-`sub_schedules` | Y | Each key within `sub_schedules` specifies one sub-schedule. See **sub-schedule definition** below.
+`select_script` | Y | See **Selector script** below. If missing, the schedule will not be dynamic.
+`sub_schedules` | Y | Each key within `sub_schedules` specifies one sub-schedule. See **Sub-schedule definition** below.
 `device_class` | N |
 `delay_startup` | N | The delay (seconds, default 0) between Home Assistant startup and the first `select_script` invocation.
 `unit_of_measurement` | N | 
 `attributes` | N | Each key within `attributes` specifies an attribute which will be assigned to the schedule entity
 `boolean` | N | Default `false`. If `true`, the state of the schedule entity will be either `on` or `off`.
+`n_attr_transitions` | N | Default 10. The number of transitions to show in the `tramsitions` attribute.
 
 ## Sub-schedule definition
  key | mandatory? | description
@@ -48,13 +49,13 @@ If there is only one sub-schedule, then it is always used, without invocation of
  `at` | sub-keys `hh` (mandatory), `mm` (default 0) and `mm` (default 0) specify the time of a schedule state transition.
  `state` | specifies the required schedule state, at time `at`.
 
-## selector script
+## Selector script
 
 The name of the selector script is defined in the schedule definition.
 
 The selector script itself is not defined with the schedule definition : this allows multiple schedule definitions to use the same script.
 
-The selector script is not invoked if there is only one sub-schedule specified : that single sub-schedule is always used.
+The selector script is not invoked if there is only one sub-schedule defined : that single sub-schedule is always used.
 
 The script will receive the following variables as input :
 
@@ -66,8 +67,9 @@ The script should return the following variables as output :
 
 * `subsched` contains the name of the particular sub-schedule which is to be used
 
-The script should use the variables which are passed as input to determine whuch sub-schedule to use for any particular day.
+The script should use the variables which are passed as input to determine which sub-schedule to use for any particular day.
 
+If the script returns the name of an invalid sub-schedule, then a dummy schedule is used for the particular day, which either sets the state to `off` (if `boolean` is true), or leaves the state alone (if `boolean` is false).
 ## Services
 
 ### `advance_schedule`
@@ -84,15 +86,29 @@ This service alters the current state of the schedule, to a specified value (`st
 
 ### `refresh_schedule`
 
+This service refreshs the schedule with the configured data.
+`
+Also, an offset (+- 6 hours) can be added to the times which are specified in the schedule - you could, for example use this facility to temporarily move your central heating schedule forward for an hour if you had to set your morning alarm to an hour earlier one morning.
+
 ## Schedule entity attributes
 ### `offset`
+Shows the current `offset` of the schedule, in seconds. See the `refresh_schedule` service above.
+
 ### `next_event`
+Shows when the next schedule transition will be.
+
 ### `next_state`
+Shows what the schedule state will be at the next transition.
+
 ### `transitions`
+Shows the next `n_attr_transitions` (default 10) transitions.
+
+### user-defined attributes
+ as defined in `attributes` in the schedule definition. These may be lists. 
 
 ## Example 1 scenario
 
-This is a simple scenario, which controls two Thermostatic Radiator Valves in one room of a house.
+This is a schedule which controls two Thermostatic Radiator Valves in one room of a house.
 
 The temperature setpoint of the valves are adjusted according to the time of day, and the season of the year, and the occupancy of the area of the house.
 
@@ -100,7 +116,7 @@ You could also use the day of the week, or any other properties of the date.
 
 There is a helper called `input_boolean.occupied` which specifies whether the area is occupied or not.
 
-#### Example schedule definition
+#### Example 1 schedule definition
 
 * for briefness, only the `winter` and `off` subschedules are defined here.
 * the `winter` subschedule varies the TRV temperatures according to personal desires.
@@ -261,4 +277,68 @@ actions:
 mode: parallel
 max: 10
 ```
+
+## Example 2 scenario
+
+This emulates the operation of a non-dynamic schedule : it'll create the same schedule for the same days each week.
+
+### EXample 2 schedule definition
+
+```oldstyle_schedule:
+  name: oldstyle schedule
+  select_script: script.oldstyle_selector
+  boolean: true
+  sub_schedules:
+    sat:
+      transitions:
+        - at:
+            hh: 10
+          state: 1
+        - at:
+            hh: 14
+          state: 0
+    tue:
+      transitions:
+        - at:
+            hh: 16
+          state: true
+        - at:
+            hh: 16
+            mm: 30
+          state: false
+    thu:
+      transitions:
+        - at:
+            hh: 8
+          state: on
+        - at:
+          state: off
+        - at:
+            hh: 14
+          state: 1
+        - at:
+            hh: 15
+            mm: 30
+          state: 0
+    "off":
+      transitions:
+        - at:
+            hh: 0
+          state: off
+```
+
+#### Example 1 schedule-selector script
+
+```sequence:
+  - stop: normal
+    response_variable: results
+variables:
+  results: >
+    {{ {'subsched' : ['mon', 'tue', 'wed', 'thu', 'fri', 'sat',
+    'sun'][date.weekday()] } }}
+mode: single
+alias: oldstyle selector
+description: ''
+```
+
 
