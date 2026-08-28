@@ -427,7 +427,7 @@ class Transition:
             self._dt += offset
             self._offset = offset
         else:
-            self._offset - timedelta()
+            self._offset = timedelta()
 
          #   self._date = self._dt.date()
 
