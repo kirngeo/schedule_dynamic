@@ -84,6 +84,12 @@ This service alters the current state of the schedule, to a specified value (`st
 
 ### `refresh_schedule`
 
+## Schedule entity attributes
+### `offset`
+### `next_event`
+### `next_state`
+### `transitions`
+
 ## Example 1 scenario
 
 This is a simple scenario, which controls two Thermostatic Radiator Valves in one room of a house.

@@ -46,7 +46,6 @@ ATTR_LOOKBEHIND: Final = "lookbehind"
 ATTR_NEXT_EVENT: Final = "next_event"
 ATTR_NEXT_STATE: Final = "next_state"
 ATTR_NORMAL: Final = "normal"
-ATTR_OFFSET: Final = "offset"
 ATTR_TRANSITIONS: Final = "transitions"
 ATTR_VARIATION: Final = "variation"
 
