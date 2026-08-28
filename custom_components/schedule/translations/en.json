@@ -107,7 +107,7 @@
         "reload": {
             "description": "Reloads schedules from the YAML-configuration.",
             "name": "Reload schedules"
-        },
+        }
     },
     "title": "Schedule",
     "triggers": {

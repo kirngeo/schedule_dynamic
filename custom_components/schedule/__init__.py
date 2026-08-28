@@ -524,7 +524,7 @@ class Schedule(CollectionEntity):
             self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
             self._attr_unit_of_measurement = self._config.get(CONF_UNIT_OF_MEASUREMENT)
             self._unrecorded_attributes |= frozenset( ATTR_TRANSITIONS )
-            self._attr_extra_state_attributes[ CONF_OFFSET ] = timedelta()
+            self._attr_extra_state_attributes[ CONF_OFFSET ] = 0
             if CONF_DEVICE_CLASS in self._config:
                 self._attr_device_class = self._config[CONF_DEVICE_CLASS]
                 self._state_is_numeric = self._attr_device_class not in NON_NUMERIC_DEVICE_CLASSES
@@ -1010,7 +1010,7 @@ class Schedule(CollectionEntity):
 
             self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = next_event = next_transition.datetime
             self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = next_transition.state
-            self._attr_extra_state_attributes[ CONF_OFFSET ]  = want.offset
+            self._attr_extra_state_attributes[ CONF_OFFSET ]  = want.offset.total_seconds()
 
             # Arrange to replenish transitions, and update the entity state, sometime...
             self.hass.async_create_task( self._async_replenish_transitions( update=True ) )
