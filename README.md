@@ -34,7 +34,7 @@ Note that the sub-schedules do not contain information about day-of-week, or day
 `unit_of_measurement` | N | 
 `attributes` | N | Each key within `attributes` specifies an attribute which will be assigned to the schedule entity
 `boolean` | N | Default `false`. If `true`, the state of the schedule entity will be either `on` or `off`.
-`n_attr_transitions` | N | Default 0, max 20. The number of transitions to show in the `tramsitions` attribute.
+`n_attr_transitions` | N | Default 0, max 20. The number of transitions to include in the `transitions` attribute.
 
 ## Sub-schedule definition
  key | mandatory? | description
@@ -282,7 +282,7 @@ max: 10
 
 This emulates the operation of a non-dynamic schedule : it'll create the same schedule for the same days each week.
 
-### EXample 2 schedule definition
+### Example 2 schedule definition
 
 ```oldstyle_schedule:
   name: oldstyle schedule
@@ -327,7 +327,7 @@ This emulates the operation of a non-dynamic schedule : it'll create the same sc
           state: off
 ```
 
-#### Example 1 schedule-selector script
+#### Example 2 schedule-selector script
 
 ```sequence:
   - stop: normal
