@@ -34,7 +34,7 @@ Note that the sub-schedules do not contain information about day-of-week, or day
 `unit_of_measurement` | N | 
 `attributes` | N | Each key within `attributes` specifies an attribute which will be assigned to the schedule entity
 `boolean` | N | Default `false`. If `true`, the state of the schedule entity will be either `on` or `off`.
-`n_attr_transitions` | N | Default 10. The number of transitions to show in the `tramsitions` attribute.
+`n_attr_transitions` | N | Default 0, max 20. The number of transitions to show in the `tramsitions` attribute.
 
 ## Sub-schedule definition
  key | mandatory? | description
@@ -101,7 +101,7 @@ Shows when the next schedule transition will be.
 Shows what the schedule state will be at the next transition.
 
 ### `transitions`
-Shows the next `n_attr_transitions` (default 10) transitions.
+Shows the next `n_attr_transitions` (default 0, max 20) transitions.
 
 ### user-defined attributes
  as defined in `attributes` in the schedule definition. These may be lists. 
