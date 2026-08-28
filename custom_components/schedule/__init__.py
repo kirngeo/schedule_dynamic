@@ -226,7 +226,7 @@ SCHEDULE_SCHEMA_V2: VolDictType = {
     vol.Optional( CONF_DEVICE_CLASS): DEVICE_CLASSES_SCHEMA,
     vol.Optional( CONF_UNIT_OF_MEASUREMENT): cv.string,
     vol.Required( CONF_ATTRIBUTES, default={}): CUSTOM_ATTR_SCHEMA_LIST,
-    vol.Required( CONF_ATTR_TRANSITIONS, default=10) : vol.All( int, vol.Range(min=0, max=20)),
+    vol.Required( CONF_ATTR_TRANSITIONS, default=0) : vol.All( int, vol.Range(min=0, max=20)),
 }
 
 STORAGE_SCHEDULE_SCHEMA: VolDictType = {
@@ -711,9 +711,13 @@ class Schedule(CollectionEntity):
             del self._transitions[0:past-keep]
 
         if update:
-            self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = \
-                    [ t.attrib for t in self._transitions ] \
-                    [ :self._config.get( CONF_ATTR_TRANSITIONS ) ]
+            if show_n :=  self._config.get( CONF_ATTR_TRANSITIONS ):
+                self._attr_extra_state_attributes[ ATTR_TRANSITIONS ] = \
+                        [ t.attrib for t in self._transitions ] \
+                        [ :show_n ]
+            else:
+                self._attr_extra_state_attributes.pop( ATTR_TRANSITIONS, None )
+
             if self._debug:
                 LOGGER.warning( "About to write_ha_state (of %s, for %s, after replenishing",
                            self._attr_state, self.name)
