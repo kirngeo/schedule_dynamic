@@ -313,7 +313,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         SERVICE_ADVANCE,
         {},
         handle_advance,
-        supports_response=SupportsResponse.ONLY,
+        supports_response=SupportsResponse.OPTIONAL,
     )
 
     component.async_register_entity_service(
@@ -322,7 +322,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             vol.Required(CONF_STATE): vol.Coerce(str),
         },
         handle_alter,
-        supports_response=SupportsResponse.ONLY,
+        supports_response=SupportsResponse.OPTIONAL,
     )
 
     component.async_register_entity_service(
@@ -332,7 +332,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             vol.Required(CONF_STATE): vol.Coerce(str),
         },
         handle_boost,
-        supports_response=SupportsResponse.ONLY,
+        supports_response=SupportsResponse.OPTIONAL,
     )
 
     component.async_register_entity_service(
@@ -359,11 +359,11 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     component.async_register_entity_service(
         SERVICE_REFRESH,
         {
-            vol.Required(CONF_OFFSET, default=timedelta()): vol.All( cv.time_period,
-                                                           vol.Clamp( max=timedelta(hours=6), min=timedelta(hours=-6) )),
+            vol.Required(CONF_OFFSET, default=0): vol.All( int,
+                                                           vol.Clamp( max=6*60*60, min=-6*60*60 )),
         },
         handle_refresh,
-        supports_response=SupportsResponse.ONLY,
+        supports_response=SupportsResponse.OPTIONAL,
     )
 
     await component.async_setup(config)
@@ -402,9 +402,9 @@ class Transition:
     """A transition of a sub-schedule."""
 
     _dt: datetime
-    _offset: timedelta
+    _offset: int
 
-    def __init__( self, tdate:date, ttime:time, state: StateType = None, offset: timedelta = None ) -> None:
+    def __init__( self, tdate:date, ttime:time, state: StateType = None, offset: int = 0 ) -> None:
         """Initialise a Transition."""
         tz = dt_util.now().tzinfo
         if isinstance( ttime, dict ):
@@ -420,14 +420,11 @@ class Transition:
                             tzinfo=tz
                             )
 
-        self._offset = False
         self._date: date = tdate
 
-        if offset is not None:
-            self._dt += offset
-            self._offset = offset
-        else:
-            self._offset = timedelta()
+        self._offset = offset
+        if offset:
+            self._dt += timedelta( seconds=offset )
 
          #   self._date = self._dt.date()
 
@@ -435,7 +432,7 @@ class Transition:
         self.inhibited = 0
 
     @property
-    def offset(self) -> timedelta:
+    def offset(self) -> int:
         """Returns the offset of the Transition."""
         return self._offset
 
@@ -495,7 +492,7 @@ class Schedule(CollectionEntity):
     _attr_should_poll = False
  #   _attr_state: Literal["on", "off"]
     _attr_state: StateType
-    _attr_offset: timedelta
+    _attr_offset: int
     _config: ConfigType
     _next: datetime
     _unsub_update: Callable[[], None] | None = None
@@ -515,7 +512,7 @@ class Schedule(CollectionEntity):
         self._attr_name = self._config[CONF_NAME]
         self._attr_unique_id = self._config[CONF_ID]
         self._attr_state = STATE_UNKNOWN
-        self._attr_offset = timedelta()
+        self._attr_offset = 0
         self._debug = self._config.get(CONF_DEBUG)
 
         if self._v2:
@@ -583,7 +580,7 @@ class Schedule(CollectionEntity):
                              state = STATE_OFF if self._is_boolean else None,
                             ) ]
 
-    async def _async_get_subschedule_for(self, offset: timedelta = None, when: date = None) -> list | None:
+    async def _async_get_subschedule_for(self, offset: int = 0, when: date = None) -> list | None:
         """ Returns a list of Transitions for the specified date. """
 
         if self._debug:
@@ -658,7 +655,7 @@ class Schedule(CollectionEntity):
     async def _async_replenish_transitions(self,
                                            until: date | None = None,
                                            update: bool = False,
-                                           offset: timedelta = None ) -> None:
+                                           offset: int = 0 ) -> None:
         """Replenish the list of Transitions, filling it until the specified date ."""
 
         if not self._v2:
@@ -942,7 +939,7 @@ class Schedule(CollectionEntity):
         self.dump_schedule( msg="post-boost" )
         return response
 
-    async def refresh(self, offset: timedelta) -> None:
+    async def refresh(self, offset: int) -> None:
         """Remove all existing Transitions; generate a new set."""
         if not self._is_ready:
             if self._debug : LOGGER.warning( "%s is not ready for refresh yet", self.name )
@@ -1014,7 +1011,7 @@ class Schedule(CollectionEntity):
 
             self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = next_event = next_transition.datetime
             self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = next_transition.state
-            self._attr_extra_state_attributes[ CONF_OFFSET ]  = want.offset.total_seconds()
+            self._attr_extra_state_attributes[ CONF_OFFSET ]  = want.offset
 
             # Arrange to replenish transitions, and update the entity state, sometime...
             self.hass.async_create_task( self._async_replenish_transitions( update=True ) )
