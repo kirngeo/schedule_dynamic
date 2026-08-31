@@ -313,7 +313,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         SERVICE_ADVANCE,
         {},
         handle_advance,
-        supports_response=SupportsResponse.ONLY,
+        supports_response=SupportsResponse.OPTIONAL,
     )
 
     component.async_register_entity_service(
@@ -322,7 +322,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             vol.Required(CONF_STATE): vol.Coerce(str),
         },
         handle_alter,
-        supports_response=SupportsResponse.ONLY,
+        supports_response=SupportsResponse.OPTIONAL,
     )
 
     component.async_register_entity_service(
@@ -332,7 +332,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             vol.Required(CONF_STATE): vol.Coerce(str),
         },
         handle_boost,
-        supports_response=SupportsResponse.ONLY,
+        supports_response=SupportsResponse.OPTIONAL,
     )
 
     component.async_register_entity_service(
@@ -346,7 +346,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         SERVICE_DEBUG,
         {},
         handle_debug,
-        supports_response=SupportsResponse.ONLY,
+        supports_response=SupportsResponse.OPTIONAL,
     )
 
     component.async_register_entity_service(
@@ -363,7 +363,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                                                            vol.Clamp( max=timedelta(hours=6), min=timedelta(hours=-6) )),
         },
         handle_refresh,
-        supports_response=SupportsResponse.ONLY,
+        supports_response=SupportsResponse.OPTIONAL,
     )
 
     await component.async_setup(config)
