@@ -41,6 +41,7 @@ CONF_TRANSITIONS: Final = "transitions"
 DTK: Final = "_dt"
 
 ATTR_DURATION: Final = "duration"
+ATTR_LAST_OFFSET_REFRESH: Final = "last_offset_refresh"
 ATTR_LOOKAHEAD: Final = "lookahead"
 ATTR_LOOKBEHIND: Final = "lookbehind"
 ATTR_NEXT_EVENT: Final = "next_event"
