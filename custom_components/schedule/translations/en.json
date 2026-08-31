@@ -100,7 +100,7 @@
             "description": "Refresh schedule transitions, without reloading YAML.",
             "name": "Refresh schedule",
             "fields" : {
-                "offset" : {"description" : "Specifies the adjustment, in seconds, to be made throughout the schedule, on refresh",
+                "offset" : {"description" : "Specifies the adjustment to be made throughout the schedule, on refresh",
                 "name" : "Offset"}
             }
         },

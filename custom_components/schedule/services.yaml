@@ -45,9 +45,11 @@ refresh_schedule:
   fields:
     offset:
       required: true
-      default: 0
+      default:
+        days: 0
+        hours: 0
+        minutes: 0
+        seconds: 0
       selector:
-        number:
-          min: -21600
-          max: 21600
-          mode: box
+        duration:
+          allow_negative: true
