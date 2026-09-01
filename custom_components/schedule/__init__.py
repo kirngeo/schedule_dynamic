@@ -523,10 +523,11 @@ class Schedule(CollectionEntity):
         if self._v2:
          #   LOGGER.warning( "almacp Schedule.__init__ _config=%s", self._config )
             self._attr_extra_state_attributes = self._config.get(CONF_ATTRIBUTES)
+            self._attr_last_offset_refresh = None
             self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
             self._attr_unit_of_measurement = self._config.get(CONF_UNIT_OF_MEASUREMENT)
             self._unrecorded_attributes |= frozenset( {ATTR_TRANSITIONS, ATTR_LAST_OFFSET_REFRESH, CONF_OFFSET} )
-            self._attr_extra_state_attributes[ CONF_OFFSET ] = timedelta()
+            self._attr_extra_state_attributes[ CONF_OFFSET ] = 0
             if CONF_DEVICE_CLASS in self._config:
                 self._attr_device_class = self._config[CONF_DEVICE_CLASS]
                 self._state_is_numeric = self._attr_device_class not in NON_NUMERIC_DEVICE_CLASSES
