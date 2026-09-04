@@ -970,23 +970,7 @@ class Schedule(CollectionEntity):
 
         if self._v2:
 
-            ## TEMPORARY - check Transitions are sorted
-            if self._transitions:
-                enn = -1
-                orderok = -1
-                for enn, t in enumerate(self._transitions):
-                    if enn == 0:
-                        whereami = t.datetime
-                        continue
-                    if t.datetime <= whereami:
-                        orderok = enn
-                        break
-                    whereami = t.datetime
-                if orderok >= 0:
-                    LOGGER.warning( "transitions order is DUFF at %s", enn)
-             #   else:
-             #       LOGGER.warning( "transitions order is OK")
-            self.dump_schedule()
+            if self._debug : self.dump_schedule()
 
             next_transition = None
             for transition in self._transitions:

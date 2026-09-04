@@ -24,22 +24,22 @@ Each of the sub-schedules is named, and consists of a list of transitions, each 
 Note that the sub-schedules do not contain information about day-of-week, or day-of-month, etc. They only contain the time of day and the required entity state.
 
 ## Schedule definition
- key | mandatory? | description
- --- | --- | ---
-`name` | Y | descriptive name
-`select_script` | Y | See **Selector script** below. If missing, the schedule will not be dynamic.
-`sub_schedules` | Y | Each key within `sub_schedules` specifies one sub-schedule. See **Sub-schedule definition** below.
-`device_class` | N |
-`delay_startup` | N | The delay (seconds, default 0) between Home Assistant startup and the first `select_script` invocation.
-`unit_of_measurement` | N | 
-`attributes` | N | Each key within `attributes` specifies an attribute which will be assigned to the schedule entity
-`boolean` | N | Default `false`. If `true`, the state of the schedule entity will be either `on` or `off`.
-`n_attr_transitions` | N | Default 0, max 20. The number of transitions to include in the `transitions` attribute.
+ key | description
+ --- | ---
+`name` | Descriptive name.
+`select_script` | See **Selector script** below.
+`sub_schedules` | Optional. If missing, the schedule will not be dynamic. Each key within `sub_schedules` specifies one sub-schedule. See **Sub-schedule definition** below.
+`device_class` | Optional.
+`delay_startup` | Optional, default 0. The delay, in seconds, between Home Assistant startup and the first `select_script` invocation.
+`unit_of_measurement` | Optional.
+`attributes` | Optional. Each key within `attributes` specifies an attribute which will be assigned to the schedule entity
+`boolean` | Optional, default `false`. If `true`, the state of the schedule entity will be either `on` or `off`.
+`n_attr_transitions` | Optional, default 0, max 20. The number of transitions to include in the `transitions` attribute.
 
 ## Sub-schedule definition
- key | mandatory? | description
- --- | --- | ---
- `transitions` | Y | A list of transitions. See **transition definition** below.
+ key | description
+ --- | ---
+ `transitions` | A list of transitions. See **transition definition** below.
 
 If there is only one sub-schedule, then it is always used, without invocation of `select_script`.
 
@@ -340,5 +340,3 @@ mode: single
 alias: oldstyle selector
 description: ''
 ```
-
-
