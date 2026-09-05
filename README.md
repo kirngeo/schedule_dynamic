@@ -1,4 +1,4 @@
-# schedule_dynamic
+# dymanic_schedule_
 Home Assistant drop-in replacement for schedule integration
 
 **dynamic schedules can currently only be set up via YAML.**
@@ -59,7 +59,7 @@ The selector script is not invoked if there is only one sub-schedule defined : t
 
 The script will receive the following variables as input :
 
-* `date` is a date object which contains the date for which a schedule is desired
+* `date` is a python `datetime.date` object which contains the date for which a schedule is desired
 * `entity` contains the entity id of the schedule
 * `choices` is the set of sub-schedule names defined in the schedule, one of which must be returned from the script.
 
@@ -69,7 +69,7 @@ The script should return the following variables as output :
 
 The script should use the variables which are passed as input to determine which sub-schedule to use for any particular day.
 
-If the script returns the name of an invalid sub-schedule, then a dummy schedule is used for the particular day, which either sets the state to `off` (if `boolean` is true), or leaves the state alone (if `boolean` is false).
+If the script returns the name of an invalid sub-schedule, or if the specified sub-schedule contains no transitions, then a dummy schedule is used for the particular day, which either sets the state to `off` (if `boolean` is true), or leaves the state unchanged (if `boolean` is false).
 ## Services
 
 ### `advance_schedule`

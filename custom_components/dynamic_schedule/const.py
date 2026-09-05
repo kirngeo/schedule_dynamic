@@ -3,7 +3,7 @@
 import logging
 from typing import Final
 
-DOMAIN: Final = "schedule"
+DOMAIN: Final = "dynamic_schedule"
 LOGGER = logging.getLogger(__package__)
 
 CONF_DATA: Final = "data"
