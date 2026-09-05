@@ -433,7 +433,6 @@ class Transition:
          #   self._date = self._dt.date()
 
         self._state: StateType = state
-        self.inhibited = 0
 
     @property
     def offset(self) -> timedelta:
@@ -461,15 +460,6 @@ class Transition:
         self._dt = dt
 
     @property
-    def inhibited(self) -> int:
-        """Return the inhibition reason. Zero means uninhibited."""
-        return self._inhibited
-
-    @inhibited.setter
-    def inhibited(self, reason: int) -> None:
-        self._inhibited = reason
-
-    @property
     def state(self) -> StateType:
         """Return the state for this transition."""
         return self._state
@@ -482,8 +472,7 @@ class Transition:
     def __repr__(self):
         """Generate string representation."""
         return (f"{self.date.day:02}-{self.datetime.hour:02}:{self.datetime.minute:02}:{self.datetime.second:02}"
-               f" {self.state}"
-               f"{'' if not self.inhibited else ' inh:' + str(self.inhibited)}")
+               f" {self.state}")
 
 class Schedule(CollectionEntity):
     """Schedule entity."""
@@ -882,9 +871,22 @@ class Schedule(CollectionEntity):
         This deletes any future transitions which the specified time overlaps.
         """
         self.dump_schedule( msg="pre-boost" )
-        now = dt_util.now()
-        until = now + duration
         response = {}
+        now = dt_util.now()
+
+        if duration:
+            # If "until" is spacified, use it.
+            until = now + duration
+        else:
+            # If "until" is not specified, then just alter the state until the next transition.
+            for transition in self._transitions:
+                if transition.datetime >= now:
+                    until = transition.datetime
+                    break
+            else:
+                until = None
+
+        LOGGER.error( "boost %s value=%s duration=%s (until=%s)", self.name, boost_value, duration, until)
 
         now_index = None
         until_index = None
@@ -974,8 +976,6 @@ class Schedule(CollectionEntity):
 
             next_transition = None
             for transition in self._transitions:
-                if transition.inhibited:
-                    continue
                 if transition.datetime >= now:
                     next_transition = transition
                     break

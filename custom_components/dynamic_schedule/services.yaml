@@ -23,7 +23,7 @@ boost_schedule:
   fields:
     duration:
       example: "00:01:00 or 60"
-      required: true
+      required: false
       selector:
         duration:
     state:
