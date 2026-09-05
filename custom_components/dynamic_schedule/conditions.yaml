@@ -1,7 +1,7 @@
 .condition_common: &condition_common
   target:
     entity:
-      domain: schedule
+      domain: dynamic_schedule
   fields:
     behavior:
       required: true

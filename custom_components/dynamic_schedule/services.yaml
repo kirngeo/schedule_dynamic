@@ -2,15 +2,15 @@ reload:
 get_schedule:
   target:
     entity:
-      domain: schedule
+      domain: dynamic_schedule
 advance_schedule:
   target:
     entity:
-      domain: schedule
+      domain: dynamic_schedule
 alter_schedule:
   target:
     entity:
-      domain: schedule
+      domain: dynamic_schedule
   fields:
     state:
       required: true
@@ -19,7 +19,7 @@ alter_schedule:
 boost_schedule:
   target:
     entity:
-      domain: schedule
+      domain: dynamic_schedule
   fields:
     duration:
       example: "00:01:00 or 60"
@@ -33,15 +33,15 @@ boost_schedule:
 debug_schedule:
   target:
     entity:
-      domain: schedule
+      domain: dynamic_schedule
 dump_schedule:
   target:
     entity:
-      domain: schedule
+      domain: dynamic_schedule
 refresh_schedule:
   target:
     entity:
-      domain: schedule
+      domain: dynamic_schedule
   fields:
     offset:
       required: true

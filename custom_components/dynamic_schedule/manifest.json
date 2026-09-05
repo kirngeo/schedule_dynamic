@@ -1,5 +1,5 @@
 {
-  "domain": "schedule",
+  "domain": "dynamic_schedule",
   "name": "Dynamic Schedule",
   "codeowners": ["@kirngeo"],
   "documentation": "https://github.com/kirngeo/schedule_dynamic/README.md",
