@@ -1,4 +1,4 @@
-# dymanic_schedule_
+# Dynamic Schedule
 Home Assistant drop-in replacement for schedule integration
 
 **dynamic schedules can currently only be set up via YAML.**

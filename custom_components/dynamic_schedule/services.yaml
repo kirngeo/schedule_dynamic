@@ -44,12 +44,12 @@ refresh_schedule:
       domain: dynamic_schedule
   fields:
     offset:
-      required: true
-      default:
-        days: 0
-        hours: 0
-        minutes: 0
-        seconds: 0
+      required: false
+        #      default:
+        #        days: 0
+        #        hours: 0
+        #        minutes: 0
+        #        seconds: 0
       selector:
         duration:
           allow_negative: true

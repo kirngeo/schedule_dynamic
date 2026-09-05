@@ -105,7 +105,7 @@
           "offset" : {"description" : "Specifies the adjustment to be made throughout the schedule, on refresh",
               "name" : "Offset"}
       }
-    },
+    }
   },
   "title": "Schedule",
   "triggers": {
