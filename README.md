@@ -1,5 +1,6 @@
 # Dynamic Schedule
 ![icon](/custom_components/dynamic_schedule/brand/icon.png)
+
 Home Assistant drop-in replacement for schedule integration
 
 **dynamic schedules can currently only be set up via YAML.**
