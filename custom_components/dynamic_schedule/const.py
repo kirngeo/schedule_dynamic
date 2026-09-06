@@ -5,6 +5,7 @@ from typing import Final
 
 DOMAIN: Final = "dynamic_schedule"
 LOGGER = logging.getLogger(__package__)
+DBG = logging.DEBUG
 
 CONF_DATA: Final = "data"
 CONF_FRIDAY: Final = "friday"
