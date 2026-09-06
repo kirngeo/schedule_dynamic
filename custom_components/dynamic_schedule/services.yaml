@@ -23,7 +23,7 @@ boost_schedule:
   fields:
     duration:
       example: "00:01:00 or 60"
-      required: false
+      required: true
       default:
         days: 0
         hours: 0
