@@ -925,10 +925,12 @@ class Schedule(CollectionEntity):
             response["msg"] = f"schedule {self.name} invalid boost until {until} to {boost_value}"
 
         elif until_index == now_index:
-            # Insert one additional transition
-            current = now_transition.state
-            self._transitions.insert( now_index+1,
-                              Transition( tdate=until.date(), ttime=until.time(), state=current ) )
+            if until < self._transitions[ until_index + 1 ].datetime:
+                # Time gap between end of "until" and start of the follwing transition.
+                # Insert one additional transition
+                current = now_transition.state
+                self._transitions.insert( now_index+1,
+                                  Transition( tdate=until.date(), ttime=until.time(), state=current ) )
             now_transition.state = boost_value
 
         else:
