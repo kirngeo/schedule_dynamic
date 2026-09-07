@@ -82,20 +82,20 @@
                      "name" : "Value"}
       }
     },
-    "boost_schedule": {
+    "dump_schedule": {
+      "description": "Dumps schedule entries to the log file.",
+      "name": "Dump schedule",
+      "fields" : {
+      }
+    },
+    "modify_schedule": {
       "description": "Alters schedule to a specified value, for a specified duration.",
-      "name": "Boost schedule",
+      "name": "Modify schedule",
       "fields" : {
           "duration" : {"description" : "Duration of the alteration",
                         "name" : "Duration"},
           "state" : {"description" : "Alter schedule to this value, for the specified duration",
                      "name" : "Value"}
-      }
-    },
-    "dump_schedule": {
-      "description": "Dumps schedule entries to the log file.",
-      "name": "Dump schedule",
-      "fields" : {
       }
     },
     "refresh_schedule": {

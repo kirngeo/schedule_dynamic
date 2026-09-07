@@ -74,7 +74,15 @@
             },
             "name": "Alter schedule"
         },
-        "boost_schedule": {
+        "dump_schedule": {
+            "description": "Dumps schedule entries to the log file.",
+            "name": "Dump schedule"
+        },
+        "get_schedule": {
+            "description": "Retrieves the configured time ranges of one or multiple schedules.",
+            "name": "Get schedule"
+        },
+        "modify_schedule": {
             "description": "Alters schedule to a specified value, for a specified duration.",
             "fields": {
                 "duration": {
@@ -86,15 +94,7 @@
                     "name": "Value"
                 }
             },
-            "name": "Boost schedule"
-        },
-        "dump_schedule": {
-            "description": "Dumps schedule entries to the log file.",
-            "name": "Dump schedule"
-        },
-        "get_schedule": {
-            "description": "Retrieves the configured time ranges of one or multiple schedules.",
-            "name": "Get schedule"
+            "name": "Modify schedule"
         },
         "refresh_schedule": {
             "description": "Refresh schedule transitions, without reloading YAML.",

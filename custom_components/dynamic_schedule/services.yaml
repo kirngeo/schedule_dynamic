@@ -16,7 +16,15 @@ alter_schedule:
       required: true
       selector:
         text:
-boost_schedule:
+debug_schedule:
+  target:
+    entity:
+      domain: dynamic_schedule
+dump_schedule:
+  target:
+    entity:
+      domain: dynamic_schedule
+modify_schedule:
   target:
     entity:
       domain: dynamic_schedule
@@ -36,14 +44,6 @@ boost_schedule:
       default: ""
       selector:
         text:
-debug_schedule:
-  target:
-    entity:
-      domain: dynamic_schedule
-dump_schedule:
-  target:
-    entity:
-      domain: dynamic_schedule
 refresh_schedule:
   target:
     entity:

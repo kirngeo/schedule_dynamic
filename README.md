@@ -82,7 +82,7 @@ This service alters the state of the schedule to the value which it would get at
 
 This service alters the current state of the schedule to a specified value (`state`).
 
-### `boost_schedule`
+### `modify_schedule`
 
 This service alters the current state of the schedule, to a specified value (`state`), for a specifed duration (`duration`).
 
