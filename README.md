@@ -19,7 +19,7 @@ Provides a dynamic scheduling facility.
 
 ## sub-schedules
 
-Each of the sub-schedules is named, and consists of a list of transitions, each of which specifies 
+Each of the sub-schedules is named, and consists of a list of transitions, each of which specifies
 * the time of day
 * the state desired for the schedule helper entity
 
@@ -85,9 +85,8 @@ This service alters the current state of the schedule to a specified value (`sta
 ### `modify_schedule`
 
 The effect depends on (a) whether the specified `duration` is non-zero, and (b) whether the `state` is a null string.
-
  | `duration` | `state` | **effect** |
- | non-zero | non-null |
+ | non-zero | non-null | |
  |:---:|:---:|---|
  | Y | Y | Alter schedule to the specified `state` for the specified `duration`. Similar to the BOOST button on a central heating system. |
  | Y | N | |
@@ -114,7 +113,7 @@ Shows what the schedule state will be at the next transition.
 Shows the next `n_attr_transitions` (default 0, max 20) transitions.
 
 ### user-defined attributes
- as defined in `attributes` in the schedule definition. These may be lists. 
+ As defined in `attributes` in the schedule definition. These may be lists.
 
 ## Example 1 scenario
 
@@ -143,8 +142,8 @@ ch_temp_lounge:
   unit_of_measurement: "°C"
   attributes:
     trv:
-      - hive_trv_e 
-      - hive_trv_d 
+      - hive_trv_e
+      - hive_trv_d
     occupied: input_boolean.occupied
   sub_schedules:
     winter:
