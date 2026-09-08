@@ -577,7 +577,7 @@ class Schedule(CollectionEntity):
         """ Returns a list of Transitions for the specified date. """
 
         if LOGGER.isEnabledFor(DBG):
-            LOGGER.debug( 'get_for when=%s offset=%s', when, offset)
+            LOGGER.debug( '%s get_for when=%s offset=%s', self.name, when, offset)
 
         sub_schedules = self._config[ CONF_SUB_SCHEDULES ]
 
@@ -709,8 +709,8 @@ class Schedule(CollectionEntity):
                 self._attr_extra_state_attributes.pop( ATTR_TRANSITIONS, None )
 
             if LOGGER.isEnabledFor(DBG):
-                LOGGER.debug( "About to write_ha_state (of %s, for %s, after replenishing",
-                           self._attr_state, self.name)
+                LOGGER.debug( "%s about to write_ha_state (of %s), after replenishing",
+                           self.name, self._attr_state)
             self.async_write_ha_state()
 
     async def async_added_to_hass(self) -> None:
@@ -808,7 +808,7 @@ class Schedule(CollectionEntity):
         """Log schedule Transitions."""
         if not LOGGER.isEnabledFor(DBG) : return
         if msg:
-            LOGGER.debug( "Dump_schedule %s", msg )
+            LOGGER.debug( "%s dump_schedule %s", self.name, msg )
         for dt in self._transitions:
             LOGGER.debug( dt )
 
@@ -884,7 +884,7 @@ class Schedule(CollectionEntity):
             else:
                 until = None
 
-        LOGGER.debug( "modify %s value=%s duration=%s (until=%s)", self.name, modify_value, duration, until)
+        LOGGER.debug( "%s modify value=%s duration=%s (until=%s)", self.name, modify_value, duration, until)
 
         now_index = None
         until_index = None

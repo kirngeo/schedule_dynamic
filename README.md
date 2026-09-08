@@ -86,6 +86,20 @@ This service alters the current state of the schedule to a specified value (`sta
 
 This service alters the current state of the schedule, to a specified value (`state`), for a specifed duration (`duration`).
 
+The effect depends on (a) whether the specified `duration` is non-zero, and (b) whether the `state` is a null string :
+
+| `duration` | `state` | *effect* |
+| non-zero | non-null | |
+| --- | --- | --- |
+| Y | Y | Alter schedule to the specified `state` for the specified `duration`.
+| --- | --- | --- |
+| Y | N | |
+| --- | --- | --- |
+| N | Y | Alter schedule to the specified `state` until the next transition.|
+| --- | --- | --- |
+| N | N | Advance schedule to the state of the next transition. |
+| --- | --- | --- |
+
 ### `refresh_schedule`
 
 This service refreshs the schedule with the configured data.
