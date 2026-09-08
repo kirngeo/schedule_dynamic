@@ -84,7 +84,7 @@ This service alters the current state of the schedule to a specified value (`sta
 
 ### `modify_schedule`
 
-The effect depends on (a) whether the specified `duration` is non-zero, and (b) whether the `state` is a null string :
+The effect depends on (a) whether the specified `duration` is non-zero, and (b) whether the `state` is a null string.
 
  | `duration` | `state` | **effect**|
  | non-zero | non-null|
