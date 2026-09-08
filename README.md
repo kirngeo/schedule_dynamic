@@ -84,20 +84,19 @@ This service alters the current state of the schedule to a specified value (`sta
 
 ### `modify_schedule`
 
-This service alters the current state of the schedule, to a specified value (`state`), for a specifed duration (`duration`).
-
 The effect depends on (a) whether the specified `duration` is non-zero, and (b) whether the `state` is a null string :
 
-| `duration` | `state` | *effect* |
+| --- | --- | --- |
+| `duration` | `state` | **effect** |
 | non-zero | non-null | |
 | --- | --- | --- |
-| Y | Y | Alter schedule to the specified `state` for the specified `duration`.
+| Y | Y | Alter schedule to the specified `state` for the specified `duration`. Similar to the BOOST button on a central heating system. |
 | --- | --- | --- |
 | Y | N | |
 | --- | --- | --- |
 | N | Y | Alter schedule to the specified `state` until the next transition.|
 | --- | --- | --- |
-| N | N | Advance schedule to the state of the next transition. |
+| N | N | Advance schedule to the state of the next transition. Similar to the ADVANCE button on a central heating system. |
 | --- | --- | --- |
 
 ### `refresh_schedule`
