@@ -616,11 +616,11 @@ class Schedule(CollectionEntity):
 
             if LOGGER.isEnabledFor(DBG):
                 LOGGER.debug( "%s I=%s",
-                               self._attr_unique_id,
+                               self.name,
                                actions[0].get('data'),
                              )
                 LOGGER.debug( "%s O=%s",
-                               self._attr_unique_id,
+                               self.name,
                                vars(result).get('variables',{}).get(response_variable),
                              )
 
