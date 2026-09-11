@@ -406,7 +406,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         hass,
         component_name="custom",
         sidebar_title="Dynamic Schedules",
-        sidebar_icon="mdi:calendar-clock",
+        sidebar_icon="mdi:table-clock",
         frontend_url_path="dynamic-schedules",
         require_admin=False,
         config={
@@ -452,7 +452,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass,
         component_name="custom",
         sidebar_title="Dynamic Schedules",
-        sidebar_icon="mdi:calendar-clock",
+        sidebar_icon="mdi:table-clock",
         frontend_url_path="dynamic-schedules",
         require_admin=False,
         config={

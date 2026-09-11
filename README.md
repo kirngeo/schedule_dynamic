@@ -1,5 +1,5 @@
 # Dynamic Schedule
-![icon](/custom_components/dynamic_schedule/brand/icon.png)
+![icon](/custom_components/dynamic_schedule/brand/icon.txt)
 
 Home Assistant drop-in replacement for schedule integration
 
