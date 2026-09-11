@@ -35,6 +35,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   set hass(hass) {
+    console.log( 'set hass' );
     const oldHass = this._hass;
     this._hass = hass;
     this.render();
@@ -42,7 +43,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   render() {
     console.log('render');
-    return `
+    this.shadowRoot.innerHTML = `
       <style>
         :host {
           --zoom-level: ${this._zoomLevel};
