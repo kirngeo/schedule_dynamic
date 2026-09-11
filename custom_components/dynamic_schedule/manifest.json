@@ -2,6 +2,8 @@
   "domain": "dynamic_schedule",
   "name": "Dynamic Schedule",
   "codeowners": ["@kirngeo"],
+  "config_flow" : true,
+  "dependencies": ["http", "frontend"],
   "documentation": "https://github.com/kirngeo/schedule_dynamic/README.md",
   "integration_type": "helper",
   "issue_tracker": "https://github.com/kirngeo/schedule_dynamic/issues",
