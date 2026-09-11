@@ -26,9 +26,23 @@ class DynamicSchedulePanel extends HTMLElement {
       }
   }
 
+  showToast(message) {
+      this.dispatchEvent(new CustomEvent("hass-notification", {
+          detail: { message },
+          bubbles: true,
+          composed: true
+      }));
+  }
+
+  set hass(hass) {
+    const oldHass = this._hass;
+    this._hass = hass;
+    this.render();
+  }
+
   render() {
     console.log('render');
-    this.shadowRoot.innerHTML = `
+    return `
       <style>
         :host {
           --zoom-level: ${this._zoomLevel};
