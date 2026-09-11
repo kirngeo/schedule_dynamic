@@ -35,14 +35,12 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   set hass(hass) {
-    console.log( 'set hass' );
     const oldHass = this._hass;
     this._hass = hass;
     this.render();
   }
 
   render() {
-    console.log('render');
     this.shadowRoot.innerHTML = `
       <style>
         :host {
