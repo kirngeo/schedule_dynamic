@@ -9,6 +9,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._zoomLevel = 0.5;
     this._dragState = null;
     this._wasDragging = false;
+    console.log( 'constructor exit' );
   }
 
   zoomIn() {
@@ -26,6 +27,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   render() {
+    console.log('render');
     this.shadowRoot.innerHTML = `
       <style>
         :host {

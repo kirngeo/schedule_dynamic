@@ -273,7 +273,7 @@ ENTITY_SCHEMA_V2 = vol.Schema(
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up a schedule."""
 
-    LOGGER.debug( "async_setup config=%s", config )
+    LOGGER.debug( "async_setup" )
     component = EntityComponent[Schedule](LOGGER, DOMAIN, hass)
 
     id_manager = IDManager()
@@ -387,7 +387,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     frontend_dir = os.path.join(integration_dir, "frontend")
 
     # Register the static path so HA can serve the JS file
-    # We serve it at /ha_schedule_panel_static
+    # We serve it at /dynamic_schedule_panel_static
     await hass.http.async_register_static_paths([
         StaticPathConfig(
             f"/{DOMAIN}_static",
