@@ -27,7 +27,26 @@ class DynamicSchedulePanel extends HTMLElement {
 
   render() {
     this.shadowRoot.innerHTML = `
-      <p>Hello World</p>
+      <style>
+        :host {
+          --zoom-level: ${this._zoomLevel};
+          display: block;
+          padding: 24px;
+          background-color: var(--primary-background-color);
+          color: var(--primary-text-color);
+          font-family: var(--paper-font-body1_-_font-family, Roboto, sans-serif);
+          min-height: 100vh;
+          box-sizing: border-box;
+        }
+
+        .content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+ 
+      </style>
+
+      <div class="content">Hello World</div>
       `;
   }
 
