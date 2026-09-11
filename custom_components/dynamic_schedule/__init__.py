@@ -35,9 +35,18 @@ from homeassistant.core import (
     SupportsResponse,
     callback,
 )
+from homeassistant.components import (
+    frontend,
+)
+from homeassistant.components.http import (
+    StaticPathConfig,
+)
 from homeassistant.components.sensor import (
     NON_NUMERIC_DEVICE_CLASSES,
     DEVICE_CLASSES_SCHEMA,
+)
+from homeassistant.config_entries import (
+    ConfigEntry,
 )
 from homeassistant.exceptions import (
     TemplateError,
@@ -263,6 +272,7 @@ ENTITY_SCHEMA_V2 = vol.Schema(
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up a schedule."""
 
+    LOGGER.debug( "async_setup config=%s", config )
     component = EntityComponent[Schedule](LOGGER, DOMAIN, hass)
 
     id_manager = IDManager()
@@ -370,6 +380,54 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     return True
 
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up HA Schedule Panel from a config entry."""
+
+    LOGGER.debug( "async_setup_entry entry=%s", entry )
+
+    # Get the directory of this integration
+    integration_dir = os.path.dirname(__file__)
+    frontend_dir = os.path.join(integration_dir, "frontend")
+
+    # Register the static path so HA can serve the JS file
+    # We serve it at /ha_schedule_panel_static
+    await hass.http.async_register_static_paths([
+        StaticPathConfig(
+            f"/{DOMAIN}_static",
+            frontend_dir,
+            cache_headers=False
+        )
+    ])
+
+    from homeassistant.loader import async_get_integration
+    integration = await async_get_integration(hass, DOMAIN)
+    version = integration.version
+
+    # Register the custom panel
+    _LOGGER.info("Registering Dynamic Schedule Panel in sidebar with version %s", version)
+    frontend.async_register_built_in_panel(
+        hass,
+        component_name="custom",
+        sidebar_title="Dynamic Schedules",
+        sidebar_icon="mdi:calendar-clock",
+        frontend_url_path="dynamic-schedules",
+        require_admin=False,
+        config={
+            "_panel_custom": {
+                "name": "dynamic-schedule-panel",
+                "module_url": f"/{DOMAIN}_static/dynamic-schedule-panel.js?v={version}",
+                "embed_iframe": False,
+                "trust_external": False,
+            }
+        },
+    )
+
+    return True
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+    frontend.async_remove_panel(hass, "dynamic-schedules")
+    return True
 
 class ScheduleStorageCollection(DictStorageCollection):
     """Schedules stored in storage."""
