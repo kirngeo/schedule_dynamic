@@ -49,7 +49,32 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      if (e.target.id === 'schedule-modal') {
+          e.preventDefault();
+          this._closeModal();
+          return;
+      }
+
   }
+
+ _openNewScheduleModal() {
+      const modal = this.shadowRoot.getElementById('schedule-modal');
+      if (modal) {
+          // Reset form fields
+          this.shadowRoot.getElementById('schedule-name').value = '';
+          this.shadowRoot.getElementById('schedule-icon').value = 'mdi:table-clock';
+          
+          modal.classList.add('open');
+      }
+  }
+
+  _closeModal() {
+      const modal = this.shadowRoot.getElementById('schedule-modal');
+      if (modal) {
+          modal.classList.remove('open');
+      }
+  }
+
 
   set hass(hass) {
     const oldHass = this._hass;
@@ -127,6 +152,9 @@ class DynamicSchedulePanel extends HTMLElement {
 
   render() {
     console.log( 'render' );
+
+    let contentHtml = 'Hello World';
+  
     this.shadowRoot.innerHTML = `
       <style>
         :host {
@@ -144,10 +172,125 @@ class DynamicSchedulePanel extends HTMLElement {
             max-width: 1400px;
             margin: 0 auto;
         }
- 
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: var(--card-background-color, var(--primary-background-color));
+            border: 1px solid var(--divider-color, rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.open .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+            padding-bottom: 12px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--primary-text-color);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--secondary-text-color);
+            padding: 0;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: var(--error-color, #ef4444);
+        }
+
+
       </style>
 
-      <div class="content">Hello World</div>
+      <div class="header">
+          <div class="title">
+              <ha-icon icon="mdi:table-clock"></ha-icon>
+              Dynamic Schedules
+          </div>
+          <div class="zoom-controls">
+              <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
+                  <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
+              </button>
+              <button class="icon-btn" onclick="this.getRootNode().host.zoomOut()" title="Zoom Out">
+                  <ha-icon icon="mdi:magnify-minus"></ha-icon>
+              </button>
+              <button class="icon-btn" onclick="this.getRootNode().host.zoomIn()" title="Zoom In">
+                  <ha-icon icon="mdi:magnify-plus"></ha-icon>
+              </button>
+          </div>
+      </div>
+
+      <div class="content">
+          ${contentHtml}
+      </div>
+
+      <div id="schedule-modal" class="modal-overlay">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2>Create New Schedule</h2>
+                  <button class="close-btn" id="modal-close-btn">&times;</button>
+              </div>
+              <form id="schedule-form" onsubmit="return false;">
+                  <div class="form-group">
+                      <label for="schedule-name">Name</label>
+                      <input type="text" id="schedule-name" required placeholder="e.g. Heating Schedule">
+                  </div>
+                  <div class="form-group">
+                      <label for="schedule-icon">Icon</label>
+                      <input type="text" id="schedule-icon" value="mdi:calendar-clock" placeholder="mdi:calendar-clock">
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn secondary" id="modal-cancel-btn">Cancel</button>
+                      <button type="submit" class="btn primary" id="modal-submit-btn">Create Schedule</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+
       `;
   }
 
