@@ -2,6 +2,7 @@ class DynamicSchedulePanel extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._domain = 'dynamic_schedule';
     this._schedules = [];
     this._scheduleDetails = {};
     this._automations = [];
@@ -60,8 +61,8 @@ class DynamicSchedulePanel extends HTMLElement {
         this.fetchScheduleDetails();
     } else if (this._hass && this._hasFetchedDetails && oldHass) {
         // Detect if any schedule states changed (e.g. user edited a schedule in the dialog)
-        const oldSchedules = Object.values(oldHass.states).filter(state => state.entity_id.startsWith('schedule.'));
-        const newSchedules = Object.values(this._hass.states).filter(state => state.entity_id.startsWith('schedule.'));
+        const oldSchedules = Object.values(oldHass.states).filter(state => state.entity_id.startsWith( this._domain + '.'));
+        const newSchedules = Object.values(this._hass.states).filter(state => state.entity_id.startsWith( this._domain + '.'));
         
         // If the state objects differ (like last_updated changed), re-fetch the details
         if (JSON.stringify(oldSchedules) !== JSON.stringify(newSchedules)) {
@@ -78,7 +79,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     // Filter all schedule entities from states
     const newSchedules = Object.values(this._hass.states).filter(state =>
-      state.entity_id.startsWith('dynamic_schedule.')
+      state.entity_id.startsWith( this._domain + '.')
     );
 
     // Simple diff
@@ -94,11 +95,29 @@ class DynamicSchedulePanel extends HTMLElement {
       console.log( 'fetchScheduleDetails entry' )
       try {
           const scheduleEntities = Object.values(this._hass.states)
-              .filter(state => state.entity_id.startsWith('dynamic_schedule.'))
+              .filter(state => state.entity_id.startsWith( this._domain + '.'))
               .map(state => state.entity_id);
           console.log( 'fetchScheduleDetails found %d dynamic schedules', scheduleEntities.length );
 
           if (scheduleEntities.length === 0) return;
+
+          // Fetch the configured time ranges directly using the service
+          const response = await this._hass.connection.sendMessagePromise({
+              type: 'call_service',
+              domain: this._domain,
+              service: 'get_schedule',
+              target: { entity_id: scheduleEntities },
+              return_response: true
+          });
+          
+          console.log('response to  get_schedule', scheduleEntities);
+          console.log( response );
+
+          if (response && response.response) {
+              // The response is keyed by entity_id: { 'schedule.my_schedule': { monday: [...], ... } }
+              this._scheduleDetails = response.response;
+              this.render(); // Re-render with real details
+          }
 
       } catch (err) {
           console.log("Could not fetch detailed schedule blocks.", err);
