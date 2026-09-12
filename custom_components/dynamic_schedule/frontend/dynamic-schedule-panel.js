@@ -10,7 +10,6 @@ class DynamicSchedulePanel extends HTMLElement {
     this._zoomLevel = 0.5;
     this._dragState = null;
     this._wasDragging = false;
-    console.log( 'constructor exit' );
   }
 
   zoomIn() {
@@ -27,7 +26,6 @@ class DynamicSchedulePanel extends HTMLElement {
       }
   }
   connectedCallback() {
-      console.log( 'connectedCallback');
       this.shadowRoot.addEventListener('click', this._onClick.bind(this));
   }
 
@@ -49,9 +47,24 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      const cancelBtn = e.target.closest('#modal-cancel-btn');
+      const closeBtn = e.target.closest('#modal-close-btn');
+      if (cancelBtn || closeBtn) {
+          e.preventDefault();
+          this._closeModal();
+          return;
+      }
+
       if (e.target.id === 'schedule-modal') {
           e.preventDefault();
           this._closeModal();
+          return;
+      }
+
+      const submitBtn = e.target.closest('#modal-submit-btn');
+      if (submitBtn) {
+          e.preventDefault();
+          this._onCreateScheduleSubmit();
           return;
       }
 
@@ -75,6 +88,43 @@ class DynamicSchedulePanel extends HTMLElement {
       }
   }
 
+
+  async _onCreateScheduleSubmit() {
+      const nameInput = this.shadowRoot.getElementById('schedule-name');
+      const iconInput = this.shadowRoot.getElementById('schedule-icon');
+      
+      const name = nameInput ? nameInput.value.trim() : '';
+      const icon = iconInput ? iconInput.value.trim() : 'mdi:table-clock';
+      
+      if (!name) {
+          this.showToast('Please enter a dynamic schedule name');
+          return;
+      }
+      
+      const dayBtns = this.shadowRoot.querySelectorAll('.day-btn.selected');
+      if (dayBtns.length === 0) {
+          this.showToast('Please select at least one day');
+          return;
+      }
+      
+      const updatedConfig = {};
+      
+      try {
+          await this._hass.connection.sendMessagePromise({
+              type: 'dynamic_schedule/create',
+              name: name,
+              icon: icon || 'mdi:table-clock',
+              ...updatedConfig
+          });
+          
+          this.showToast(`Dynamic Schedule "${name}" created successfully`);
+          this._closeModal();
+          this.fetchScheduleDetails();
+      } catch (err) {
+          console.error("Failed to create dynamic schedule helper.", err);
+          this.showToast(`Failed to create dynamic schedule: ${err.message || 'Unknown error'}`);
+      }
+  }
 
   set hass(hass) {
     const oldHass = this._hass;
@@ -166,6 +216,58 @@ class DynamicSchedulePanel extends HTMLElement {
           font-family: var(--paper-font-body1_-_font-family, Roboto, sans-serif);
           min-height: 100vh;
           box-sizing: border-box;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary-text-color);
+        }
+
+        .title ha-icon {
+            color: var(--primary-color);
+            --mdc-icon-size: 32px;
+        }
+        
+        .zoom-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: var(--secondary-background-color);
+            border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+            color: var(--primary-text-color);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
 
         .content {
