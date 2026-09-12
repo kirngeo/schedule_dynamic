@@ -861,7 +861,7 @@ class Schedule(CollectionEntity):
         """Return the schedule."""
         if not self._v2:
             return {d: self._config[d] for d in WEEKDAY_TO_CONF.values()}
-        return None
+        return self._config
 
     async def debug_schedule(self, msg: str | None = None) -> None:
         """Debug schedule."""
