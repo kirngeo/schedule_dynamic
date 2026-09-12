@@ -116,6 +116,7 @@ class DynamicSchedulePanel extends HTMLElement {
           if (response && response.response) {
               // The response is keyed by entity_id: { 'schedule.my_schedule': { monday: [...], ... } }
               this._scheduleDetails = response.response;
+              console.log( JSON.stringify( response.response ) );
               this.render(); // Re-render with real details
           }
 
