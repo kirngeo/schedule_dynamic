@@ -25,6 +25,10 @@ class DynamicSchedulePanel extends HTMLElement {
           this.render();
       }
   }
+  connectedCallback() {
+      console.log( 'connectedCallback');
+      this.shadowRoot.addEventListener('click', this._onClick.bind(this));
+  }
 
   showToast(message) {
       this.dispatchEvent(new CustomEvent("hass-notification", {
@@ -34,13 +38,75 @@ class DynamicSchedulePanel extends HTMLElement {
       }));
   }
 
+  _onClick(e) {
+      console.log('_onClick', e );
+
+      const newBtn = e.target.closest('#new-schedule-btn');
+      if (newBtn) {
+          e.preventDefault();
+          this._openNewScheduleModal();
+          return;
+      }
+
+  }
+
   set hass(hass) {
     const oldHass = this._hass;
     this._hass = hass;
-    this.render();
+
+    // Initial fetch of detailed blocks if possible
+    if (this._hass && !this._hasFetchedDetails) {
+        this._hasFetchedDetails = true;
+        this.fetchScheduleDetails();
+    } else if (this._hass && this._hasFetchedDetails && oldHass) {
+        // Detect if any schedule states changed (e.g. user edited a schedule in the dialog)
+        const oldSchedules = Object.values(oldHass.states).filter(state => state.entity_id.startsWith('schedule.'));
+        const newSchedules = Object.values(this._hass.states).filter(state => state.entity_id.startsWith('schedule.'));
+        
+        // If the state objects differ (like last_updated changed), re-fetch the details
+        if (JSON.stringify(oldSchedules) !== JSON.stringify(newSchedules)) {
+            this.fetchScheduleDetails();
+        }
+
+    }
+
+    this.updateSchedules();
+  }
+
+  updateSchedules() {
+    if (!this._hass) return;
+
+    // Filter all schedule entities from states
+    const newSchedules = Object.values(this._hass.states).filter(state =>
+      state.entity_id.startsWith('dynamic_schedule.')
+    );
+
+    // Simple diff
+    if (JSON.stringify(newSchedules) !== JSON.stringify(this._schedules)) {
+      this._schedules = newSchedules;
+      this.render();
+    } else if (!this.shadowRoot.innerHTML) {
+      this.render();
+    }
+  }
+
+  async fetchScheduleDetails() {
+      console.log( 'fetchScheduleDetails entry' )
+      try {
+          const scheduleEntities = Object.values(this._hass.states)
+              .filter(state => state.entity_id.startsWith('dynamic_schedule.'))
+              .map(state => state.entity_id);
+          console.log( 'fetchScheduleDetails found %d dynamic schedules', scheduleEntities.length );
+
+          if (scheduleEntities.length === 0) return;
+
+      } catch (err) {
+          console.log("Could not fetch detailed schedule blocks.", err);
+      }
   }
 
   render() {
+    console.log( 'render' );
     this.shadowRoot.innerHTML = `
       <style>
         :host {
