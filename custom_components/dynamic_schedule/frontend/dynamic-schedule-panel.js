@@ -70,7 +70,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   }
 
- _openNewScheduleModal() {
+  _openNewScheduleModal() {
       const modal = this.shadowRoot.getElementById('schedule-modal');
       if (modal) {
           // Reset form fields
@@ -88,7 +88,6 @@ class DynamicSchedulePanel extends HTMLElement {
       }
   }
 
-
   async _onCreateScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('schedule-name');
       const iconInput = this.shadowRoot.getElementById('schedule-icon');
@@ -98,12 +97,6 @@ class DynamicSchedulePanel extends HTMLElement {
       
       if (!name) {
           this.showToast('Please enter a dynamic schedule name');
-          return;
-      }
-      
-      const dayBtns = this.shadowRoot.querySelectorAll('.day-btn.selected');
-      if (dayBtns.length === 0) {
-          this.showToast('Please select at least one day');
           return;
       }
       
@@ -346,6 +339,87 @@ class DynamicSchedulePanel extends HTMLElement {
         }
 
 
+        /* Form groups */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--secondary-text-color);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="time"] {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.2));
+            background-color: var(--primary-background-color);
+            color: var(--primary-text-color);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="time"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* Buttons */
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            border-top: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+            padding-top: 16px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn.primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn.primary:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn.secondary {
+            background-color: var(--secondary-background-color);
+            color: var(--primary-text-color);
+            border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+        }
+
+        .btn.secondary:hover {
+            background-color: var(--divider-color, rgba(0, 0, 0, 0.05));
+        }
+
+
       </style>
 
       <div class="header">
@@ -373,7 +447,7 @@ class DynamicSchedulePanel extends HTMLElement {
       <div id="schedule-modal" class="modal-overlay">
           <div class="modal-content">
               <div class="modal-header">
-                  <h2>Create New Schedule</h2>
+                  <h2>Create New Dynamic Schedule</h2>
                   <button class="close-btn" id="modal-close-btn">&times;</button>
               </div>
               <form id="schedule-form" onsubmit="return false;">
