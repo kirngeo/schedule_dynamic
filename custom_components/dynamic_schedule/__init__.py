@@ -479,17 +479,20 @@ class ScheduleStorageCollection(DictStorageCollection):
 
     async def _process_create_data(self, data: dict) -> dict:
         """Validate the config is valid."""
+        LOGGER.debug( "_process_create_data, data=%s", data )
         self.SCHEMA(data)
         return data
 
     @callback
     def _get_suggested_id(self, info: dict) -> str:
+        LOGGER.debug( "_get_suggested_id, info=%s", info )
         """Suggest an ID based on the config."""
         name: str = info[CONF_NAME]
         return name
 
     async def _update_data(self, item: dict, update_data: dict) -> dict:
         """Return a new updated data object."""
+        LOGGER.debug( "_update_data, item=%s update_data=%s", item, update_data )
         self.SCHEMA(update_data)
         return {CONF_ID: item[CONF_ID]} | update_data
 
@@ -497,6 +500,7 @@ class ScheduleStorageCollection(DictStorageCollection):
         """Load the data."""
         if data := await super()._async_load_data():
             data["items"] = [STORAGE_SCHEMA(item) for item in data["items"]]
+        LOGGER.debug( "_async_load_data data=%s", data )
         return data
 
 class Transition:

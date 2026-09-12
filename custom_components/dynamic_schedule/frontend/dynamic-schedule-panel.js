@@ -91,9 +91,11 @@ class DynamicSchedulePanel extends HTMLElement {
   async _onCreateScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('schedule-name');
       const iconInput = this.shadowRoot.getElementById('schedule-icon');
+      const iconBool = this.shadowRoot.getElementById('schedule-bool');
       
       const name = nameInput ? nameInput.value.trim() : '';
       const icon = iconInput ? iconInput.value.trim() : 'mdi:table-clock';
+      const bool = iconBool ? iconBool.value == 'on' : false;
       
       if (!name) {
           this.showToast('Please enter a dynamic schedule name');
@@ -107,6 +109,7 @@ class DynamicSchedulePanel extends HTMLElement {
               type: 'dynamic_schedule/create',
               name: name,
               icon: icon || 'mdi:table-clock',
+              "boolean" : Boolean( bool ),
               ...updatedConfig
           });
           
@@ -457,11 +460,15 @@ class DynamicSchedulePanel extends HTMLElement {
                   </div>
                   <div class="form-group">
                       <label for="schedule-icon">Icon</label>
-                      <input type="text" id="schedule-icon" value="mdi:calendar-clock" placeholder="mdi:calendar-clock">
+                      <input type="text" id="schedule-icon" value="mdi:table-clock" placeholder="mdi:table-clock">
+                  </div>
+                  <div class="form-group">
+                      <label for="schedule-bool">boolean</label>
+                      <input type="checkbox" id="schedule-bool" value="mdi:table-clock" placeholder="mdi:table-clock">
                   </div>
                   <div class="modal-footer">
                       <button type="button" class="btn secondary" id="modal-cancel-btn">Cancel</button>
-                      <button type="submit" class="btn primary" id="modal-submit-btn">Create Schedule</button>
+                      <button type="submit" class="btn primary" id="modal-submit-btn">Create Dynamic Schedule</button>
                   </div>
               </form>
           </div>
