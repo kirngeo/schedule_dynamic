@@ -105,13 +105,16 @@ class DynamicSchedulePanel extends HTMLElement {
       const updatedConfig = {};
       
       try {
-          await this._hass.connection.sendMessagePromise({
+          const parms = {
               type: 'dynamic_schedule/create',
               name: name,
               icon: icon || 'mdi:table-clock',
               "boolean" : Boolean( bool ),
               ...updatedConfig
-          });
+          };
+
+          console.log( parms );
+          await this._hass.connection.sendMessagePromise(parms);
           
           this.showToast(`Dynamic Schedule "${name}" created successfully`);
           this._closeModal();

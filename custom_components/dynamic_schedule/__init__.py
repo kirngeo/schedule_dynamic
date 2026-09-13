@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import os
+import pprint
 from collections.abc import Callable
 from datetime import date, datetime, time, timedelta
 import itertools
@@ -204,6 +205,14 @@ SCHEDULE_SCHEMA: VolDictType = {
     )
     for day in CONF_ALL_DAYS
 }
+
+STORAGE_SCHEDULE_SCHEMA: VolDictType = {
+    vol.Optional(day, default=[]): vol.All(
+        cv.ensure_list, [TIME_RANGE_SCHEMA], valid_schedule, [STORAGE_TIME_RANGE_SCHEMA]
+    )
+    for day in CONF_ALL_DAYS
+}
+
 
 AT_SCHEMA: VolDictType = {
     vol.Required( CONF_HH ) :vol.All(vol.Coerce(int), vol.Range(min=0, max=23)),
@@ -421,7 +430,14 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     ###
 
+    dpath = '/config/tmp/pprint'
+
+    if os.path.exists( dpath ) : os.remove( dpath )
+    os.close( os.open( dpath, os.O_CREAT ) )
+
     return True
+
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up HA Schedule Panel from a config entry."""
@@ -635,6 +651,16 @@ class Schedule(CollectionEntity):
 
         if self._v2:
             self._transitions : [Transition] = []
+
+        self._dpath = '/config/tmp/pprint'
+        self.ppr( 'SCHEMA', vol.Schema(BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA) )
+
+    def ppr(self, msg, data ):
+        with open( self._dpath, mode='a' ) as fp:
+            fp.write(msg + ' ' + dt_util.now().isoformat(sep=' ') + '\n')
+            fp.write( pprint.pformat( data ) )
+            fp.write('\n\n')
+            fp.close()
 
     @classmethod
     def from_storage(cls, config: ConfigType) -> Schedule:
