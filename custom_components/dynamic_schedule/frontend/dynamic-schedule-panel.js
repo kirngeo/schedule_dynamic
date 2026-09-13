@@ -173,6 +173,11 @@ class DynamicSchedulePanel extends HTMLElement {
               .map(state => state.entity_id);
           console.log( 'fetchScheduleDetails found %d dynamic schedules', scheduleEntities.length );
 
+          const xxscheduleEntities = Object.values(this._hass.states)
+              .filter(state => state.entity_id.startsWith( this._domain + '.'))
+              ;
+          console.log( 'states', xxscheduleEntities );
+
           if (scheduleEntities.length === 0) return;
 
           // Fetch the configured time ranges directly using the service
