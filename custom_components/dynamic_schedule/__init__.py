@@ -230,7 +230,8 @@ SUBSCHED_SCHEMA: VolDictType = {
 }
 
 SUBSCHEDS_SCHEMA: VolDictType = {
-    vol.Required( str ) : SUBSCHED_SCHEMA,
+   # vol.Required( str ) : SUBSCHED_SCHEMA,
+    vol.Optional( str ) : SUBSCHED_SCHEMA,
 }
 
 SCHEDULE_SCHEMA_V2: VolDictType = {
