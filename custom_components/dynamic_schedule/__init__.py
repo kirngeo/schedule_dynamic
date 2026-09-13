@@ -210,14 +210,6 @@ SCHEDULE_SCHEMA: VolDictType = {
     for day in CONF_ALL_DAYS
 }
 
-STORAGE_SCHEDULE_SCHEMA: VolDictType = {
-    vol.Optional(day, default=[]): vol.All(
-        cv.ensure_list, [TIME_RANGE_SCHEMA], valid_schedule, [STORAGE_TIME_RANGE_SCHEMA]
-    )
-    for day in CONF_ALL_DAYS
-}
-
-
 AT_SCHEMA: VolDictType = {
     vol.Required( CONF_HH ) :vol.All(vol.Coerce(int), vol.Range(min=0, max=23)),
     vol.Optional( CONF_MM, default=0 ) : vol.All(vol.Coerce(int), vol.Range(min=0, max=59)),
@@ -314,8 +306,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         storage_collection,
         DOMAIN,
         DOMAIN,
-        BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA,
-        BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA,
+     #   BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA,
+        BASE_SCHEMA | SCHEDULE_SCHEMA_V2,
+     #   BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA,
     ).async_setup(hass)
 
     async def reload_service_handler(service_call: ServiceCall) -> None:
@@ -435,7 +428,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     ###
 
   #  ppr( 'SCHEMA', vol.Schema(BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA) )
-    ppr( 'SCHEMA', BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA )
+ #   ppr( 'SCHEMA', BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA )
 
     return True
 
@@ -493,7 +486,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 class ScheduleStorageCollection(DictStorageCollection):
     """Schedules stored in storage."""
 
-    SCHEMA = vol.Schema(BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA)
+  #  SCHEMA = vol.Schema(BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA)
+    SCHEMA = vol.Schema(BASE_SCHEMA | SCHEDULE_SCHEMA_V2)
 
     async def _process_create_data(self, data: dict) -> dict:
         """Validate the config is valid."""
