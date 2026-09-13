@@ -120,7 +120,7 @@ from .const import (
 STORAGE_VERSION = 1
 STORAGE_VERSION_MINOR = 1
 
-def ppr(self, msg, data ):
+def ppr(msg, data ):
     LOGGER.debug(msg)
     for line in pprint.pformat( data ).splitlines():
         LOGGER.debug(line)
@@ -435,7 +435,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     ###
 
   #  ppr( 'SCHEMA', vol.Schema(BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA) )
-    ppr( 'SCHEMA', (BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA) )
+    ppr( 'SCHEMA', BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA )
 
     return True
 
