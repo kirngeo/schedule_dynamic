@@ -237,7 +237,7 @@ SCHEDULE_SCHEMA_V2: VolDictType = {
     vol.Required( CONF_SELECT_SCRIPT, default=" -missing-" ) : vol.Coerce(str),
     vol.Optional( CONF_DELAY_STARTUP ) : vol.All(int, vol.Range(min=0, max=60)),
     vol.Required( CONF_BOOLEAN, default=False ) : bool,
-    vol.Required( CONF_SUB_SCHEDULES ) : SUBSCHEDS_SCHEMA,
+    vol.Required( CONF_SUB_SCHEDULES,  default={} ) : SUBSCHEDS_SCHEMA,
     vol.Optional( CONF_DEVICE_CLASS): DEVICE_CLASSES_SCHEMA,
     vol.Optional( CONF_UNIT_OF_MEASUREMENT): cv.string,
     vol.Required( CONF_ATTRIBUTES, default={}): CUSTOM_ATTR_SCHEMA_LIST,
