@@ -607,7 +607,8 @@ class Schedule(CollectionEntity):
     _config: ConfigType
     _next: datetime
     _unsub_update: Callable[[], None] | None = None
-    _v2: bool = False
+  #  _v2: bool = False
+    _v2: bool = True
     _is_boolean: bool
     _transitions: [Transition] = []
     _state_is_numeric: bool = False
@@ -616,6 +617,7 @@ class Schedule(CollectionEntity):
     def __init__(self, config: ConfigType, editable: bool) -> None:
         """Initialize a schedule."""
         self._v2 = CONF_SUB_SCHEDULES in config
+        self._v2 = True
         self._is_boolean = config.get(CONF_BOOLEAN, False) or not self._v2
         self._config = ENTITY_SCHEMA_V2(config) if self._v2 else ENTITY_SCHEMA(config)
         self._attr_capability_attributes = {ATTR_EDITABLE: editable}
@@ -665,6 +667,7 @@ class Schedule(CollectionEntity):
     async def async_update_config(self, config: ConfigType) -> None:
         """Handle when the config is updated."""
         self._v2 = CONF_SUB_SCHEDULES in config
+        self._v2 = True
         self._is_boolean = (not self._v2) or config.get(CONF_BOOLEAN, False)
         self._config = ENTITY_SCHEMA_V2(config) if self._v2 else ENTITY_SCHEMA(config)
         self._attr_icon = config.get(CONF_ICON)
