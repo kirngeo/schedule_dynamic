@@ -309,6 +309,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
      #   BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA,
         BASE_SCHEMA | SCHEDULE_SCHEMA_V2,
      #   BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA,
+        BASE_SCHEMA | SCHEDULE_SCHEMA_V2,
     ).async_setup(hass)
 
     async def reload_service_handler(service_call: ServiceCall) -> None:
