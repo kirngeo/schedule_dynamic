@@ -267,6 +267,9 @@ CONFIG_SCHEMA = vol.Schema(
 STORAGE_SCHEMA = vol.Schema(
     {vol.Required(CONF_ID): cv.string} | BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA
 )
+STORAGE_SCHEMA_V2 = vol.Schema(
+    {vol.Required(CONF_ID): cv.string} | BASE_SCHEMA | SCHEDULE_SCHEMA_V2
+)
 # Validate + transform entity config
 ENTITY_SCHEMA = vol.Schema(
     {vol.Required(CONF_ID): cv.string} | BASE_SCHEMA | SCHEDULE_SCHEMA
@@ -514,7 +517,7 @@ class ScheduleStorageCollection(DictStorageCollection):
         """Load the data."""
         if data := await super()._async_load_data():
           #  data["items"] = [STORAGE_SCHEMA(item) for item in data["items"]]
-            data["items"] = [STORAGE_SCHEMA(item) for item in data["items"] if item.get('id') != 'giraffes' ]
+            data["items"] = [STORAGE_SCHEMA_V2(item) for item in data["items"] if item.get('id') != 'giraffes' ]
         LOGGER.debug( "_async_load_data data=%s", data )
         return data
 
@@ -691,7 +694,7 @@ class Schedule(CollectionEntity):
 
     def _dummy( self, when: date, at: int=0 ) -> list[Transition]:
         """ Retuens a dummy daily transition list, containing just one transition. """
-        if not at : LOGGER.warning( "subschedule for %s is missing", when.isoformat() )
+        if not at : LOGGER.warning( "%s subschedule for %s is missing", self.name, when.isoformat() )
         return [ Transition( tdate = when,
                              ttime = time( hour=at, tzinfo = dt_util.get_default_time_zone() ),
                              state = STATE_OFF if self._is_boolean else None,
