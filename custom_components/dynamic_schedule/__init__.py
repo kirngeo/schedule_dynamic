@@ -435,7 +435,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     ###
 
   #  ppr( 'SCHEMA', vol.Schema(BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA) )
-    ppr( 'SCHEMA', BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA )
+    ppr( 'SCHEMA', (BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA) )
 
     return True
 
