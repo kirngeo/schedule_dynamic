@@ -120,6 +120,10 @@ from .const import (
 STORAGE_VERSION = 1
 STORAGE_VERSION_MINOR = 1
 
+def ppr(self, msg, data ):
+    LOGGER.debug(msg)
+    for line in pprint.pformat( data ).splitlines():
+        LOGGER.debug(line)
 
 def valid_schedule(schedule: list[dict[str, str]]) -> list[dict[str, str]]:
     """Validate the schedule of time ranges.
@@ -430,6 +434,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     ###
 
+  #  ppr( 'SCHEMA', vol.Schema(BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA) )
+    ppr( 'SCHEMA', BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA )
+
     return True
 
 
@@ -647,12 +654,6 @@ class Schedule(CollectionEntity):
         if self._v2:
             self._transitions : [Transition] = []
 
-        self.ppr( 'SCHEMA', vol.Schema(BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA) )
-
-    def ppr(self, msg, data ):
-        LOGGER.debug(msg)
-        for line in pprint.pformat( data ).splitlines():
-            LOGGER.debug(line)
 
     @classmethod
     def from_storage(cls, config: ConfigType) -> Schedule:
