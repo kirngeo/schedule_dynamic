@@ -430,11 +430,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     ###
 
-    dpath = '/config/tmp/pprint'
-
-    if os.path.exists( dpath ) : os.remove( dpath )
-    os.close( os.open( dpath, os.O_CREAT ) )
-
     return True
 
 
@@ -652,15 +647,12 @@ class Schedule(CollectionEntity):
         if self._v2:
             self._transitions : [Transition] = []
 
-        self._dpath = '/config/tmp/pprint'
         self.ppr( 'SCHEMA', vol.Schema(BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA) )
 
     def ppr(self, msg, data ):
-        with open( self._dpath, mode='a' ) as fp:
-            fp.write(msg + ' ' + dt_util.now().isoformat(sep=' ') + '\n')
-            fp.write( pprint.pformat( data ) )
-            fp.write('\n\n')
-            fp.close()
+        LOGGER.debug(msg)
+        for line in pprint.pformat( data ).splitlines():
+            LOGGER.debug(line)
 
     @classmethod
     def from_storage(cls, config: ConfigType) -> Schedule:
