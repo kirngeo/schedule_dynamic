@@ -114,14 +114,14 @@ class DynamicSchedulePanel extends HTMLElement {
               ...updatedConfig
           };
 
-          console.log( parms );
+          console.log( 'parms', parms );
           await this._hass.connection.sendMessagePromise(parms);
           
           this.showToast(`Dynamic Schedule "${name}" created successfully`);
           this._closeModal();
           this.fetchScheduleDetails();
       } catch (err) {
-          console.error("Failed to create dynamic schedule helper.", err);
+          console.error("Failed to create dynamic schedule.", err);
           this.showToast(`Failed to create dynamic schedule: ${err.message || 'Unknown error'}`);
       }
   }
@@ -167,7 +167,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   async fetchScheduleDetails() {
-      console.log( 'fetchScheduleDetails entry' )
+     // console.log( 'fetchScheduleDetails entry' )
       try {
           this._scheduleList = Object.values(this._hass.states)
               .filter(state => state.entity_id.startsWith( 'dynamic_schedule.'))
@@ -176,8 +176,7 @@ class DynamicSchedulePanel extends HTMLElement {
                   'name'   : Object.hasOwn(state,'attributes') && state.attributes.friendly_name ? state.attributes.friendly_name : state.entity_id,
                   'edit' : Boolean( Object.hasOwn(state,'attributes') && state.attributes.editable)
                   }))
-              .sort((a,b) => {return a.name.localeCompare(b.name)});
-          console.log( 'fetchScheduleDetails found %d dynamic schedules', this._scheduleList.length );
+              .sort((a,b) => a.name.localeCompare(b.name));
 
           if (this._scheduleList.length === 0) return;
 
@@ -190,13 +189,13 @@ class DynamicSchedulePanel extends HTMLElement {
               return_response: true
           });
           
-          console.log('response to  get_schedule', this._scheduleList.map( a=>a.entid) );
+      //    console.log('response to  get_schedule', this._scheduleList.map( a=>a.entid) );
       //    console.log( response );
 
           if (response && response.response) {
               // The response is keyed by entity_id: { 'schedule.my_schedule': { monday: [...], ... } }
               this._scheduleDetails = response.response;
-              console.log( 'response', response.response );
+           //   console.log( 'response', response.response );
               this.render(); // Re-render with real details
           }
 
@@ -206,7 +205,6 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   render() {
-    console.log( 'render' );
 
     let contentHtml = 'Hello World';
   
@@ -475,11 +473,15 @@ class DynamicSchedulePanel extends HTMLElement {
                       </ha-icon-picker>
                   </div>
                   <div class="form-group">
-                      <ha-switch
-                        id="schedule-bool-b"
-                        label="Sw LaBeL"
-                      >
-                      </ha-switch>
+                      <ha-settings-row>
+                          <span slot="heading"> the switch heading</span>
+                          <span slot="description">switch description</span>
+                          <ha-switch
+                            id="schedule-bool-b"
+                            label="Sw LaBeL"
+                          >
+                          </ha-switch>
+                      </ha-settings-row>
                   </div>
                   <div class="form-group">
                       <label for="schedule-icon">Icon</label>
