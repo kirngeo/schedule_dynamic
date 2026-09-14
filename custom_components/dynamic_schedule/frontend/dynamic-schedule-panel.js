@@ -475,6 +475,7 @@ class DynamicSchedulePanel extends HTMLElement {
                           <ha-input
                             placeholder="a plchldr"
                             name="schedule-name"
+                            id="schedule-name"
                             required
                           >
                           e.g. blee blah
