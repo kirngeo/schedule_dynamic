@@ -249,6 +249,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
         schedselHtml =
           `<ha-select
+              .value="dyn sch tet1"
+              .required
               .options=${this._scheduleList.map(
                   ent => ({
                       value: ent.name,
