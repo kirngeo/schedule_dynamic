@@ -5,6 +5,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._domain = 'dynamic_schedule';
     this._schedules = [];
     this._scheduleDetails = {};
+    this._scheduleList = [];
     this._automations = [];
     this._hasFetchedDetails = false;
     this._zoomLevel = 0.5;
@@ -168,34 +169,34 @@ class DynamicSchedulePanel extends HTMLElement {
   async fetchScheduleDetails() {
       console.log( 'fetchScheduleDetails entry' )
       try {
-          const scheduleEntities = Object.values(this._hass.states)
-              .filter(state => state.entity_id.startsWith( this._domain + '.'))
-              .map(state => state.entity_id);
+          this._scheduleList = Object.values(this._hass.states)
+              .filter(state => state.entity_id.startsWith( 'dynamic_schedule.'))
+              .map(state => ({
+                  'entid'  : state.entity_id,
+                  'name'   : Object.hasOwn(state,'attributes') && state.attributes.friendly_name ? state.attributes.friendly_name : state.entity_id,
+                  'edit' : Boolean( Object.hasOwn(state,'attributes') && state.attributes.editable)
+                  }))
+              .sort((a,b) => {return a.name.localeCompare(b.name)});
           console.log( 'fetchScheduleDetails found %d dynamic schedules', scheduleEntities.length );
 
-          const xxscheduleEntities = Object.values(this._hass.states)
-              .filter(state => state.entity_id.startsWith( this._domain + '.'))
-              ;
-          console.log( 'states', xxscheduleEntities );
-
-          if (scheduleEntities.length === 0) return;
+          if (this._scheduleList.length === 0) return;
 
           // Fetch the configured time ranges directly using the service
           const response = await this._hass.connection.sendMessagePromise({
               type: 'call_service',
               domain: this._domain,
               service: 'get_schedule',
-              target: { entity_id: scheduleEntities },
+              target: { entity_id: this._scheduleList.map( a => a.entid ) },
               return_response: true
           });
           
-          console.log('response to  get_schedule', scheduleEntities);
-          console.log( response );
+          console.log('response to  get_schedule', this._scheduleList.map( a=>a.entid) );
+      //    console.log( response );
 
           if (response && response.response) {
               // The response is keyed by entity_id: { 'schedule.my_schedule': { monday: [...], ... } }
               this._scheduleDetails = response.response;
-          //    console.log( JSON.stringify( response.response ) );
+              console.log( 'response', response.response );
               this.render(); // Re-render with real details
           }
 
@@ -465,6 +466,13 @@ class DynamicSchedulePanel extends HTMLElement {
                   <div class="form-group">
                       <label for="schedule-name">Name</label>
                       <input type="text" id="schedule-name" required placeholder="e.g. Heating Schedule">
+                  </div>
+                  <div class="form-group">
+                      <ha-icon-picker
+                        .label="LaBeL"
+                      >
+                      </ha-icon-picker>
+                      <input type="text" id="schedule-icon" value="mdi:table-clock" placeholder="mdi:table-clock">
                   </div>
                   <div class="form-group">
                       <label for="schedule-icon">Icon</label>
