@@ -466,18 +466,30 @@ class DynamicSchedulePanel extends HTMLElement {
                       <input type="text" id="schedule-name" required placeholder="e.g. Heating Schedule">
                   </div>
                   <div class="form-group">
+                      <ha-settings-row>
+                          <span slot="heading">name</span>
+                          <span slot="description"the name of the dynamic schedule</span>
+                          <ha-input
+                            placeholder="a plchldr"
+                            required
+                          >
+                          e.g. blee blah
+                          </ha-input>
+                      </ha-settings-row>
+                  </div>
+                  <div class="form-group">
                       <ha-icon-picker
-                        id="schedule-icon-b"
-                        label="LaBeL"
+                        id="schedule-icon"
+                        name="mdi:table-clock"
                       >
                       </ha-icon-picker>
                   </div>
                   <div class="form-group">
                       <ha-settings-row>
-                          <span slot="heading"> the switch heading</span>
-                          <span slot="description">switch description</span>
+                          <span slot="heading">boolean state</span>
+                          <span slot="description">entity states will be boolean</span>
                           <ha-switch
-                            id="schedule-bool-b"
+                            id="schedule-bool"
                             label="Sw LaBeL"
                           >
                           </ha-switch>
@@ -485,11 +497,11 @@ class DynamicSchedulePanel extends HTMLElement {
                   </div>
                   <div class="form-group">
                       <label for="schedule-icon">Icon</label>
-                      <input type="text" id="schedule-icon" value="mdi:table-clock" placeholder="mdi:table-clock">
+                      <input type="text" id="schedule-icon-old" value="mdi:table-clock" placeholder="mdi:table-clock">
                   </div>
                   <div class="form-group">
                       <label for="schedule-bool">boolean</label>
-                      <input type="checkbox" id="schedule-bool" value="mdi:table-clock" placeholder="mdi:table-clock">
+                      <input type="checkbox" id="schedule-bool-old" value="mdi:table-clock" placeholder="mdi:table-clock">
                   </div>
                   <div class="modal-footer">
                       <button type="button" class="btn secondary" id="modal-cancel-btn">Cancel</button>
