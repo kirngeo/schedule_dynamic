@@ -239,6 +239,14 @@ class DynamicSchedulePanel extends HTMLElement {
     let schedselHtml = '';
 
     if (this._scheduleList.length > 0) {
+        console.log('_scheduleList', this->_scheduleList);
+        console.log('mapped', 
+          this._scheduleList.map(
+              ent => ({
+                  value: ent.name,
+                  label: ent.entid
+              }) ) );
+
         schedselHtml =
           `<ha-select>
           .options=${this._scheduleList.map(
