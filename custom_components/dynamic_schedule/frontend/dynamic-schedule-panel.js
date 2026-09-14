@@ -488,9 +488,7 @@ class DynamicSchedulePanel extends HTMLElement {
                           <span slot="description"the name of the dynamic schedule</span>
                           <ha-input
                             placeholder="e.g Heating Schedule"
-                            name="schedule-name"
                             id="schedule-name"
-                            required
                           >
                           </ha-input>
                       </ha-settings-row>
