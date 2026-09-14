@@ -56,6 +56,16 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      const testlBtn = e.target.closest('#modal-test-btn');
+      if (testBtn) {
+          e.preventDefault();
+          const iconBool = this.shadowRoot.getElementById('schedule-bool');
+          console.log('iconBool', iconBool);
+          console.log('iconBool.value', iconBool.value);
+          this._closeModal();
+          return;
+      }
+
       if (e.target.id === 'schedule-modal') {
           e.preventDefault();
           this._closeModal();
@@ -501,6 +511,7 @@ class DynamicSchedulePanel extends HTMLElement {
                           <span slot="description">entity states will be boolean</span>
                           <ha-switch
                             id="schedule-bool"
+                            value="off"
                           >
                           </ha-switch>
                       </ha-settings-row>
@@ -516,6 +527,7 @@ class DynamicSchedulePanel extends HTMLElement {
                   </div>
                 -->
                   <div class="modal-footer">
+                      <button type="button" class="btn secondary" id="modal-test-btn">Test</button>
                       <button type="button" class="btn secondary" id="modal-cancel-btn">Cancel</button>
                       <button type="submit" class="btn primary" id="modal-submit-btn">Create Dynamic Schedule</button>
                   </div>
