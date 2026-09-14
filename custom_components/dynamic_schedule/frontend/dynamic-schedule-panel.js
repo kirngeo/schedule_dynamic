@@ -250,8 +250,8 @@ class DynamicSchedulePanel extends HTMLElement {
               );
         console.log('options', options);
 
-        schedselHtml =
-          `<ha-select
+        schedselHtml = html`
+          <ha-select
               .value="dyn sch tet1"
               .options=${options}
               .required
