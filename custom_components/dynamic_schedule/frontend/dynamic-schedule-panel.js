@@ -248,13 +248,13 @@ class DynamicSchedulePanel extends HTMLElement {
               }) ) );
 
         schedselHtml =
-          `<ha-select>
-          .options=${this._scheduleList.map(
-              ent => ({
-                  value: ent.name,
-                  label: ent.entid
-              })
-          )}
+          `<ha-select
+              .options=${this._scheduleList.map(
+                  ent => ({
+                      value: ent.name,
+                      label: ent.entid
+                  })
+              )}
           ></ha-select>
           `;
     }
