@@ -241,7 +241,8 @@ class DynamicSchedulePanel extends HTMLElement {
     if (this._scheduleList.length > 0) {
         console.log('_scheduleList', this._scheduleList);
 
-        const options: HaSelectOption[] = this._scheduleList.map(
+     //   const options: HaSelectOption[] = this._scheduleList.map(
+        const options = this._scheduleList.map(
                   ent => ({
                       value: ent.name,
                       label: ent.entid
