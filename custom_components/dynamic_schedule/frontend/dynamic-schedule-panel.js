@@ -61,8 +61,7 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
           const iconBool = this.shadowRoot.getElementById('schedule-bool');
           console.log('iconBool', iconBool);
-          console.log('iconBool.value', iconBool.value);
-       //   this._closeModal();
+          console.log('iconBool.checked', iconBool.checked);
           return;
       }
 
