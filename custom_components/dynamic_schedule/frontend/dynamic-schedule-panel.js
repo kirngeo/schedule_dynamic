@@ -177,7 +177,7 @@ class DynamicSchedulePanel extends HTMLElement {
                   'edit' : Boolean( Object.hasOwn(state,'attributes') && state.attributes.editable)
                   }))
               .sort((a,b) => {return a.name.localeCompare(b.name)});
-          console.log( 'fetchScheduleDetails found %d dynamic schedules', scheduleEntities.length );
+          console.log( 'fetchScheduleDetails found %d dynamic schedules', this.scheduleList.length );
 
           if (this._scheduleList.length === 0) return;
 
