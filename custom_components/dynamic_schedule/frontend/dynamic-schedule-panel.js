@@ -93,7 +93,10 @@ class DynamicSchedulePanel extends HTMLElement {
       const nameInput = this.shadowRoot.getElementById('schedule-name');
       const iconInput = this.shadowRoot.getElementById('schedule-icon');
       const iconBool = this.shadowRoot.getElementById('schedule-bool');
-      
+
+      console.log('iconBool', iconBool);
+      console.log('iconBool.value', iconBool.value);
+
       const name = nameInput ? nameInput.value.trim() : '';
       const icon = iconInput ? iconInput.value.trim() : 'mdi:table-clock';
       const bool = iconBool ? iconBool.value == 'on' : false;
@@ -115,7 +118,8 @@ class DynamicSchedulePanel extends HTMLElement {
           };
 
           console.log( 'parms', parms );
-          await this._hass.connection.sendMessagePromise(parms);
+          const returned = await this._hass.connection.sendMessagePromise(parms);
+          console.log( 'returned', returned);
           
           this.showToast(`Dynamic Schedule "${name}" created successfully`);
           this._closeModal();
@@ -473,21 +477,23 @@ class DynamicSchedulePanel extends HTMLElement {
                           <span slot="heading">Name</span>
                           <span slot="description"the name of the dynamic schedule</span>
                           <ha-input
-                            placeholder="a plchldr"
+                            placeholder="e.g Heating Schedule"
                             name="schedule-name"
                             id="schedule-name"
                             required
                           >
-                          e.g. blee blah
                           </ha-input>
                       </ha-settings-row>
                   </div>
                   <div class="form-group">
-                      <ha-icon-picker
-                        id="schedule-icon"
-                        name="mdi:table-clock"
-                      >
-                      </ha-icon-picker>
+                      <ha-settings-row>
+                          <span slot="heading">Icon</span>
+                          <ha-icon-picker
+                            id="schedule-icon"
+                            value="mdi:table-clock"
+                          >
+                          </ha-icon-picker>
+                      </ha-settings-row>
                   </div>
                   <div class="form-group">
                       <ha-settings-row>
@@ -495,7 +501,6 @@ class DynamicSchedulePanel extends HTMLElement {
                           <span slot="description">entity states will be boolean</span>
                           <ha-switch
                             id="schedule-bool"
-                            label="Sw LaBeL"
                           >
                           </ha-switch>
                       </ha-settings-row>
