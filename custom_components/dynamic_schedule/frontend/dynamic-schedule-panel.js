@@ -240,25 +240,23 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._scheduleList.length > 0) {
         console.log('_scheduleList', this._scheduleList);
-        console.log('mapped', 
-          this._scheduleList.map(
-              ent => ({
-                  value: ent.name,
-                  label: ent.entid
-              }) ) );
 
-        schedselHtml =
-          `<ha-select
-              .value="dyn sch tet1"
-              .required
-              options=${this._scheduleList.map(
+        const options: HaSelectOption[] = this._scheduleList.map(
                   ent => ({
                       value: ent.name,
                       label: ent.entid
                   })
-              )}
+              );
+        console.log('options', options);
+
+        schedselHtml =
+          `<ha-select
+              .value="dyn sch tet1"
+              .options=${options}
+              .required
           ></ha-select>
           `;
+        console.log('schedselHtmk', schedselHtml );
     }
   
     this.shadowRoot.innerHTML = `
