@@ -469,10 +469,17 @@ class DynamicSchedulePanel extends HTMLElement {
                   </div>
                   <div class="form-group">
                       <ha-icon-picker
-                        .label="LaBeL"
+                        id="schedule-icon-b"
+                        label="LaBeL"
                       >
                       </ha-icon-picker>
-                      <input type="text" id="schedule-icon" value="mdi:table-clock" placeholder="mdi:table-clock">
+                  </div>
+                  <div class="form-group">
+                      <ha-switch
+                        id="schedule-bool-b"
+                        label="Sw LaBeL"
+                      >
+                      </ha-switch>
                   </div>
                   <div class="form-group">
                       <label for="schedule-icon">Icon</label>
