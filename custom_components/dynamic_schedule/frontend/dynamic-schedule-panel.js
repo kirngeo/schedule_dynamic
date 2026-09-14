@@ -103,12 +103,9 @@ class DynamicSchedulePanel extends HTMLElement {
       const iconInput = this.shadowRoot.getElementById('schedule-icon');
       const iconBool = this.shadowRoot.getElementById('schedule-bool');
 
-      console.log('iconBool', iconBool);
-      console.log('iconBool.value', iconBool.value);
-
       const name = nameInput ? nameInput.value.trim() : '';
       const icon = iconInput ? iconInput.value.trim() : 'mdi:table-clock';
-      const bool = iconBool ? iconBool.value == 'on' : false;
+      const bool = iconBool ? iconBool.checked : false;
       
       if (!name) {
           this.showToast('Please enter a dynamic schedule name');
@@ -125,10 +122,29 @@ class DynamicSchedulePanel extends HTMLElement {
               "boolean" : Boolean( bool ),
               ...updatedConfig
           };
+/* eg parms
+{
+  "type": "dynamic_schedule/create",
+  "name": "Mixed-Case Name",
+  "icon": "mdi:table-clock",
+  "boolean": false,
+  "id": 44
+}
+*/
 
-          console.log( 'parms', parms );
           const returned = await this._hass.connection.sendMessagePromise(parms);
-          console.log( 'returned', returned);
+/* eg returned
+{
+  "id": "mixed_case_name",
+  "name": "Mixed-Case Name",
+  "icon": "mdi:table-clock",
+  "boolean": false,
+  "select_script": " -missing-",
+  "sub_schedules": {},
+  "attributes": {},
+  "n_attr_transitions": 0
+}
+*/
           
           this.showToast(`Dynamic Schedule "${name}" created successfully`);
           this._closeModal();
@@ -220,6 +236,20 @@ class DynamicSchedulePanel extends HTMLElement {
   render() {
 
     let contentHtml = 'Hello World';
+    let schedselHtml = '';
+
+    if (this._scheduleList.length > 0) {
+        schedselHtml =
+          `<ha-select>
+          .options=${this._scheduleList.map(
+              ent => ({
+                  value: ent.name,
+                  label: ent.entid
+              })
+          )}
+          ></ha-select>
+          `;
+    }
   
     this.shadowRoot.innerHTML = `
       <style>
@@ -452,6 +482,7 @@ class DynamicSchedulePanel extends HTMLElement {
               Dynamic Schedules
           </div>
           <div class="zoom-controls">
+              ${schedselHtml}
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
               </button>
@@ -508,7 +539,7 @@ class DynamicSchedulePanel extends HTMLElement {
                           <span slot="description">entity states will be boolean</span>
                           <ha-switch
                             id="schedule-bool"
-                            value="off"
+                            checked=false
                           >
                           </ha-switch>
                       </ha-settings-row>
