@@ -1,4 +1,7 @@
-class DynamicSchedulePanel extends HTMLElement {
+import { css, html, LitElement, nothing } from "lit";
+
+//class DynamicSchedulePanel extends HTMLElement {
+class DynamicSchedulePanel extends LitElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
