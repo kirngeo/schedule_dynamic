@@ -56,7 +56,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      const testlBtn = e.target.closest('#modal-test-btn');
+      const testBtn = e.target.closest('#modal-test-btn');
       if (testBtn) {
           e.preventDefault();
           const iconBool = this.shadowRoot.getElementById('schedule-bool');
