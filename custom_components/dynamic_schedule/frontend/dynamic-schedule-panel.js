@@ -294,6 +294,7 @@ class DynamicSchedulePanel extends HTMLElement {
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
+              overflow: auto;
         }
 
         .modal-overlay.open {
@@ -461,16 +462,19 @@ class DynamicSchedulePanel extends HTMLElement {
                   <button class="close-btn" id="modal-close-btn">&times;</button>
               </div>
               <form id="schedule-form" onsubmit="return false;">
+                <!--
                   <div class="form-group">
                       <label for="schedule-name">Name</label>
                       <input type="text" id="schedule-name" required placeholder="e.g. Heating Schedule">
                   </div>
+                -->
                   <div class="form-group">
                       <ha-settings-row>
-                          <span slot="heading">name</span>
+                          <span slot="heading">Name</span>
                           <span slot="description"the name of the dynamic schedule</span>
                           <ha-input
                             placeholder="a plchldr"
+                            name="schedule-name"
                             required
                           >
                           e.g. blee blah
@@ -495,6 +499,7 @@ class DynamicSchedulePanel extends HTMLElement {
                           </ha-switch>
                       </ha-settings-row>
                   </div>
+                <!--
                   <div class="form-group">
                       <label for="schedule-icon">Icon</label>
                       <input type="text" id="schedule-icon-old" value="mdi:table-clock" placeholder="mdi:table-clock">
@@ -503,6 +508,7 @@ class DynamicSchedulePanel extends HTMLElement {
                       <label for="schedule-bool">boolean</label>
                       <input type="checkbox" id="schedule-bool-old" value="mdi:table-clock" placeholder="mdi:table-clock">
                   </div>
+                -->
                   <div class="modal-footer">
                       <button type="button" class="btn secondary" id="modal-cancel-btn">Cancel</button>
                       <button type="submit" class="btn primary" id="modal-submit-btn">Create Dynamic Schedule</button>
