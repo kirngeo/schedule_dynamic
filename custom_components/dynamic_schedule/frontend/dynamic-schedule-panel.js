@@ -9,7 +9,7 @@ import {
 class DynamicSchedulePanel extends LitElement {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+  //  this.attachShadow({ mode: 'open' });
     this._domain = 'dynamic_schedule';
     this._schedules = [];
     this._scheduleDetails = {};
