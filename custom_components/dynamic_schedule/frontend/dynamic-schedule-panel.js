@@ -261,11 +261,15 @@ class DynamicSchedulePanel extends LitElement {
         schedselHtml = html`
           <ha-select
               .value="dyn sch tet1"
-              .options=${options}
-              .required
+              .options=${this._scheduleList.map(
+                  ent => ({
+                      value: ent.name,
+                      label: ent.entid
+                  })
+              )}
           ></ha-select>
           `;
-        console.log('schedselHtmk', schedselHtml );
+        console.log('schedselHtml', schedselHtml );
     }
   
     this.shadowRoot.innerHTML = `
