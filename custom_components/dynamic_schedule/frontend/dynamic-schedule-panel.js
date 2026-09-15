@@ -1,15 +1,17 @@
+/*
 //import { css, html, LitElement, nothing } from "lit";
 import {
   LitElement,
   html,
   css,
 } from "https://unpkg.com/lit-element@2.4.0/lit-element.js?module";
+*/
 
-//class DynamicSchedulePanel extends HTMLElement {
-class DynamicSchedulePanel extends LitElement {
+class DynamicSchedulePanel extends HTMLElement {
+//class DynamicSchedulePanel extends LitElement {
   constructor() {
     super();
-  //  this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: 'open' });
     this._domain = 'dynamic_schedule';
     this._schedules = [];
     this._scheduleDetails = {};
@@ -246,7 +248,7 @@ class DynamicSchedulePanel extends LitElement {
     let contentHtml = 'Hello World';
     let schedselHtml = '';
 
-    if (this._scheduleList.length > 0) {
+    if (false && this._scheduleList.length > 0) {
         console.log('_scheduleList', this._scheduleList);
 
      //   const options: HaSelectOption[] = this._scheduleList.map(
@@ -258,7 +260,7 @@ class DynamicSchedulePanel extends LitElement {
               );
         console.log('options', options);
 
-        schedselHtml = html`
+        schedselHtml = `
           <ha-select
               .value="dyn sch tet1"
               .options=${this._scheduleList.map(
@@ -504,6 +506,15 @@ class DynamicSchedulePanel extends LitElement {
           </div>
           <div class="zoom-controls">
               ${schedselHtml}
+          <ha-select
+              .value="dyn sch tet1"
+              .options=${this._scheduleList.map(
+                  ent => ({
+                      value: ent.name,
+                      label: ent.entid
+                  })
+              )}
+          ></ha-select>
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
               </button>
