@@ -596,6 +596,7 @@ class DynamicSchedulePanel extends HTMLElement {
       </div>
 
       `;
+    console.log( this.shadowRoot.innerHTML );
   }
 
 }
