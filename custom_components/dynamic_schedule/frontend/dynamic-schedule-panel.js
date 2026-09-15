@@ -1,4 +1,9 @@
-import { css, html, LitElement, nothing } from "lit";
+//import { css, html, LitElement, nothing } from "lit";
+import {
+  LitElement,
+  html,
+  css,
+} from "https://unpkg.com/lit-element@2.4.0/lit-element.js?module";
 
 //class DynamicSchedulePanel extends HTMLElement {
 class DynamicSchedulePanel extends LitElement {
