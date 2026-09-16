@@ -26,6 +26,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._zoomLevel = 0.5;
     this._dragState = null;
     this._wasDragging = false;
+    this._activeSchedule = null;
   }
 
   zoomIn() {
@@ -87,7 +88,8 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest( '#schedule-sel-entid');
       if (clicked) {
           e.preventDefault();
-          console.log('selected', clicked.value, clicked.text);
+          this._showEntid( clicked.value );
+          return;
       }
 
       if (e.target.id === 'schedule-modal') {
@@ -174,10 +176,21 @@ class DynamicSchedulePanel extends HTMLElement {
           this.showToast(`Dynamic Schedule "${name}" created successfully`);
           this._closeModal();
           this.fetchScheduleDetails();
+          this._showEntid( returned.id );
       } catch (err) {
           console.error("Failed to create dynamic schedule.", err);
           this.showToast(`Failed to create dynamic schedule: ${err.message || 'Unknown error'}`);
       }
+  }
+
+  _showEntid( entid ) {
+    const ent = this._scheduleList.filter( entry => entry.entid == entid );
+    if (ent.length === 1) {
+      this._activeSchedule = ent[1];
+      this.render();
+    } else {
+      this._activeSchedule = null;
+    }
   }
 
   set hass(hass) {
@@ -222,7 +235,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   async fetchScheduleDetails() {
      // console.log( 'fetchScheduleDetails entry' )
-      try {
+ //     try {
           this._scheduleList = Object.values(this._hass.states)
               .filter(state => state.entity_id.startsWith( this._domaindot))
               .map(state => ({
@@ -252,15 +265,16 @@ class DynamicSchedulePanel extends HTMLElement {
            //   console.log( 'response', response.response );
               this.render(); // Re-render with real details
           }
-
+/*
       } catch (err) {
           console.log("Could not fetch detailed schedule blocks.", err);
       }
+      */
   }
 
   render() {
 
-    let contentHtml = 'Hello World';
+    let contentHtml = '';
     let schedselHtml = '';
 
     if (this._scheduleList.length > 0) {
@@ -271,6 +285,14 @@ class DynamicSchedulePanel extends HTMLElement {
             schedselHtml += `<option value="${ent.entid}">${ent.name}</option>`;
         });
         schedselHtml += `</select>`;
+    }
+
+    if (this._activeSchedule) {
+        contentHtml = JSON.stringify( this._activeSchedule, null, "  " );
+    } else if (this._scheduleList.length > 0) {
+        contentHtml = 'please select a dynamic schedule';
+    } else {
+        contentHtml = 'no dynamic schedules exist yet';
     }
   
     this.shadowRoot.innerHTML = `
