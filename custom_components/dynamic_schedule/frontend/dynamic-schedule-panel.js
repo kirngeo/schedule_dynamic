@@ -64,6 +64,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest( '#schedule-sel-entid');
       if (clicked) {
           e.preventDefault();
+          clicked.value = clicked.value;
           this._showEntid( clicked.value );
           return;
       }
