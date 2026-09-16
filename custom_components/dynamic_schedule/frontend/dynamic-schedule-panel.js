@@ -44,6 +44,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
   connectedCallback() {
       this.shadowRoot.addEventListener('click', this._onClick.bind(this));
+      this.shadowRoot.addEventListener('change', this._onChange.bind(this));
   }
 
   showToast(message) {
@@ -52,6 +53,21 @@ class DynamicSchedulePanel extends HTMLElement {
           bubbles: true,
           composed: true
       }));
+  }
+
+  _onChange(e) {
+      console.log('_onChange', e );
+      console.log( e.target );
+
+      let clicked = null;
+
+      clicked = e.target.closest( '#schedule-sel-entid');
+      if (clicked) {
+          e.preventDefault();
+          this._showEntid( clicked.value );
+          return;
+      }
+
   }
 
   _onClick(e) {
@@ -82,13 +98,6 @@ class DynamicSchedulePanel extends HTMLElement {
           const iconBool = this.shadowRoot.getElementById('schedule-bool');
           console.log('iconBool', iconBool);
           console.log('iconBool.checked', iconBool.checked);
-          return;
-      }
-
-      clicked = e.target.closest( '#schedule-sel-entid');
-      if (clicked) {
-          e.preventDefault();
-          this._showEntid( clicked.value );
           return;
       }
 
