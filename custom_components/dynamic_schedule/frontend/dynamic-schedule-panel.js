@@ -64,7 +64,6 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest( '#schedule-sel-entid');
       if (clicked) {
           e.preventDefault();
-          clicked.value = clicked.value;
           this._showEntid( clicked.value );
           return;
       }
@@ -194,10 +193,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   _showEntid( entid ) {
-    console.log( 'showEntid', entid );
-    console.log( '_scheduleList', this._scheduleList );
     const ent = this._scheduleList.filter( entry => entry.entid === entid );
-    console.log( 'ent', ent );
     if (ent.length === 1) {
       this._activeSchedule = ent[0];
       this.render();
@@ -295,7 +291,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
         schedselHtml += `<select id="schedule-sel-entid"`
         this._scheduleList.forEach( ent => {
-            schedselHtml += `<option value="${ent.entid}">${ent.name}</option>`;
+            schedselHtml += `<option ${((this._activeSchedule !== null) && (ent.entid === this._activeSchedule.entid)) ? "selected " ? ""}value="${ent.entid}">${ent.name}</option>`;
         });
         schedselHtml += `</select>`;
     }
