@@ -189,7 +189,7 @@ class DynamicSchedulePanel extends HTMLElement {
     const ent = this._scheduleList.filter( entry => entry.entid === entid );
     console.log( 'ent', ent );
     if (ent.length === 1) {
-      this._activeSchedule = ent[1];
+      this._activeSchedule = ent[0];
       this.render();
     } else {
       this._activeSchedule = null;
@@ -290,7 +290,9 @@ class DynamicSchedulePanel extends HTMLElement {
         schedselHtml += `</select>`;
     }
 
-    if (this._activeSchedule) {
+    console.log( '_activeSchedule', this._activeSchedule);
+
+    if (this._activeSchedule !== null) {
         contentHtml = JSON.stringify( this._activeSchedule, null, "  " );
     } else if (this._scheduleList.length > 0) {
         contentHtml = 'please select a dynamic schedule';
