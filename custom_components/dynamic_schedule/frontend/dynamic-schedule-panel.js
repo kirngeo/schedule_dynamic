@@ -54,6 +54,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   _onClick(e) {
       console.log('_onClick', e );
+      console.log( e.target );
 
       let clicked = null;
       let clicked2 = null;
@@ -264,12 +265,11 @@ class DynamicSchedulePanel extends HTMLElement {
     if (this._scheduleList.length > 0) {
         console.log('_scheduleList', this._scheduleList);
 
-        schedselHtml += `<select id="schedule_sel_entid"`
+        schedselHtml += `<select id="schedule-sel-entid"`
         this._scheduleList.forEach( ent => {
             schedselHtml += `<option>${ent.name}</option>`;
         });
         schedselHtml += `</select>`;
-        console.log('schedselHtml', schedselHtml );
     }
   
     this.shadowRoot.innerHTML = `
