@@ -87,6 +87,8 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           e.preventDefault();
           console.log('selected', clicked);
+          console.log( 'value is next ...' );
+          console.log( clicked.value )
       }
 
       if (e.target.id === 'schedule-modal') {
@@ -267,7 +269,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
         schedselHtml += `<select id="schedule-sel-entid"`
         this._scheduleList.forEach( ent => {
-            schedselHtml += `<option>${ent.name}</option>`;
+            schedselHtml += `<option value="${ent.entid}">${ent.name}</option>`;
         });
         schedselHtml += `</select>`;
     }
