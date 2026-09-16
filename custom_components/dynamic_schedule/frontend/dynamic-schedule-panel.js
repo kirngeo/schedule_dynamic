@@ -17,6 +17,7 @@ class DynamicSchedulePanel extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this._domain = 'dynamic_schedule';
+    this._domaindot = this._domain + '.';
     this._schedules = [];
     this._scheduleDetails = {};
     this._scheduleList = [];
@@ -86,9 +87,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest( '#schedule-sel-entid');
       if (clicked) {
           e.preventDefault();
-          console.log('selected', clicked);
-          console.log( 'value is next ...' );
-          console.log( clicked.value )
+          console.log('selected', clicked.value, clicked.text);
       }
 
       if (e.target.id === 'schedule-modal') {
@@ -142,7 +141,7 @@ class DynamicSchedulePanel extends HTMLElement {
       
       try {
           const parms = {
-              type: 'dynamic_schedule/create',
+              type: this._domain + '/create',
               name: name,
               icon: icon || 'mdi:table-clock',
               "boolean" : Boolean( bool ),
@@ -191,8 +190,8 @@ class DynamicSchedulePanel extends HTMLElement {
         this.fetchScheduleDetails();
     } else if (this._hass && this._hasFetchedDetails && oldHass) {
         // Detect if any schedule states changed (e.g. user edited a schedule in the dialog)
-        const oldSchedules = Object.values(oldHass.states).filter(state => state.entity_id.startsWith( this._domain + '.'));
-        const newSchedules = Object.values(this._hass.states).filter(state => state.entity_id.startsWith( this._domain + '.'));
+        const oldSchedules = Object.values(oldHass.states).filter(state => state.entity_id.startsWith( this._domaindot));
+        const newSchedules = Object.values(this._hass.states).filter(state => state.entity_id.startsWith( this._domaindot));
         
         // If the state objects differ (like last_updated changed), re-fetch the details
         if (JSON.stringify(oldSchedules) !== JSON.stringify(newSchedules)) {
@@ -209,7 +208,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     // Filter all schedule entities from states
     const newSchedules = Object.values(this._hass.states).filter(state =>
-      state.entity_id.startsWith( this._domain + '.')
+      state.entity_id.startsWith( this._domaindot)
     );
 
     // Simple diff
@@ -225,9 +224,9 @@ class DynamicSchedulePanel extends HTMLElement {
      // console.log( 'fetchScheduleDetails entry' )
       try {
           this._scheduleList = Object.values(this._hass.states)
-              .filter(state => state.entity_id.startsWith( 'dynamic_schedule.'))
+              .filter(state => state.entity_id.startsWith( this._domaindot))
               .map(state => ({
-                  'entid'  : state.entity_id,
+                  'entid'  : state.entity_id.replace( this._domaindot, ''),
                   'name'   : Object.hasOwn(state,'attributes') && state.attributes.friendly_name ? state.attributes.friendly_name : state.entity_id,
                   'edit' : Boolean( Object.hasOwn(state,'attributes') && state.attributes.editable)
                   }))
@@ -587,7 +586,6 @@ class DynamicSchedulePanel extends HTMLElement {
       </div>
 
       `;
-    console.log( this.shadowRoot.innerHTML );
   }
 
 }
