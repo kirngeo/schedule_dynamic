@@ -265,9 +265,9 @@ class DynamicSchedulePanel extends HTMLElement {
         console.log('_scheduleList', this._scheduleList);
 
         schedselHtml += `<select id="schedule_sel_entid"`
-        for( ent :: this._scheduleList) {
+        this._scheduleList.forEach( ent => {
             schedselHtml += `<option>${ent.name}</option>`;
-        }
+        });
         schedselHtml += `</select>`;
         console.log('schedselHtml', schedselHtml );
     }
