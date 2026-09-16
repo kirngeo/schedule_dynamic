@@ -186,7 +186,7 @@ class DynamicSchedulePanel extends HTMLElement {
   _showEntid( entid ) {
     console.log( 'showEntid', entid );
     console.log( '_scheduleList', this._scheduleList );
-    const ent = this._scheduleList.filter( entry => {entry.entid == entid} );
+    const ent = this._scheduleList.filter( entry => entry.entid === entid );
     console.log( 'ent', ent );
     if (ent.length === 1) {
       this._activeSchedule = ent[1];
