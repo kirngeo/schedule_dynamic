@@ -184,7 +184,10 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   _showEntid( entid ) {
-    const ent = this._scheduleList.filter( entry => entry.entid == entid );
+    console.log( 'showEntid', entid );
+    console.log( '_scheduleList', this._scheduleList );
+    const ent = this._scheduleList.filter( entry => {entry.entid == entid} );
+    console.log( 'ent', ent );
     if (ent.length === 1) {
       this._activeSchedule = ent[1];
       this.render();
@@ -235,7 +238,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   async fetchScheduleDetails() {
      // console.log( 'fetchScheduleDetails entry' )
- //     try {
+      try {
           this._scheduleList = Object.values(this._hass.states)
               .filter(state => state.entity_id.startsWith( this._domaindot))
               .map(state => ({
@@ -265,11 +268,11 @@ class DynamicSchedulePanel extends HTMLElement {
            //   console.log( 'response', response.response );
               this.render(); // Re-render with real details
           }
-/*
+
       } catch (err) {
           console.log("Could not fetch detailed schedule blocks.", err);
       }
-      */
+
   }
 
   render() {
