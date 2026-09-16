@@ -1,8 +1,10 @@
+/*
 try {
     import 'https://ka-f.webawesome.com/webawesome@3.12.0/components/select/select.js';
 } catch (e) {
     console.log(e);
 }
+*/
 
 class Subschedule extends HTMLElement {
 }
