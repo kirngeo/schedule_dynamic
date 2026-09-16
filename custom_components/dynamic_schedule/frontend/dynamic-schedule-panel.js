@@ -1,14 +1,16 @@
-/*
-//import { css, html, LitElement, nothing } from "lit";
-import {
-  LitElement,
-  html,
-  css,
-} from "https://unpkg.com/lit-element@2.4.0/lit-element.js?module";
-*/
+try {
+    import 'https://ka-f.webawesome.com/webawesome@3.12.0/components/select/select.js';
+} catch (e) {
+    console.log(e);
+}
+
+class Subschedule extends HTMLElement {
+}
+
+class Transition extends HTMLElement {
+}
 
 class DynamicSchedulePanel extends HTMLElement {
-//class DynamicSchedulePanel extends LitElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -51,28 +53,37 @@ class DynamicSchedulePanel extends HTMLElement {
   _onClick(e) {
       console.log('_onClick', e );
 
-      const newBtn = e.target.closest('#new-schedule-btn');
-      if (newBtn) {
+      let clicked = null;
+      let clicked2 = null;
+
+      clicked = e.target.closest('#new-schedule-btn');
+      if (clicked) {
           e.preventDefault();
           this._openNewScheduleModal();
           return;
       }
 
-      const cancelBtn = e.target.closest('#modal-cancel-btn');
-      const closeBtn = e.target.closest('#modal-close-btn');
-      if (cancelBtn || closeBtn) {
+      clicked  = e.target.closest('#modal-cancel-btn');
+      clicked2 = e.target.closest('#modal-close-btn');
+      if (clicked || clicked2) {
           e.preventDefault();
           this._closeModal();
           return;
       }
 
-      const testBtn = e.target.closest('#modal-test-btn');
-      if (testBtn) {
+      clicked = e.target.closest('#modal-test-btn');
+      if (clicked) {
           e.preventDefault();
           const iconBool = this.shadowRoot.getElementById('schedule-bool');
           console.log('iconBool', iconBool);
           console.log('iconBool.checked', iconBool.checked);
           return;
+      }
+
+      clicked = e.target.closest( '#schedule-sel-entid");
+      if (clicked) {
+          e.preventDefault();
+          console.log('selected', clicked);
       }
 
       if (e.target.id === 'schedule-modal') {
@@ -248,29 +259,14 @@ class DynamicSchedulePanel extends HTMLElement {
     let contentHtml = 'Hello World';
     let schedselHtml = '';
 
-    if (false && this._scheduleList.length > 0) {
+    if (this._scheduleList.length > 0) {
         console.log('_scheduleList', this._scheduleList);
 
-     //   const options: HaSelectOption[] = this._scheduleList.map(
-        const options = this._scheduleList.map(
-                  ent => ({
-                      value: ent.name,
-                      label: ent.entid
-                  })
-              );
-        console.log('options', options);
-
-        schedselHtml = `
-          <ha-select
-              .value="dyn sch tet1"
-              .options=${this._scheduleList.map(
-                  ent => ({
-                      value: ent.name,
-                      label: ent.entid
-                  })
-              )}
-          ></ha-select>
-          `;
+        schedselHtml l+= `<select id="schedule_sel_entid"`
+        for( ent :: this._scheduleList) {
+            schedselHtml += `<option>${ent.name}</option>`
+        schedselHtml += `</select>`
+        }
         console.log('schedselHtml', schedselHtml );
     }
   
@@ -506,15 +502,6 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
           <div class="zoom-controls">
               ${schedselHtml}
-          <ha-select
-              .value="dyn sch tet1"
-              .options=${this._scheduleList.map(
-                  ent => ({
-                      value: ent.name,
-                      label: ent.entid
-                  })
-              )}
-          ></ha-select>
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
               </button>
@@ -603,5 +590,13 @@ class DynamicSchedulePanel extends HTMLElement {
 
 if (!customElements.get('dynamic-schedule-panel')) {
     customElements.define('dynamic-schedule-panel', DynamicSchedulePanel);
+}
+
+if (!customElements.get('ds-subschedule')) {
+    customElements.define('ds-subschedule', Subschedule);
+}
+
+if (!customElements.get('ds-transition')) {
+    customElements.define('ds-transition', Transition);
 }
 
