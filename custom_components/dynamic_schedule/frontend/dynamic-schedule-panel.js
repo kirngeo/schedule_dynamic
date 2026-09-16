@@ -82,7 +82,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      clicked = e.target.closest( '#schedule-sel-entid");
+      clicked = e.target.closest( '#schedule-sel-entid');
       if (clicked) {
           e.preventDefault();
           console.log('selected', clicked);
