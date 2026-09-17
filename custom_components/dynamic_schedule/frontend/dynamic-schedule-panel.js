@@ -670,7 +670,7 @@ class DynamicSchedulePanel extends HTMLElement {
   ['dynamic-schedule-panel', DynamicSchedulePanel],
   ['ds-subschedule', Subschedule],
   ['ds-transition', Transition],
-].forEach( (el, cls) => if (!customElements.get(el)) {customElements.define(el, cls);} );
+].forEach( (el, cls) => (if (!customElements.get(el)) {customElements.define(el, cls);}) );
 
 /*
 if (!customElements.get('dynamic-schedule-panel')) {
