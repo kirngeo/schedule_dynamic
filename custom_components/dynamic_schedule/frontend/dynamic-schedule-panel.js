@@ -735,22 +735,22 @@ class DynamicSchedulePanel extends HTMLElement {
 
 }
 
-[
-  ['dynamic-schedule-panel', DynamicSchedulePanel],
-  ['ds-subschedule', Subschedule],
-  ['ds-transition', Transition],
-].forEach( (el, cls) => {if (!customElements.get(el)) {customElements.define(el, cls);}} );
+if (false) {
+    [
+      ['dynamic-schedule-panel', DynamicSchedulePanel],
+      ['ds-subschedule', Subschedule],
+      ['ds-transition', Transition],
+    ].forEach( (el, cls) => {if (!customElements.get(el)) {customElements.define(el, cls);}} );
+} else {
+    if (!customElements.get('dynamic-schedule-panel')) {
+        customElements.define('dynamic-schedule-panel', DynamicSchedulePanel);
+    }
 
-if (!customElements.get('dynamic-schedule-panel')) {
-    customElements.define('dynamic-schedule-panel', DynamicSchedulePanel);
+    if (!customElements.get('ds-subschedule')) {
+        customElements.define('ds-subschedule', Subschedule);
+    }
+
+    if (!customElements.get('ds-transition')) {
+        customElements.define('ds-transition', Transition);
+    }
 }
-
-if (!customElements.get('ds-subschedule')) {
-    customElements.define('ds-subschedule', Subschedule);
-}
-
-if (!customElements.get('ds-transition')) {
-    customElements.define('ds-transition', Transition);
-}
-
-
