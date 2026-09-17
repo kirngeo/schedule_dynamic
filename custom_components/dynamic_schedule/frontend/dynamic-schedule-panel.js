@@ -313,6 +313,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
     let contentHtml = '';
     let schedselHtml = '';
+    let subsched_names = [];
+    let subscheds = {};
 
     if (this._scheduleList.length > 0) {
 
@@ -331,8 +333,8 @@ class DynamicSchedulePanel extends HTMLElement {
     if (this._activeSchedule !== null) {
       let scheduleConfig = this._scheduleDetails[ this._domaindot + this._activeSchedule.entid ];
       console.log( 'scheduleConfig', this._domaindot + this._activeSchedule.entid, scheduleConfig);
-      let subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
-      let subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
+      subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
+      subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
       contentHtml += `<div>${JSON.stringify( this._activeSchedule, null, "  " )}</div>`;
  //     contentHtml += `<div><pre>${JSON.stringify( this._scheduleDetails, null, "  " )}</pre></div>`;
       contentHtml += `<div>scheduleConfig<pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
