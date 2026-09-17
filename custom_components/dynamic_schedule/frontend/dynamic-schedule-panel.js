@@ -346,7 +346,20 @@ class DynamicSchedulePanel extends HTMLElement {
 
     // subschedule columns
     let subschedHtml = '';
-    
+
+    // Time Gutter (Y-Axis)
+    const timeGutterHtml = `
+        <div class="time-gutter">
+            ${Array.from({length: 24}).map((_, i) => `
+                <div class="time-slot"><span>${i.toString().padStart(2, '0')}:00</span></div>
+            `).join('')}
+        </div>
+    `;
+
+    const subschedNamesHtml = subsched_names.map((sub, inx) =} `
+      <div class="sub-header">${sub}</div>
+    `).join('');
+
     this.shadowRoot.innerHTML = `
       <style>
         :host {
@@ -415,6 +428,46 @@ class DynamicSchedulePanel extends HTMLElement {
         .content {
             max-width: 1400px;
             margin: 0 auto;
+        }
+
+        .sub-headers {
+            display: flex;
+            flex: 1;
+            min-width: 700px;
+        }
+
+        .sub-header {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--secondary-text-color);
+            border-right: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+            background-color: var(--secondary-background-color);
+            letter-spacing: 0.5px;
+        }
+
+        .sub-header.today {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .time-gutter-header {
+            width: 60px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+            background-color: var(--secondary-background-color);
+        }
+
+        .time-gutter {
+            width: 60px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+            background-color: var(--card-background-color);
+            position: sticky;
+            left: 0;
+            z-index: 10;
         }
 
         /* Modal Overlay */
@@ -592,11 +645,24 @@ class DynamicSchedulePanel extends HTMLElement {
       </div>
 
       <div class="content">
+        <ha-card class="all-subschedules">
+          <div>
+            <div class="sub-header">
+              <div class="time-gutter-header"></div>
+              <div class="sub-headers>
+                 ${subschedNamesHtml}
+              </div>
+            </div>
+            <div>
+              ${timeGutterHtml}
+              <div class="sub-columns">
+                 columns of subschedules here
+              <./div>
+            <div>
+          </div>
+        </ha-card>
         <ha-card class="schedule-details">
           ${contentHtml}
-        </ha-card>
-        <ha-card class="all-subschedules">
-          subschedules here
         </ha-card>
       </div>
 
@@ -669,13 +735,11 @@ class DynamicSchedulePanel extends HTMLElement {
 
 }
 
-/*
 [
   ['dynamic-schedule-panel', DynamicSchedulePanel],
   ['ds-subschedule', Subschedule],
   ['ds-transition', Transition],
-].forEach( (el, cls) => (if (!customElements.get(el)) {customElements.define(el, cls);}) );
-*/
+].forEach( (el, cls) => {if (!customElements.get(el)) {customElements.define(el, cls);}} );
 
 if (!customElements.get('dynamic-schedule-panel')) {
     customElements.define('dynamic-schedule-panel', DynamicSchedulePanel);
