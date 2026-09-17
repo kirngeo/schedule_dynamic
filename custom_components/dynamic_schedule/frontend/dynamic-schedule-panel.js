@@ -330,11 +330,12 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._activeSchedule !== null) {
       let scheduleConfig = this._scheduleDetails[ self._domaindot + this._activeSchedule.entid ];
-      let subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
-      let subsched_names = subscheds.keys();
+      console.log( 'scheduleConfig', self._domaindot + this._activeSchedule.entid, scheduleConfig);
+ //     let subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
+ //     let subsched_names = subscheds.keys();
       contentHtml += `<div>${JSON.stringify( this._activeSchedule, null, "  " )}</div>`;
       contentHtml += `<div><pre>${JSON.stringify( this._scheduleDetails, null, "  " )}</pre></div>`;
-      contentHtml += `<div><pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
+      contentHtml += `<div><pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
     } else if (this._scheduleList.length > 0) {
       contentHtml = 'please select a dynamic schedule';
     } else {
