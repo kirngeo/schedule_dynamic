@@ -273,8 +273,8 @@ class DynamicSchedulePanel extends HTMLElement {
               return_response: true
           });
           
-      //    console.log('response to  get_schedule', this._scheduleList.map( a=>a.entid) );
-      //    console.log( response );
+          console.log('response to  get_schedule', this._scheduleList.map( a=>a.entid) );
+          console.log( response );
 
           if (response && response.response) {
               // The response is keyed by entity_id: { 'schedule.my_schedule': { monday: [...], ... } }
@@ -304,7 +304,7 @@ class DynamicSchedulePanel extends HTMLElement {
     }
 
     if (this._activeSchedule !== null) {
-        contentHtml += `<div><pre>${JSON.stringify( this._activeSchedule, null, "  " )}</pre></div>`;
+        contentHtml += `<div>${JSON.stringify( this._activeSchedule, null, "  " )}</div>`;
         contentHtml += `<div><pre>${JSON.stringify( this._scheduleDetails, null, "  " )}</pre></div>`;
     } else if (this._scheduleList.length > 0) {
         contentHtml = 'please select a dynamic schedule';
