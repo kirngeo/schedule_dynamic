@@ -356,7 +356,7 @@ class DynamicSchedulePanel extends HTMLElement {
         </div>
     `;
 
-    const subschedNamesHtml = subsched_names.map((sub, inx) =} `
+    const subschedNamesHtml = subsched_names.map((sub, inx) => `
       <div class="sub-header">${sub}</div>
     `).join('');
 
