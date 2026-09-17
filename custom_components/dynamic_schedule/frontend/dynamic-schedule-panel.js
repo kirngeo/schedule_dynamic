@@ -301,7 +301,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
           console.log('fetchScheduleDetails success');
       } catch (err) {
-          this._hasFetchedDetails = false;
+       //   this._hasFetchedDetails = false;
           console.log("Could not fetch detailed schedule blocks.", err);
       }
 
