@@ -254,6 +254,7 @@ class DynamicSchedulePanel extends HTMLElement {
      // console.log( 'fetchScheduleDetails entry' )
       try {
           let parms2 = {nothing: 0};
+          let response = null;
           this._scheduleList = Object.values(this._hass.states)
               .filter(state => state.entity_id.startsWith( this._domaindot))
               .map(state => ({
@@ -276,7 +277,7 @@ class DynamicSchedulePanel extends HTMLElement {
               return_response: true
           };
           try {
-            const response = await this._hass.connection.sendMessagePromise(parms2);
+            response = await this._hass.connection.sendMessagePromise(parms2);
               /*
           const response = await this._hass.connection.sendMessagePromise({
               type: 'call_service',
