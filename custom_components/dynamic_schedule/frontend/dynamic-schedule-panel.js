@@ -253,6 +253,7 @@ class DynamicSchedulePanel extends HTMLElement {
   async fetchScheduleDetails() {
      // console.log( 'fetchScheduleDetails entry' )
       try {
+          let parms2 = {nothing: 0};
           this._scheduleList = Object.values(this._hass.states)
               .filter(state => state.entity_id.startsWith( this._domaindot))
               .map(state => ({
@@ -264,16 +265,16 @@ class DynamicSchedulePanel extends HTMLElement {
 
           if (this._scheduleList.length === 0) return;
 
-          try {
           // Fetch the configured time ranges directly using the service
-            let parms = {
+          parms2 = {
               type: 'call_service',
               domain: this._domain,
               service: 'get_schedule',
               target: { entity_id: this._scheduleList.map( a => a.entid ) },
               return_response: true
-            };
-            const response = await this._hass.connection.sendMessagePromise(parms);
+          };
+          try {
+            const response = await this._hass.connection.sendMessagePromise(parms2);
               /*
           const response = await this._hass.connection.sendMessagePromise({
               type: 'call_service',
@@ -284,7 +285,7 @@ class DynamicSchedulePanel extends HTMLElement {
           });
           */
           } catch(e) {
-              console.log( 'call_service error', parms, e);
+              console.log( 'call_service error', parms2, e);
               throw new Error( 'urg' );
           }
           
