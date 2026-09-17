@@ -204,6 +204,7 @@ class DynamicSchedulePanel extends HTMLElement {
       } else {
         this._activeSchedule = null;
       }
+    }
 
     this.render();
 
