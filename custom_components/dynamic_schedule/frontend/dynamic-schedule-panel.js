@@ -329,8 +329,8 @@ class DynamicSchedulePanel extends HTMLElement {
     }
 
     if (this._activeSchedule !== null) {
-      let scheduleConfig = this._scheduleDetails[ self._domaindot + this._activeSchedule.entid ];
-      console.log( 'scheduleConfig', self._domaindot + this._activeSchedule.entid, scheduleConfig);
+      let scheduleConfig = this._scheduleDetails[ this._domaindot + this._activeSchedule.entid ];
+      console.log( 'scheduleConfig', this._domaindot + this._activeSchedule.entid, scheduleConfig);
  //     let subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
  //     let subsched_names = subscheds.keys();
       contentHtml += `<div>${JSON.stringify( this._activeSchedule, null, "  " )}</div>`;
