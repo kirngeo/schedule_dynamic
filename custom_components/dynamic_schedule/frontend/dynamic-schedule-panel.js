@@ -193,13 +193,20 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   _showEntid( entid ) {
-    const ent = this._scheduleList.filter( entry => entry.entid === entid );
-    if (ent.length === 1) {
-      this._activeSchedule = ent[0];
-      this.render();
+    if (this._scheduleList.length === 0) {
+        this._activeSchedule = ent[0];
+    } else if (this._scheduleList.length === 1) {
+        this._activeSchedule = null;
     } else {
-      this._activeSchedule = null;
-    }
+      const ent = this._scheduleList.filter( entry => entry.entid === entid );
+      if (ent.length === 1) {
+        this._activeSchedule = ent[0];
+      } else {
+        this._activeSchedule = null;
+      }
+
+    this.render();
+
   }
 
   set hass(hass) {
@@ -296,13 +303,17 @@ class DynamicSchedulePanel extends HTMLElement {
     }
 
     if (this._activeSchedule !== null) {
-        contentHtml = JSON.stringify( this._activeSchedule, null, "  " );
+        contentHtml += `<div><pre>${JSON.stringify( this._activeSchedule, null, "  " )}</pre></div>`;
+        contentHtml += `<div><pre>${JSON.stringify( this._scheduleDetails, null, "  " )}</pre></div>`;
     } else if (this._scheduleList.length > 0) {
         contentHtml = 'please select a dynamic schedule';
     } else {
         contentHtml = 'no dynamic schedules exist yet';
     }
-  
+
+    // subschedule columns
+    let subschedHtml = '';
+    
     this.shadowRoot.innerHTML = `
       <style>
         :host {
@@ -548,7 +559,12 @@ class DynamicSchedulePanel extends HTMLElement {
       </div>
 
       <div class="content">
+        <ha-card class="schedule-details">
           ${contentHtml}
+        </ha-card>
+        <ha-card class="all-subschedules">
+          subschedules here
+        </ha-card>
       </div>
 
       <div id="schedule-modal" class="modal-overlay">
