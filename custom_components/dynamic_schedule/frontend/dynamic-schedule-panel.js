@@ -301,6 +301,11 @@ class DynamicSchedulePanel extends HTMLElement {
             schedselHtml += `<option ${((this._activeSchedule !== null) && (ent.entid === this._activeSchedule.entid)) ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
         });
         schedselHtml += `</select>`;
+
+        if (this._activeSchedule === null) {
+            this._activeSchedule = this._scheduleList[0];
+        }
+
     }
 
     if (this._activeSchedule !== null) {
