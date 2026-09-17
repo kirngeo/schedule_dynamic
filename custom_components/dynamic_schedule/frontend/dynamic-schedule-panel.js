@@ -271,7 +271,8 @@ class DynamicSchedulePanel extends HTMLElement {
               domain: this._domain,
               service: 'get_schedule',
          //     target: { entity_id: this._scheduleList.map( a => a.entid ) },
-              target: { entity: this._scheduleList.map( a => a.entid ) },
+         //     target: { entity: this._scheduleList.map( a => a.entid ) },
+              target: { entity_id: 'all' ) },
               return_response: true
           };
           try {
