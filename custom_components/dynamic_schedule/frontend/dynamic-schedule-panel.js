@@ -272,7 +272,6 @@ class DynamicSchedulePanel extends HTMLElement {
               domain: this._domain,
               service: 'get_schedule',
          //     target: { entity_id: this._scheduleList.map( a => a.entid ) },
-         //     target: { entity: this._scheduleList.map( a => a.entid ) },
               target: { entity_id: 'all' },
               return_response: true
           };
@@ -317,25 +316,29 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._scheduleList.length > 0) {
 
-        schedselHtml += `<select class="icon-btn" id="schedule-sel-entid"`
-        this._scheduleList.forEach( ent => {
-            schedselHtml += `<option ${((this._activeSchedule !== null) && (ent.entid === this._activeSchedule.entid)) ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
+      schedselHtml += `<select class="icon-btn" id="schedule-sel-entid"`
+      this._scheduleList.forEach( ent => {
+        schedselHtml += `<option ${((this._activeSchedule !== null) && (ent.entid === this._activeSchedule.entid)) ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
         });
-        schedselHtml += `</select>`;
+      schedselHtml += `</select>`;
 
-        if (this._activeSchedule === null) {
-            this._activeSchedule = this._scheduleList[0];
-        }
+      if (this._activeSchedule === null) {
+        this._activeSchedule = this._scheduleList[0];
+      }
 
     }
 
     if (this._activeSchedule !== null) {
-        contentHtml += `<div>${JSON.stringify( this._activeSchedule, null, "  " )}</div>`;
-        contentHtml += `<div><pre>${JSON.stringify( this._scheduleDetails, null, "  " )}</pre></div>`;
+      let scheduleConfig = this._scheduleDetails[ self._domaindot + this._activeSchedule.entid ];
+      let subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
+      let subsched_names = subscheds.keys();
+      contentHtml += `<div>${JSON.stringify( this._activeSchedule, null, "  " )}</div>`;
+      contentHtml += `<div><pre>${JSON.stringify( this._scheduleDetails, null, "  " )}</pre></div>`;
+      contentHtml += `<div><pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
     } else if (this._scheduleList.length > 0) {
-        contentHtml = 'please select a dynamic schedule';
+      contentHtml = 'please select a dynamic schedule';
     } else {
-        contentHtml = 'no dynamic schedules exist yet';
+      contentHtml = 'no dynamic schedules exist yet';
     }
 
     // subschedule columns
@@ -663,6 +666,13 @@ class DynamicSchedulePanel extends HTMLElement {
 
 }
 
+[
+  ['dynamic-schedule-panel', DynamicSchedulePanel],
+  ['ds-subschedule', Subschedule],
+  ['ds-transition', Transition],
+].forEach( (el, cls) => if (!customElements.get(el)) {customElements.define(el, cls);} );
+
+/*
 if (!customElements.get('dynamic-schedule-panel')) {
     customElements.define('dynamic-schedule-panel', DynamicSchedulePanel);
 }
@@ -674,4 +684,5 @@ if (!customElements.get('ds-subschedule')) {
 if (!customElements.get('ds-transition')) {
     customElements.define('ds-transition', Transition);
 }
+*/
 
