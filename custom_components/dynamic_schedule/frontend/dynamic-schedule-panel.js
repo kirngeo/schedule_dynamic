@@ -264,7 +264,17 @@ class DynamicSchedulePanel extends HTMLElement {
 
           if (this._scheduleList.length === 0) return;
 
+          try {
           // Fetch the configured time ranges directly using the service
+            let parms = {
+              type: 'call_service',
+              domain: this._domain,
+              service: 'get_schedule',
+              target: { entity_id: this._scheduleList.map( a => a.entid ) },
+              return_response: true
+            };
+            const response = await this._hass.connection.sendMessagePromise(parms);
+              /*
           const response = await this._hass.connection.sendMessagePromise({
               type: 'call_service',
               domain: this._domain,
@@ -272,6 +282,11 @@ class DynamicSchedulePanel extends HTMLElement {
               target: { entity_id: this._scheduleList.map( a => a.entid ) },
               return_response: true
           });
+          */
+          } catch(e) {
+              console.log( 'call_service error', parms, e);
+              throw new Error( 'urg' );
+          }
           
           console.log('response to  get_schedule', this._scheduleList.map( a=>a.entid) );
           console.log( response );
@@ -283,7 +298,9 @@ class DynamicSchedulePanel extends HTMLElement {
               this.render(); // Re-render with real details
           }
 
+          console.log('fetchScheduleDetails success');
       } catch (err) {
+          this._hasFetchedDetails = false;
           console.log("Could not fetch detailed schedule blocks.", err);
       }
 
