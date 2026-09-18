@@ -388,7 +388,7 @@ class DynamicSchedulePanel extends HTMLElement {
               ${contentHtml}
             </ha-card>
           </div>
-      `:
+      `;
 
     this.shadowRoot.innerHTML = `
       <style>
