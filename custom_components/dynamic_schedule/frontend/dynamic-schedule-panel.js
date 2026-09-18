@@ -373,7 +373,7 @@ class DynamicSchedulePanel extends HTMLElement {
         <ha-card class="all-subschedules">
           <div>
             <div class="sub-header">
-              <div class="time-gutter-header"></div>
+              <div class="time-gutter-header">hdr</div>
               <div class="sub-headers>
                  ${subschedNamesHtml}
               </div>
@@ -751,7 +751,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
 }
 
-if (false) {
+if (true) {
     [
       ['dynamic-schedule-panel', DynamicSchedulePanel],
       ['ds-subschedule', Subschedule],
