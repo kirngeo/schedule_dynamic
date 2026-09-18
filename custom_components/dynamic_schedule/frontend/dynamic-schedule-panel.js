@@ -362,6 +362,34 @@ class DynamicSchedulePanel extends HTMLElement {
       <div class="sub-header">${sub}</div>
     `).join('');
 
+    const allContentHtml = (this._activeSchedule === null) 
+        ?
+        ''
+        :
+        `
+          <div class="content">
+            <ha-card class="all-subschedules">
+              <div>
+                <div class="sub-header">
+                  <div class="time-gutter-header"></div>
+                  <div class="sub-headers>
+                     ${subschedNamesHtml}
+                  </div>
+                </div>
+                <div>
+                  ${timeGutterHtml}
+                  <div class="sub-columns">
+                     columns of subschedules here
+                  </div>
+                <div>
+              </div>
+            </ha-card>
+            <ha-card class="schedule-details">
+              ${contentHtml}
+            </ha-card>
+          </div>
+      `:
+
     this.shadowRoot.innerHTML = `
       <style>
         :host {
@@ -646,27 +674,7 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
       </div>
 
-      <div class="content">
-        <ha-card class="all-subschedules">
-          <div>
-            <div class="sub-header">
-              <div class="time-gutter-header"></div>
-              <div class="sub-headers>
-                 ${subschedNamesHtml}
-              </div>
-            </div>
-            <div>
-              ${timeGutterHtml}
-              <div class="sub-columns">
-                 columns of subschedules here
-              <./div>
-            <div>
-          </div>
-        </ha-card>
-        <ha-card class="schedule-details">
-          ${contentHtml}
-        </ha-card>
-      </div>
+      ${allContentHtml}
 
       <div id="schedule-modal" class="modal-overlay">
           <div class="modal-content">
