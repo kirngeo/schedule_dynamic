@@ -80,6 +80,8 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('#new-schedule-btn');
       if (clicked) {
           e.preventDefault();
+          const iconBool = this.shadowRoot.getElementById('schedule-bool');
+          if (iconBool) iconBool.checked = false;
           this._openNewScheduleModal();
           return;
       }
@@ -721,7 +723,6 @@ class DynamicSchedulePanel extends HTMLElement {
                           <span slot="description">entity states will be boolean</span>
                           <ha-switch
                             id="schedule-bool"
-                            checked=false
                           >
                           </ha-switch>
                       </ha-settings-row>
