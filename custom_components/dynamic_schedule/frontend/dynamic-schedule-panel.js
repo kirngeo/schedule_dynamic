@@ -404,6 +404,7 @@ class DynamicSchedulePanel extends HTMLElement {
               </button>
           </div>
       `;
+    }
 
     this.shadowRoot.innerHTML = `
       <style>
