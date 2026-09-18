@@ -320,7 +320,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._scheduleList.length > 0) {
 
-      schedselHtml += `<select class="icon-btn" id="schedule-sel-entid"`
+      schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
       this._scheduleList.forEach( ent => {
         schedselHtml += `<option ${((this._activeSchedule !== null) && (ent.entid === this._activeSchedule.entid)) ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
         });
