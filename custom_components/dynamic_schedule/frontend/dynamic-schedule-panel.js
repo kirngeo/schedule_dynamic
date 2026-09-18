@@ -196,9 +196,9 @@ class DynamicSchedulePanel extends HTMLElement {
 
   _showEntid( entid ) {
     if (this._scheduleList.length === 0) {
-        this._activeSchedule = ent[0];
-    } else if (this._scheduleList.length === 1) {
         this._activeSchedule = null;
+    } else if (this._scheduleList.length === 1) {
+        this._activeSchedule = this._scheduleList[0];
     } else {
       const ent = this._scheduleList.filter( entry => entry.entid === entid );
       if (ent.length === 1) {
