@@ -673,12 +673,12 @@ class DynamicSchedulePanel extends HTMLElement {
               Dynamic Schedules
           </div>
           <div class="zoom-controls">
+              ${schedselHtml}
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
               </button>
-              ${schedselHtml}
+              ${zoomHtml}
           </div>
-          ${zoomHtml}
       </div>
 
       ${allContentHtml}
