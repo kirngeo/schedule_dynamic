@@ -391,18 +391,12 @@ class DynamicSchedulePanel extends HTMLElement {
       `;
 
       zoomHtml = `
-          <div class="zoom-controls">
-              ${schedselHtml}
-              <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
-                  <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
-              </button>
-              <button class="icon-btn" onclick="this.getRootNode().host.zoomOut()" title="Zoom Out">
-                  <ha-icon icon="mdi:magnify-minus"></ha-icon>
-              </button>
-              <button class="icon-btn" onclick="this.getRootNode().host.zoomIn()" title="Zoom In">
-                  <ha-icon icon="mdi:magnify-plus"></ha-icon>
-              </button>
-          </div>
+          <button class="icon-btn" onclick="this.getRootNode().host.zoomOut()" title="Zoom Out">
+              <ha-icon icon="mdi:magnify-minus"></ha-icon>
+          </button>
+          <button class="icon-btn" onclick="this.getRootNode().host.zoomIn()" title="Zoom In">
+              <ha-icon icon="mdi:magnify-plus"></ha-icon>
+          </button>
       `;
     }
 
@@ -675,6 +669,12 @@ class DynamicSchedulePanel extends HTMLElement {
           <div class="title">
               <ha-icon icon="mdi:table-clock"></ha-icon>
               Dynamic Schedules
+          </div>
+          <div class="zoom-controls">
+              <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
+                  <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
+              </button>
+              ${schedselHtml}
           </div>
           ${zoomHtml}
       </div>
