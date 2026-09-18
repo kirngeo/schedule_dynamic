@@ -418,6 +418,7 @@ class DynamicSchedulePanel extends HTMLElement {
 div {
    outline:1px blue solid;
    padding: 2px;
+   margin: 2px;
  }
 
         * {
