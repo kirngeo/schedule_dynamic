@@ -751,7 +751,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
 }
 
-if (true) {
+if (false) {
     [
       ['dynamic-schedule-panel', DynamicSchedulePanel],
       ['ds-subschedule', Subschedule],
