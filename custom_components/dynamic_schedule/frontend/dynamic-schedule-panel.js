@@ -415,8 +415,9 @@ class DynamicSchedulePanel extends HTMLElement {
           box-sizing: border-box;
         }
 
-*:hover {
+* {
    outline:1px blue solid;
+   padding: 1px;
  }
 
         * {
