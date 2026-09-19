@@ -174,18 +174,26 @@ class DynamicSchedulePanel extends HTMLElement {
   async _onCreateSubScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('subschedule-name');
       const name = nameInput ? nameInput.value.trim() : '';
+      const scheduleConfig = this._scheduleDetails[ this._domaindot + this._activeSchedule.entid ];
+      let sub_schedules = scheduleConfig.sub_schedules;
 
       if (name.length === 0) {
           this.showToast('subschedule name must be nonblank, with alphanumerics and underlines only');
           return;
       }
 
+      if ( Object.keys( sub_schedules ).indexOf( name ) >= 0 ) {
+          this.showToast('subschedule name must be unique within the schedule');
+          return;
+      }
+
       const in1 = {transitions: []};
       let in2 = {};
       in2[ name ] = in1;
+      sub_schedules[ name ] = {transitions: []};
   //    in2[ name ] = {};
       
-      const updatedConfig = {'sub_schedules' : in2 };
+      const updatedConfig = {'sub_schedules' : sub_schedules };
       
       try {
           let parms = {
