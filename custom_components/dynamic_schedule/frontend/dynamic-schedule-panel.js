@@ -396,7 +396,7 @@ class DynamicSchedulePanel extends HTMLElement {
               gh
             </td>
             <td id="sub-header">
-              ${subschedNameHtml}
+              ${subschedNamesHtml}
             </td>
            </tr>
            <tr>
