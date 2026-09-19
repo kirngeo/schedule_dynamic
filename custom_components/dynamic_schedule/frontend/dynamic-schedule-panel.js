@@ -183,6 +183,7 @@ class DynamicSchedulePanel extends HTMLElement {
       const in1 = {transitions: {}};
       let in2 = {};
       in2[ name ] = in1;
+      in2[ name ] = {};
       
       const updatedConfig = {'sub_schedules' : in2 };
       
