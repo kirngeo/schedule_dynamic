@@ -180,7 +180,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      const in1 = {transitions: ()};
+      const in1 = {transitions: []};
       let in2 = {};
       in2[ name ] = in1;
   //    in2[ name ] = {};
