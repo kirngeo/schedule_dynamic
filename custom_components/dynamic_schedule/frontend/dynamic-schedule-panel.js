@@ -193,13 +193,13 @@ class DynamicSchedulePanel extends HTMLElement {
       sub_schedules[ name ] = {transitions: []};
   //    in2[ name ] = {};
       
-      const updatedConfig = {'sub_schedules' : sub_schedules };
+   //   const updatedConfig = {'sub_schedules' : sub_schedules };
       
       try {
           let parms = {
               name: this._activeSchedule.entid,
               type: this._domain + '/update',
-              ...updatedConfig
+              sub_schedules : sub_schedules
           };
           parms[ this._domain + '_id' ] = this._activeSchedule.entid;
 
