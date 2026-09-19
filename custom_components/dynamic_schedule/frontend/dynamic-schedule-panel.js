@@ -527,7 +527,7 @@ table {
 
         .subs-ed-ctr {
             display: grid;
-            grid-template-columns: auto auto;
+            grid-template-columns: min-content auto;
         }
 
         .sub-headers {
