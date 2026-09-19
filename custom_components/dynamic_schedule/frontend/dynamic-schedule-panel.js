@@ -262,6 +262,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
   async fetchScriptDetails() {
       console.log( '_hass keys', Object.keys( this._hass ) );
+      console.log( 'connection', this._hass.connection );
+      return;
       console.log( 'config', this._hass.config );
       console.log( 'config keys', Object.keys( this._hass.config ) );
       console.log( 'config.components', this._hass.config.components );
@@ -353,7 +355,7 @@ class DynamicSchedulePanel extends HTMLElement {
       let scheduleConfig = this._scheduleDetails[ this._domaindot + this._activeSchedule.entid ];
       console.log( 'scheduleConfig', this._domaindot + this._activeSchedule.entid, scheduleConfig);
       subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
-      subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
+      subsched_names = JSON.toString( Object.keys(subscheds).sort((a,b) => a.localeCompare(b)) );
       contentHtml += `<div>${JSON.stringify( this._activeSchedule, null, "  " )}</div>`;
  //     contentHtml += `<div><pre>${JSON.stringify( this._scheduleDetails, null, "  " )}</pre></div>`;
       contentHtml += `<div>scheduleConfig<pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
@@ -388,6 +390,25 @@ class DynamicSchedulePanel extends HTMLElement {
       allContentHtml = `
       <div class="content">
         <ha-card class="all-subschedules">
+          <table>
+           <tr>
+            <td id="time-gutter-header">
+              gh
+            </td>
+            <td id="sub-header">
+              ${subschedNameHtml}
+            </td>
+           </tr>
+           <tr>
+            <td id="time-gutter">
+             ${timeGutterHtml}
+            </td>
+            <td id="subs">
+             subs
+            </td>
+           </tr>
+          </table>
+          <!--
           <div>
             <div class="sub-header">
               <div class="time-gutter-header">hdr</div>
@@ -402,6 +423,7 @@ class DynamicSchedulePanel extends HTMLElement {
               </div>
             <div>
           </div>
+          -->
         </ha-card>
         <ha-card class="schedule-details">
           ${contentHtml}
