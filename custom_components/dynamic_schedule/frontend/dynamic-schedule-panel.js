@@ -90,7 +90,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('#add-subschedule');
       if (clicked) {
           e.preventDefault();
-          //this._openNewScheduleModal();
+          this._openNewSubScheduleModal();
           console.log('add subschedule');
           return;
       }
@@ -140,6 +140,24 @@ class DynamicSchedulePanel extends HTMLElement {
 
   _closeModal() {
       const modal = this.shadowRoot.getElementById('schedule-modal');
+      if (modal) {
+          modal.classList.remove('open');
+      }
+  }
+
+  _openNewSubScheduleModal() {
+      const modal = this.shadowRoot.getElementById('subschedule-modal');
+      if (modal) {
+          // Reset form fields
+       //   this.shadowRoot.getElementById('schedule-name').value = '';
+       //   this.shadowRoot.getElementById('schedule-icon').value = 'mdi:table-clock';
+          
+          modal.classList.add('open');
+      }
+  }
+
+  _closeModal() {
+      const modal = this.shadowRoot.getElementById('subschedule-modal');
       if (modal) {
           modal.classList.remove('open');
       }
@@ -382,7 +400,7 @@ class DynamicSchedulePanel extends HTMLElement {
     // time gutter header 
     // 1) add a subschedule
     timeGutterHeaderHtml += `
-          <button id="add-subschedule" class="icon-btn" title="add a subschedule">
+          <button id="add-subschedule" class="icon-btn-small" title="add a subschedule">
               <ha-icon icon="mdi:plus"></ha-icon>
           </button>
     `;
@@ -515,6 +533,19 @@ div {
             cursor: pointer;
             padding: 8px;
             border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .icon-btn-small {
+            background: var(--secondary-background-color);
+            border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+            color: var(--primary-text-color);
+            cursor: pointer;
+       //     padding: 8px;
+       //     border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -755,12 +786,6 @@ div {
                   <button class="close-btn" id="modal-close-btn">&times;</button>
               </div>
               <form id="schedule-form" onsubmit="return false;">
-                <!--
-                  <div class="form-group">
-                      <label for="schedule-name">Name</label>
-                      <input type="text" id="schedule-name" required placeholder="e.g. Heating Schedule">
-                  </div>
-                -->
                   <div class="form-group">
                       <ha-settings-row>
                           <span slot="heading">Name</span>
@@ -792,16 +817,6 @@ div {
                           </ha-switch>
                       </ha-settings-row>
                   </div>
-                <!--
-                  <div class="form-group">
-                      <label for="schedule-icon">Icon</label>
-                      <input type="text" id="schedule-icon-old" value="mdi:table-clock" placeholder="mdi:table-clock">
-                  </div>
-                  <div class="form-group">
-                      <label for="schedule-bool">boolean</label>
-                      <input type="checkbox" id="schedule-bool-old" value="mdi:table-clock" placeholder="mdi:table-clock">
-                  </div>
-                -->
                   <div class="modal-footer">
                       <button type="button" class="btn secondary" id="modal-test-btn">Test</button>
                       <button type="button" class="btn secondary" id="modal-cancel-btn">Cancel</button>
@@ -810,6 +825,35 @@ div {
               </form>
           </div>
       </div>
+
+
+      <div id="subschedule-modal" class="modal-overlay">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2>Create New Dynamic Sub-chedule</h2>
+                  <button class="close-btn" id="modal-sub-close-btn">&times;</button>
+              </div>
+              <form id="schedule-form" onsubmit="return false;">
+                  <div class="form-group">
+                      <ha-settings-row>
+                          <span slot="heading">Sub-schedule name</span>
+                          <span slot="description"the name of the sub-schedule</span>
+                          <ha-input
+                            placeholder="e.g Wednesday"
+                            id="subschedule-name"
+                          >
+                          </ha-input>
+                      </ha-settings-row>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn secondary" id="modal-sub-test-btn">Test</button>
+                      <button type="button" class="btn secondary" id="modal-sub-cancel-btn">Cancel</button>
+                      <button type="submit" class="btn primary" id="modal-sub-submit-btn">Create Sub-chedule</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+
 
       `;
   }
