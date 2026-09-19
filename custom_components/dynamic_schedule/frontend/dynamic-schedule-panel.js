@@ -180,10 +180,10 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      const in1 = {transitions: {}};
+      const in1 = {transitions: ()};
       let in2 = {};
       in2[ name ] = in1;
-      in2[ name ] = {};
+  //    in2[ name ] = {};
       
       const updatedConfig = {'sub_schedules' : in2 };
       
@@ -896,7 +896,7 @@ div {
                   <div class="modal-footer">
                       <button type="button" class="btn secondary" id="modal-sub-test-btn">Test</button>
                       <button type="button" class="btn secondary" id="modal-sub-cancel-btn">Cancel</button>
-                      <button type="submit" class="btn primary" id="modal-sub-submit-btn">Create Sub-chedule</button>
+                      <button type="submit" class="btn primary" id="modal-sub-submit-btn">Create Sub-schedule</button>
                   </div>
               </form>
           </div>
