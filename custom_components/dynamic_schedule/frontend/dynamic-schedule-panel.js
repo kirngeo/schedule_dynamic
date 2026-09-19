@@ -450,7 +450,7 @@ class DynamicSchedulePanel extends HTMLElement {
     // time gutter header 
     // 1) add a subschedule
     timeGutterHeaderHtml += `
-          <button id="add-subschedule" class="icon-btn-small" title="add a subschedule">
+          <button style="font-size: 0.75em;" id="add-subschedule" class="icon-btn-small" title="add a subschedule">
               <ha-icon icon="mdi:plus"></ha-icon>
           </button>
     `;
@@ -483,7 +483,7 @@ class DynamicSchedulePanel extends HTMLElement {
       <div class="content">
         <ha-card class="all-subschedules">
           <div class="subs-ed-ctr">
-            <div id="time-gutter-header">
+            <div class="time-gutter-header">
              ${timeGutterHeaderHtml}
             </div>
             <div id="sub-header">
@@ -596,6 +596,11 @@ div {
             border-color: var(--primary-color);
         }
 
+        .time-gutter-header {
+            justify-content: flex-end;
+            align-items: center;
+        }
+
         .content {
             max-width: 1400px;
             margin: 0 auto;
@@ -634,7 +639,7 @@ div {
             border-bottom: 2px solid var(--primary-color);
         }
 
-        .time-gutter-header {
+        .Xtime-gutter-header {
             width: 60px;
             flex-shrink: 0;
             border-right: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
