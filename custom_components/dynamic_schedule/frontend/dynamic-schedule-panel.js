@@ -261,7 +261,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   async fetchScriptDetails() {
-      console.log( 'fetchScriptDetails', Object.keys( this._hass ) );
+      console.log( 'fetchScriptDetails', Object.keys( this._hass.config ) );
   }
 
 
