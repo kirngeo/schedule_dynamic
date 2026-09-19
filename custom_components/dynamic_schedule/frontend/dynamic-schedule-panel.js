@@ -118,10 +118,10 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      const submitBtn = e.target.closest('#modal-submit-btn');
-      if (submitBtn) {
+      clicked = e.target.closest('#modal-submit-btn');
+      if (clicked) {
           e.preventDefault();
-          this._onCreateScheduleSubmit();
+          this._onCreateSubScheduleSubmit();
           return;
       }
 
@@ -139,7 +139,11 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   _closeModal() {
-      const modal = this.shadowRoot.getElementById('schedule-modal');
+      let modal = this.shadowRoot.getElementById('schedule-modal');
+      if (modal) {
+          modal.classList.remove('open');
+      }
+      modal = this.shadowRoot.getElementById('subschedule-modal');
       if (modal) {
           modal.classList.remove('open');
       }
@@ -163,6 +167,40 @@ class DynamicSchedulePanel extends HTMLElement {
       }
   }
 
+  async _onCreateSubScheduleSubmit() {
+      const nameInput = this.shadowRoot.getElementById('subschedule-name');
+      const name - nameInput ? nameInput.value.trim() : '';
+
+      if (name.length === 0) {
+          this.showToast('subschedule name must be nonblank, with alphanumerics and underlines only');
+          return;
+      }
+
+      const updatedConfig = {'sub-schedules' : {name : {} };
+      
+      try {
+          const parms = {
+              type: this._domain + '/update',
+              item_id: this._activeSchedule.entid,
+              ...updatedConfig
+          };
+
+          console.log('parms', parms);
+
+          const returned = await this._hass.connection.sendMessagePromise(parms);
+          console.log('returned', returned );
+          
+          this.showToast(`sub-schedule "${name}" added successfully`);
+          this._closeModal();
+          this.fetchScheduleDetails();
+          this._showEntid( returned.id );
+      } catch (err) {
+          console.error("Failed to add sub-schedule.", err);
+          this.showToast(`Failed to add sub-schedule: ${err.message || 'Unknown error'}`);
+      }
+
+  }
+
   async _onCreateScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('schedule-name');
       const iconInput = this.shadowRoot.getElementById('schedule-icon');
@@ -176,7 +214,7 @@ class DynamicSchedulePanel extends HTMLElement {
           this.showToast('Please enter a dynamic schedule name');
           return;
       }
-      
+
       const updatedConfig = {};
       
       try {
@@ -830,7 +868,7 @@ div {
       <div id="subschedule-modal" class="modal-overlay">
           <div class="modal-content">
               <div class="modal-header">
-                  <h2>Create New Dynamic Sub-chedule</h2>
+                  <h2>Create New Sub-schedule</h2>
                   <button class="close-btn" id="modal-sub-close-btn">&times;</button>
               </div>
               <form id="schedule-form" onsubmit="return false;">
@@ -839,7 +877,7 @@ div {
                           <span slot="heading">Sub-schedule name</span>
                           <span slot="description"the name of the sub-schedule</span>
                           <ha-input
-                            placeholder="e.g Wednesday"
+                            placeholder="alphanumerics or underlines only"
                             id="subschedule-name"
                           >
                           </ha-input>
