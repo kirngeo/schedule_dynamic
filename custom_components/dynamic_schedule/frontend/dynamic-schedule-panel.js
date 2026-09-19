@@ -390,24 +390,20 @@ class DynamicSchedulePanel extends HTMLElement {
       allContentHtml = `
       <div class="content">
         <ha-card class="all-subschedules">
-          <table>
-           <tr>
-            <td id="time-gutter-header">
+          <div class="subs-ed-ctr">
+            <div id="time-gutter-header">
               gh
-            </td>
-            <td id="sub-header">
+            </div>
+            <div id="sub-header">
               names : ${subschedNamesHtml} : names
-            </td>
-           </tr>
-           <tr>
-            <td id="time-gutter">
+            </div>
+            <div id="time-gutter">
              ${timeGutterHtml}
-            </td>
-            <td id="subs">
+            </div>
+            <div id="subs">
              subs
-            </td>
-           </tr>
-          </table>
+            </div>
+          </div>
           <!--
           <div>
             <div class="sub-header">
@@ -527,6 +523,11 @@ table {
         .content {
             max-width: 1400px;
             margin: 0 auto;
+        }
+
+        .subs-ed-ctr {
+            display: grid;
+            grid-template-columns: auto auto;
         }
 
         .sub-headers {
