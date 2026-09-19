@@ -118,7 +118,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      clicked = e.target.closest('#modal-submit-btn');
+      clicked = e.target.closest('#modal-sub-submit-btn');
       if (clicked) {
           e.preventDefault();
           this._onCreateSubScheduleSubmit();
