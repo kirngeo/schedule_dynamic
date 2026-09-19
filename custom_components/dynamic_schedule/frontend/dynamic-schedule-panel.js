@@ -87,6 +87,14 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      clicked = e.target.closest('#add-subschedule');
+      if (clicked) {
+          e.preventDefault();
+          //this._openNewScheduleModal();
+          console.log('add subschedule');
+          return;
+      }
+
       clicked  = e.target.closest('#modal-cancel-btn');
       clicked2 = e.target.closest('#modal-close-btn');
       if (clicked || clicked2) {
@@ -336,6 +344,7 @@ class DynamicSchedulePanel extends HTMLElement {
     let schedselHtml = '';
     let subsched_names = [];
     let subscheds = {};
+    let timeGutterHeaderHtml = '';
 
     if (this._scheduleList.length > 0) {
 
@@ -370,6 +379,15 @@ class DynamicSchedulePanel extends HTMLElement {
     // subschedule columns
     let subschedHtml = '';
 
+    // time gutter header 
+    // 1) add a subschedule
+    timeGutterHeaderHtml += `
+          <button id="add-subschedule" class="icon-btn" title="add a subschedule">
+              <ha-icon icon="mdi:plus"></ha-icon>
+          </button>
+    `;
+
+
     // Time Gutter (Y-Axis)
     const timeGutterHtml = `
         <div class="time-gutter">
@@ -392,7 +410,7 @@ class DynamicSchedulePanel extends HTMLElement {
         <ha-card class="all-subschedules">
           <div class="subs-ed-ctr">
             <div id="time-gutter-header">
-              gh
+             ${timeGutterHeaderHtml}
             </div>
             <div id="sub-header">
               names : ${subschedNamesHtml} : names
