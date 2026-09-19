@@ -169,7 +169,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   async _onCreateSubScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('subschedule-name');
-      const name - nameInput ? nameInput.value.trim() : '';
+      const name = nameInput ? nameInput.value.trim() : '';
 
       if (name.length === 0) {
           this.showToast('subschedule name must be nonblank, with alphanumerics and underlines only');
