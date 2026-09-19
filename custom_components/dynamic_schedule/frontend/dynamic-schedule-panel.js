@@ -23,6 +23,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._scheduleList = [];
     this._automations = [];
     this._hasFetchedDetails = false;
+    this._hasFetchedScripts= false;
     this._zoomLevel = 0.5;
     this._dragState = null;
     this._wasDragging = false;
@@ -233,6 +234,13 @@ class DynamicSchedulePanel extends HTMLElement {
     }
 
     this.updateSchedules();
+
+    // Initial fetch of scripts which are eligible to be selectors
+    if (this._hass && !this._hasFetchedScripts) {
+        this._hasFetchedScripts = true;
+        this.fetchScriptDetails();
+    }
+
   }
 
   updateSchedules() {
@@ -251,6 +259,11 @@ class DynamicSchedulePanel extends HTMLElement {
       this.render();
     }
   }
+
+  async fetchScriptDetails() {
+      console.log( 'fetchScriptDetails', Object.keys( this._hass ) );
+  }
+
 
   async fetchScheduleDetails() {
      // console.log( 'fetchScheduleDetails entry' )
