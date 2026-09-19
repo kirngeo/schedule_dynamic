@@ -182,18 +182,12 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      if ( Object.keys( sub_schedules ).indexOf( name ) >= 0 ) {
+      if ( Object.keys( sub_schedules ).indexOf(name) >= 0 ) {
           this.showToast('subschedule name must be unique within the schedule');
           return;
       }
 
-      const in1 = {transitions: []};
-      let in2 = {};
-      in2[ name ] = in1;
       sub_schedules[ name ] = {transitions: []};
-  //    in2[ name ] = {};
-      
-   //   const updatedConfig = {'sub_schedules' : sub_schedules };
       
       try {
           let parms = {
@@ -471,9 +465,15 @@ class DynamicSchedulePanel extends HTMLElement {
         </div>
     `;
 
-    const subschedNamesHtml = subsched_names.map((sub, inx) => `
+    let subschedNamesHtml = subsched_names.map((sub, inx) => `
       <div class="sub-header">${sub}</div>
     `).join('');
+
+    subschedNamesHtml = `
+      <div class="sub-hrows">
+       ${subschedNamesHtml}
+      </div>
+      `;
 
     let allContentHtml = '';
     let zoomHtml = '';
@@ -487,7 +487,7 @@ class DynamicSchedulePanel extends HTMLElement {
              ${timeGutterHeaderHtml}
             </div>
             <div id="sub-header">
-              names : ${subschedNamesHtml} : names
+             ${subschedNamesHtml}
             </div>
             <div id="time-gutter">
              ${timeGutterHtml}
@@ -496,22 +496,6 @@ class DynamicSchedulePanel extends HTMLElement {
              subs
             </div>
           </div>
-          <!--
-          <div>
-            <div class="sub-header">
-              <div class="time-gutter-header">hdr</div>
-              <div class="sub-headers>
-                 ${subschedNamesHtml}
-              </div>
-            </div>
-            <div>
-              ${timeGutterHtml}
-              <div class="sub-columns">
-                 columns of subschedules here
-              </div>
-            <div>
-          </div>
-          -->
         </ha-card>
         <ha-card class="schedule-details">
           ${contentHtml}
@@ -617,6 +601,11 @@ div {
         .content {
             max-width: 1400px;
             margin: 0 auto;
+        }
+
+        .sub-hrows {
+            display: grid;
+            grid-template-columns: repeat(${subsched_names.length}, [col-start] 1fr);
         }
 
         .subs-ed-ctr {
