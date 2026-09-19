@@ -176,7 +176,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      const updatedConfig = {'sub-schedules' : {name : {} };
+      const updatedConfig = {'sub-schedules' : {name : {} }};
       
       try {
           const parms = {
