@@ -396,7 +396,7 @@ class DynamicSchedulePanel extends HTMLElement {
               gh
             </td>
             <td id="sub-header">
-              ${subschedNamesHtml}
+              names : ${subschedNamesHtml} : names
             </td>
            </tr>
            <tr>
@@ -456,6 +456,18 @@ class DynamicSchedulePanel extends HTMLElement {
 
 div {
    outline:1px blue solid;
+   padding: 2px;
+   margin: 2px;
+ }
+
+td {
+   outline:1px red dotted;
+   padding: 2px;
+   margin: 2px;
+ }
+
+table {
+   outline:1px green dashed;
    padding: 2px;
    margin: 2px;
  }
