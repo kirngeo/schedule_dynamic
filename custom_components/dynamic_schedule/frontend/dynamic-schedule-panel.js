@@ -77,6 +77,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
       let clicked = null;
       let clicked2 = null;
+      let clicked3 = null;
+      let clicked4 = null;
 
       clicked = e.target.closest('#new-schedule-btn');
       if (clicked) {
@@ -97,6 +99,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
       clicked  = e.target.closest('#modal-cancel-btn');
       clicked2 = e.target.closest('#modal-close-btn');
+      clicked3 = e.target.closest('#modal-sub-cancel-btn');
+      clicked4 = e.target.closest('#modal-sub-close-btn');
       if (clicked || clicked2) {
           e.preventDefault();
           this._closeModal();
