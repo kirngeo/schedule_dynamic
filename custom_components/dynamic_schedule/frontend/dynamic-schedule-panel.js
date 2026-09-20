@@ -363,31 +363,19 @@ class DynamicSchedulePanel extends HTMLElement {
           const promises = scriptEntities.map(async (entityId) => {
               try {
                   const stateObj = this._hass.states[entityId];
-                  console.log(`[Schedule Panel Debug] Requesting config for: ${entityId}`);
                   const response = await this._hass.connection.sendMessagePromise({
                       type: 'script/config',
                       entity_id: entityId
                   });
-                  console.log(`[Schedule Panel Debug] Response for ${entityId}:`, response);
                   if (response) {
                       const config = response.config || response.raw_config || response;
-                      console.log(`[Schedule Panel Debug] Resolved config for ${entityId}:`, config);
                       const sequence = config ? config.sequence : null;
                       if (sequence) {
                           if (( Array.isArray(sequence) ? sequence : [sequence])
                               .filter( (seq)=>{ return !!seq.response_variable} )
                               .length > 0) {
-                              this._eligibleScriptConfigs.push(config);
                               return config;
                           }
-/*
-                          return response;
-                          return {
-                              alias: stateObj.attributes.friendly_name || config.alias || entityId.split('.')[1],
-                              response_variable: true,
-                              state: stateObj.state
-                          };
-*/
                       }
                   }
               } catch (err) {
@@ -397,28 +385,16 @@ class DynamicSchedulePanel extends HTMLElement {
           });
 
           const results = await Promise.all(promises);
-          console.log( 'results', results );
-          const validScripts = results.filter(auto => auto !== null);
-          console.log("[Schedule Panel Debug] Successfully resolved configs for:", validScripts.map(a => a.alias));
+          this._eligibleScripts = results.filter(auto => auto !== null);
       } catch (err) {
           console.error("[Schedule Panel Debug] Global error in fetchScriptConfigss:", err);
       }
 
-      return;
-
-
-      console.log( '_hass keys', Object.keys( this._hass ) );
-      console.log( 'connection', this._hass.connection );
-      return;
-      console.log( 'config', this._hass.config );
-      console.log( 'config keys', Object.keys( this._hass.config ) );
-      console.log( 'config.components', this._hass.config.components );
-      console.log( 'config.config_source', this._hass.config.config_source );
+      console.log('_eligibleScripts', this._eligibleScripts);
   }
 
 
   async fetchScheduleConfigs() {
-     // console.log( 'fetchScheduleConfigs entry' )
       try {
           let parms2 = {nothing: 0};
           let response = null;
@@ -520,7 +496,7 @@ class DynamicSchedulePanel extends HTMLElement {
     // time gutter header 
     // 1) add a subschedule
     timeGutterHeaderHtml += `
-          <button style="font-size: 0.75em;" id="add-subschedule" class="icon-btn-small style="background-color:;"" title="add a subschedule">
+          <button style="font-size: 0.75em;" id="add-subschedule" class="XXicon-btn-small style="XXbackground-color:;"" title="add a subschedule">
               <ha-icon icon="mdi:plus"></ha-icon>
           </button>
     `;
