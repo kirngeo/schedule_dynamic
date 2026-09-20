@@ -130,6 +130,12 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      clicked = e.target.closest('#tester');
+      if (clicked) {
+          e.preventDefault();
+          return;
+      }
+
   }
 
   _openNewScheduleModal() {
@@ -299,6 +305,7 @@ class DynamicSchedulePanel extends HTMLElement {
     if (this._hass && !this._hasFetchedConfigs) {
         this._hasFetchedConfigs = true;
         this.fetchScheduleConfigs();
+        this.fetchScriptConfigs();
     } else if (this._hass && this._hasFetchedConfigs && oldHass) {
         // Detect if any schedule states changed (e.g. user edited a schedule in the dialog)
         const oldSchedules = Object.values(oldHass.states).filter(state => state.entity_id.startsWith( this._domaindot));
@@ -307,6 +314,14 @@ class DynamicSchedulePanel extends HTMLElement {
         // If the state objects differ (like last_updated changed), re-fetch the details
         if (JSON.stringify(oldSchedules) !== JSON.stringify(newSchedules)) {
             this.fetchScheduleConfigs();
+        }
+
+        // Detect if any script states changed or populated
+        const oldScripts = Object.values(oldHass.states).filter(state => state.entity_id.startsWith('script.'));
+        const newScripts = Object.values(this._hass.states).filter(state => state.entity_id.startsWith('script.'));
+        
+        if (JSON.stringify(oldScripts) !== JSON.stringify(newScripts)) {
+            this.fetchScriptConfigs();
         }
 
     }
@@ -340,7 +355,53 @@ class DynamicSchedulePanel extends HTMLElement {
     }
   }
 
-  async fetchScriptDetails() {
+  async fetchScriptConfigs() {
+      try {
+          const scriptEntities = Object.keys(this._hass.states).filter(id => id.startsWith('script.'));
+          const promises = scriptEntities.map(async (entityId) => {
+              try {
+                  const stateObj = this._hass.states[entityId];
+                  console.log(`[Schedule Panel Debug] Requesting config for: ${entityId}`);
+                  const response = await this._hass.connection.sendMessagePromise({
+                      type: 'script/config',
+                      entity_id: entityId
+                  });
+                  console.log(`[Schedule Panel Debug] Response for ${entityId}:`, response);
+                  if (response) {
+                      const config = response.config || response.raw_config || response;
+                      console.log(`[Schedule Panel Debug] Resolved config for ${entityId}:`, config);
+                      const rawTriggers = config ? (config.trigger || config.triggers) : null;
+                      if (config && rawTriggers) {
+                          return {
+                              alias: stateObj.attributes.friendly_name || config.alias || entityId.split('.')[1],
+                              trigger: rawTriggers,
+                              state: stateObj.state
+                          };
+                      } else {
+                          console.log(`[Schedule Panel Debug] Script ${entityId} does not have trigger/triggers in
+ config:`, config);
+                      }
+                  }
+              } catch (err) {
+                  console.error(`[Schedule Panel Debug] Failed to fetch config for ${entityId}:`, err);
+              }
+              return null;
+          });
+
+          const results = await Promise.all(promises);
+          const validScripts = results.filter(auto => auto !== null);
+          console.log("[Schedule Panel Debug] Successfully resolved configs for:", validScripts.map(a => a.alias));
+
+          const results = await Promise.all(promises);
+          const validScripts = results.filter(auto => auto !== null);
+          console.log("[Schedule Panel Debug] Successfully resolved configs for:", validScripts.map(a => a.alias));
+      } catch (err) {
+          console.error("[Schedule Panel Debug] Global error in fetchScriptConfigss:", err);
+      }
+
+      return;
+
+
       console.log( '_hass keys', Object.keys( this._hass ) );
       console.log( 'connection', this._hass.connection );
       return;
@@ -817,7 +878,7 @@ div {
       </style>
 
       <div class="header">
-          <div class="title">
+          <div class="title" id="tester">
               <ha-icon icon="mdi:table-clock"></ha-icon>
               Dynamic Schedules
           </div>
