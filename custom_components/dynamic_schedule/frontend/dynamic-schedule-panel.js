@@ -370,15 +370,18 @@ class DynamicSchedulePanel extends HTMLElement {
                   if (response) {
                       const config = response.config || response.raw_config || response;
                       console.log(`[Schedule Panel Debug] Resolved config for ${entityId}:`, config);
-                      const rawTriggers = config ? (config.trigger || config.triggers) : null;
-                      if (config && rawTriggers) {
+                      const sequence = config ? config.sequence : null;
+                      if (sequence) {
+                          let filt = ( Array.isArray(sequence) ? sequence : [sequence])
+                              .filter( (seq)=>{ seq.response_variable} ) ;
+                          console.log('filt', filt);
                           return {
                               alias: stateObj.attributes.friendly_name || config.alias || entityId.split('.')[1],
-                              trigger: rawTriggers,
+                              response_variable: true,
                               state: stateObj.state
                           };
                       } else {
-                          console.log(`[Schedule Panel Debug] Script ${entityId} does not have trigger/triggers in
+                          console.log(`[Schedule Panel Debug] Script ${entityId} does not have response_variable in
  config:`, config);
                       }
                   }
