@@ -67,7 +67,7 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           e.preventDefault();
           this.setShowingEntid( clicked.value );
-          if this._activeSchweduleOverview) {
+          if (this._activeSchweduleOverview) {
               this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
           return;
       }
