@@ -391,10 +391,6 @@ class DynamicSchedulePanel extends HTMLElement {
           const results = await Promise.all(promises);
           const validScripts = results.filter(auto => auto !== null);
           console.log("[Schedule Panel Debug] Successfully resolved configs for:", validScripts.map(a => a.alias));
-
-          const results = await Promise.all(promises);
-          const validScripts = results.filter(auto => auto !== null);
-          console.log("[Schedule Panel Debug] Successfully resolved configs for:", validScripts.map(a => a.alias));
       } catch (err) {
           console.error("[Schedule Panel Debug] Global error in fetchScriptConfigss:", err);
       }
