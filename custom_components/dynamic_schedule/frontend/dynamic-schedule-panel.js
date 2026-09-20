@@ -394,6 +394,7 @@ class DynamicSchedulePanel extends HTMLElement {
           });
 
           const results = await Promise.all(promises);
+          console.log( 'results', results );
           const validScripts = results.filter(auto => auto !== null);
           console.log("[Schedule Panel Debug] Successfully resolved configs for:", validScripts.map(a => a.alias));
       } catch (err) {
