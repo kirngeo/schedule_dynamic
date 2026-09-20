@@ -529,13 +529,13 @@ class DynamicSchedulePanel extends HTMLElement {
           min-height: 100vh;
           box-sizing: border-box;
         }
-<!--
+/*
 div {
    outline:1px blue solid;
    padding: 2px;
    margin: 2px;
  }
--->
+*/
         * {
             box-sizing: border-box;
         }
