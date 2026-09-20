@@ -18,16 +18,16 @@ class DynamicSchedulePanel extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this._domain = 'dynamic_schedule';
     this._domaindot = this._domain + '.';
-    this._schedules = [];
-    this._scheduleDetails = {};
-    this._scheduleList = [];
-    this._automations = [];
-    this._hasFetchedDetails = false;
+    this._scheduleStates = [];
+    this._scheduleConfigs = {};
+    this._schedulesOverview = [];
+    this._hasFetchedConfigs = false;
     this._hasFetchedScripts= false;
     this._zoomLevel = 0.5;
     this._dragState = null;
     this._wasDragging = false;
-    this._activeSchedule = null;
+    this._activeScheduleOverview = null;
+    this._editingConfig = null;
   }
 
   zoomIn() {
@@ -65,7 +65,8 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest( '#schedule-sel-entid');
       if (clicked) {
           e.preventDefault();
-          this._showEntid( clicked.value );
+          this._editingConfig = structuredClone( 
+          this.setShowingEntid( clicked.value );
           return;
       }
 
@@ -174,7 +175,7 @@ class DynamicSchedulePanel extends HTMLElement {
   async _onCreateSubScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('subschedule-name');
       const name = nameInput ? nameInput.value.trim() : '';
-      const scheduleConfig = this._scheduleDetails[ this._domaindot + this._activeSchedule.entid ];
+      const scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
       let sub_schedules = scheduleConfig.sub_schedules;
 
       if (name.length === 0) {
@@ -191,11 +192,11 @@ class DynamicSchedulePanel extends HTMLElement {
       
       try {
           let parms = {
-              name: this._activeSchedule.entid,
+              name: this._activeScheduleOverview.entid,
               type: this._domain + '/update',
               sub_schedules : sub_schedules
           };
-          parms[ this._domain + '_id' ] = this._activeSchedule.entid;
+          parms[ this._domain + '_id' ] = this._activeScheduleOverview.entid;
 
           console.log('parms', parms);
 
@@ -204,8 +205,9 @@ class DynamicSchedulePanel extends HTMLElement {
           
           this.showToast(`sub-schedule "${name}" added successfully`);
           this._closeModal();
-          this.fetchScheduleDetails();
-          this._showEntid( returned.id );
+          this.fetchScheduleConfigs();
+          this.setShowingEntid( returned.id );
+          this.render();
       } catch (err) {
           console.error("Failed to add sub-schedule.", err);
           this.showToast(`Failed to add sub-schedule: ${err.message || 'Unknown error'}`);
@@ -263,25 +265,25 @@ class DynamicSchedulePanel extends HTMLElement {
           
           this.showToast(`Dynamic Schedule "${name}" created successfully`);
           this._closeModal();
-          this.fetchScheduleDetails();
-          this._showEntid( returned.id );
+          this.fetchScheduleConfigs();
+          this.setShowingEntid( returned.id );
       } catch (err) {
           console.error("Failed to create dynamic schedule.", err);
           this.showToast(`Failed to create dynamic schedule: ${err.message || 'Unknown error'}`);
       }
   }
 
-  _showEntid( entid ) {
-    if (this._scheduleList.length === 0) {
-        this._activeSchedule = null;
-    } else if (this._scheduleList.length === 1) {
-        this._activeSchedule = this._scheduleList[0];
+  setShowingEntid( entid ) {
+    if (this._schedulesOverview.length === 0) {
+        this._activeScheduleOverview = null;
+    } else if (this._schedulesOverview.length === 1) {
+        this._activeScheduleOverview = this._schedulesOverview[0];
     } else {
-      const ent = this._scheduleList.filter( entry => entry.entid === entid );
+      const ent = this._schedulesOverview.filter( entry => entry.entid === entid );
       if (ent.length === 1) {
-        this._activeSchedule = ent[0];
+        this._activeScheduleOverview = ent[0];
       } else {
-        this._activeSchedule = null;
+        this._activeScheduleOverview = null;
       }
     }
 
@@ -294,28 +296,30 @@ class DynamicSchedulePanel extends HTMLElement {
     this._hass = hass;
 
     // Initial fetch of detailed blocks if possible
-    if (this._hass && !this._hasFetchedDetails) {
-        this._hasFetchedDetails = true;
-        this.fetchScheduleDetails();
-    } else if (this._hass && this._hasFetchedDetails && oldHass) {
+    if (this._hass && !this._hasFetchedConfigs) {
+        this._hasFetchedConfigs = true;
+        this.fetchScheduleConfigs();
+    } else if (this._hass && this._hasFetchedConfigs && oldHass) {
         // Detect if any schedule states changed (e.g. user edited a schedule in the dialog)
         const oldSchedules = Object.values(oldHass.states).filter(state => state.entity_id.startsWith( this._domaindot));
         const newSchedules = Object.values(this._hass.states).filter(state => state.entity_id.startsWith( this._domaindot));
         
         // If the state objects differ (like last_updated changed), re-fetch the details
         if (JSON.stringify(oldSchedules) !== JSON.stringify(newSchedules)) {
-            this.fetchScheduleDetails();
+            this.fetchScheduleConfigs();
         }
 
     }
 
     this.updateSchedules();
 
+      /*
     // Initial fetch of scripts which are eligible to be selectors
     if (this._hass && !this._hasFetchedScripts) {
         this._hasFetchedScripts = true;
         this.fetchScriptDetails();
     }
+*/
 
   }
 
@@ -323,13 +327,13 @@ class DynamicSchedulePanel extends HTMLElement {
     if (!this._hass) return;
 
     // Filter all schedule entities from states
-    const newSchedules = Object.values(this._hass.states).filter(state =>
+    const newScheduleStates = Object.values(this._hass.states).filter(state =>
       state.entity_id.startsWith( this._domaindot)
     );
 
     // Simple diff
-    if (JSON.stringify(newSchedules) !== JSON.stringify(this._schedules)) {
-      this._schedules = newSchedules;
+    if (JSON.stringify(newScheduleStates) !== JSON.stringify(this._scheduleStates)) {
+      this._scheduleStates = newScheduleStates;
       this.render();
     } else if (!this.shadowRoot.innerHTML) {
       this.render();
@@ -347,12 +351,12 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
 
-  async fetchScheduleDetails() {
-     // console.log( 'fetchScheduleDetails entry' )
+  async fetchScheduleConfigs() {
+     // console.log( 'fetchScheduleConfigs entry' )
       try {
           let parms2 = {nothing: 0};
           let response = null;
-          this._scheduleList = Object.values(this._hass.states)
+          this._schedulesOverview = Object.values(this._hass.states)
               .filter(state => state.entity_id.startsWith( this._domaindot))
               .map(state => ({
                   'entid'  : state.entity_id.replace( this._domaindot, ''),
@@ -361,14 +365,14 @@ class DynamicSchedulePanel extends HTMLElement {
                   }))
               .sort((a,b) => a.name.localeCompare(b.name));
 
-          if (this._scheduleList.length === 0) return;
+          if (this._schedulesOverview.length === 0) return;
 
           // Fetch the configured time ranges directly using the service
           parms2 = {
               type: 'call_service',
               domain: this._domain,
               service: 'get_schedule',
-         //     target: { entity_id: this._scheduleList.map( a => a.entid ) },
+         //     target: { entity_id: this._schedulesOverview.map( a => a.entid ) },
               target: { entity_id: 'all' },
               return_response: true
           };
@@ -379,7 +383,7 @@ class DynamicSchedulePanel extends HTMLElement {
               type: 'call_service',
               domain: this._domain,
               service: 'get_schedule',
-              target: { entity_id: this._scheduleList.map( a => a.entid ) },
+              target: { entity_id: this._schedulesOverview.map( a => a.entid ) },
               return_response: true
           });
           */
@@ -388,20 +392,20 @@ class DynamicSchedulePanel extends HTMLElement {
               throw new Error( 'urg' );
           }
           
-          console.log('response to  get_schedule', this._scheduleList.map( a=>a.entid) );
+          console.log('response to  get_schedule', this._schedulesOverview.map( a=>a.entid) );
           console.log( response );
 
           if (response && response.response) {
               // The response is keyed by entity_id: { 'schedule.my_schedule': { monday: [...], ... } }
-              this._scheduleDetails = response.response;
+              this._scheduleConfigs = response.response;
            //   console.log( 'response', response.response );
               this.render(); // Re-render with real details
           }
 
-          console.log('fetchScheduleDetails success');
+          console.log('fetchScheduleConfigs success');
       } catch (err) {
-       //   this._hasFetchedDetails = false;
-          console.log("Could not fetch detailed schedule blocks.", err);
+       //   this._hasFetchedConfigs = false;
+          console.log("Could not fetch detailed schedule configs.", err);
       }
 
   }
@@ -414,31 +418,31 @@ class DynamicSchedulePanel extends HTMLElement {
     let subscheds = {};
     let timeGutterHeaderHtml = '';
 
-    if (this._scheduleList.length > 0) {
+    if (this._schedulesOverview.length > 0) {
 
       schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
-      this._scheduleList.forEach( ent => {
-        schedselHtml += `<option ${((this._activeSchedule !== null) && (ent.entid === this._activeSchedule.entid)) ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
+      this._schedulesOverview.forEach( ent => {
+        schedselHtml += `<option ${((this._activeScheduleOverview !== null) && (ent.entid === this._activeScheduleOverview.entid)) ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
         });
       schedselHtml += `</select>`;
 
-      if (this._activeSchedule === null) {
-        this._activeSchedule = this._scheduleList[0];
+      if (this._activeScheduleOverview === null) {
+        this._activeScheduleOverview = this._schedulesOverview[0];
       }
 
     }
 
-    if (this._activeSchedule !== null) {
-      let scheduleConfig = this._scheduleDetails[ this._domaindot + this._activeSchedule.entid ];
-      console.log( 'scheduleConfig', this._domaindot + this._activeSchedule.entid, scheduleConfig);
+    if (this._activeScheduleOverview !== null) {
+      let scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+      console.log( 'scheduleConfig', this._domaindot + this._activeScheduleOverview.entid, scheduleConfig);
       subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
       subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
-      contentHtml += `<div>${JSON.stringify( this._activeSchedule, null, "  " )}</div>`;
- //     contentHtml += `<div><pre>${JSON.stringify( this._scheduleDetails, null, "  " )}</pre></div>`;
+      contentHtml += `<div>${JSON.stringify( this._activeScheduleOverview, null, "  " )}</div>`;
+ //     contentHtml += `<div><pre>${JSON.stringify( this._scheduleConfigs, null, "  " )}</pre></div>`;
       contentHtml += `<div>scheduleConfig<pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
       contentHtml += `<div>subscheds<pre>${JSON.stringify( subscheds, null, "  " )}</pre></div>`;
       contentHtml += `<div>subsched_names<pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
-    } else if (this._scheduleList.length > 0) {
+    } else if (this._schedulesOverview.length > 0) {
       contentHtml = 'please select a dynamic schedule';
     } else {
       contentHtml = 'no dynamic schedules exist yet';
@@ -450,7 +454,7 @@ class DynamicSchedulePanel extends HTMLElement {
     // time gutter header 
     // 1) add a subschedule
     timeGutterHeaderHtml += `
-          <button style="font-size: 0.75em;" id="add-subschedule" class="icon-btn-small" title="add a subschedule">
+          <button style="font-size: 0.75em;" id="add-subschedule" class="icon-btn-small style="background-color:;"" title="add a subschedule">
               <ha-icon icon="mdi:plus"></ha-icon>
           </button>
     `;
@@ -478,7 +482,7 @@ class DynamicSchedulePanel extends HTMLElement {
     let allContentHtml = '';
     let zoomHtml = '';
 
-    if (this._activeSchedule !== null) {
+    if (this._activeScheduleOverview !== null) {
       allContentHtml = `
       <div class="content">
         <ha-card class="all-subschedules">
@@ -525,12 +529,13 @@ class DynamicSchedulePanel extends HTMLElement {
           min-height: 100vh;
           box-sizing: border-box;
         }
-
+<!--
 div {
    outline:1px blue solid;
    padding: 2px;
    margin: 2px;
  }
+-->
         * {
             box-sizing: border-box;
         }
