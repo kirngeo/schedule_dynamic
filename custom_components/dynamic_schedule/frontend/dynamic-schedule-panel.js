@@ -378,13 +378,16 @@ class DynamicSchedulePanel extends HTMLElement {
                               .filter( (seq)=>{ return !!seq.response_variable} )
                               .length > 0) {
                               this._eligibleScriptConfigs.push(config);
+                              return config;
                           }
+/*
                           return response;
                           return {
                               alias: stateObj.attributes.friendly_name || config.alias || entityId.split('.')[1],
                               response_variable: true,
                               state: stateObj.state
                           };
+*/
                       }
                   }
               } catch (err) {
