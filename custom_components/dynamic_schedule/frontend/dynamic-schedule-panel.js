@@ -368,12 +368,13 @@ class DynamicSchedulePanel extends HTMLElement {
                       entity_id: entityId
                   });
                   if (response) {
-                      const config = response.config || response.raw_config || response;
+                      let config = response.config || response.raw_config || response;
                       const sequence = config ? config.sequence : null;
                       if (sequence) {
                           if (( Array.isArray(sequence) ? sequence : [sequence])
                               .filter( (seq)=>{ return !!seq.response_variable} )
                               .length > 0) {
+                              config.id = entityId;
                               return config;
                           }
                       }
@@ -385,12 +386,14 @@ class DynamicSchedulePanel extends HTMLElement {
           });
 
           const results = await Promise.all(promises);
-          this._eligibleScripts = results.filter(auto => auto !== null);
+          this._eligibleScriptConfigs = results
+              .filter(auto => auto !== null)
+              .sort((a,b) => a.alias.localeCompare(b.alias));
       } catch (err) {
           console.error("[Schedule Panel Debug] Global error in fetchScriptConfigss:", err);
       }
 
-      console.log('_eligibleScripts', this._eligibleScripts);
+      console.log('_eligibleScriptConfigs', this._eligibleScriptConfigs);
   }
 
 
