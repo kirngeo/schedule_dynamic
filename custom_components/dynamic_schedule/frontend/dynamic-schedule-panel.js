@@ -372,6 +372,8 @@ class DynamicSchedulePanel extends HTMLElement {
                       console.log(`[Schedule Panel Debug] Resolved config for ${entityId}:`, config);
                       const sequence = config ? config.sequence : null;
                       if (sequence) {
+                          let filxt = ( Array.isArray(sequence) ? sequence : [sequence])
+                              .map( (seq)=>{ console.log('seq', seq} ) ;
                           let filt = ( Array.isArray(sequence) ? sequence : [sequence])
                               .filter( (seq)=>{ seq.response_variable} ) ;
                           console.log('filt', filt);
