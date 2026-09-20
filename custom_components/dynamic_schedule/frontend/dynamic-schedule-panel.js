@@ -66,8 +66,9 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest( '#schedule-sel-entid');
       if (clicked) {
           e.preventDefault();
-      //    this._editingConfig = structuredClone( 
           this.setShowingEntid( clicked.value );
+          if this._activeSchweduleOverview) {
+              this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
           return;
       }
 
@@ -479,14 +480,15 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._activeScheduleOverview !== null) {
       let scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
-      console.log( 'scheduleConfig', this._domaindot + this._activeScheduleOverview.entid, scheduleConfig);
+   //   console.log( 'scheduleConfig', this._domaindot + this._activeScheduleOverview.entid, scheduleConfig);
       subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
       subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
       contentHtml += `<div>${JSON.stringify( this._activeScheduleOverview, null, "  " )}</div>`;
  //     contentHtml += `<div><pre>${JSON.stringify( this._scheduleConfigs, null, "  " )}</pre></div>`;
+      contentHtml += `<div>editingConfig<pre>${JSON.stringify( this._editingConfig, null, "  " )}</pre></div>`;
       contentHtml += `<div>scheduleConfig<pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
-      contentHtml += `<div>subscheds<pre>${JSON.stringify( subscheds, null, "  " )}</pre></div>`;
-      contentHtml += `<div>subsched_names<pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
+ //     contentHtml += `<div>subscheds<pre>${JSON.stringify( subscheds, null, "  " )}</pre></div>`;
+ //     contentHtml += `<div>subsched_names<pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
     } else if (this._schedulesOverview.length > 0) {
       contentHtml = 'please select a dynamic schedule';
     } else {
