@@ -65,7 +65,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest( '#schedule-sel-entid');
       if (clicked) {
           e.preventDefault();
-          this._editingConfig = structuredClone( 
+      //    this._editingConfig = structuredClone( 
           this.setShowingEntid( clicked.value );
           return;
       }
