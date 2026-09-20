@@ -373,7 +373,7 @@ class DynamicSchedulePanel extends HTMLElement {
                       const sequence = config ? config.sequence : null;
                       if (sequence) {
                           let filxt = ( Array.isArray(sequence) ? sequence : [sequence])
-                              .map( (seq)=>{ console.log('seq', seq} ) ;
+                              .map( (seq)=>{ console.log('seq', seq)} ) ;
                           let filt = ( Array.isArray(sequence) ? sequence : [sequence])
                               .filter( (seq)=>{ seq.response_variable} ) ;
                           console.log('filt', filt);
