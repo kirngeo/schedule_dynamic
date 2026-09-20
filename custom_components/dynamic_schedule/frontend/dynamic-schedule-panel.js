@@ -47,6 +47,7 @@ class DynamicSchedulePanel extends HTMLElement {
   connectedCallback() {
       this.shadowRoot.addEventListener('click', this._onClick.bind(this));
       this.shadowRoot.addEventListener('change', this._onChange.bind(this));
+      this.shadowRoot.addEventListener('select', this._onSelect.bind(this));
   }
 
   showToast(message) {
@@ -55,6 +56,11 @@ class DynamicSchedulePanel extends HTMLElement {
           bubbles: true,
           composed: true
       }));
+  }
+
+  _onSelect(e) {
+      console.log('_onSelect', e );
+      console.log( e.target );
   }
 
   _onChange(e) {
