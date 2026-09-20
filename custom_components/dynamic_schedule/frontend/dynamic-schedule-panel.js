@@ -28,6 +28,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._wasDragging = false;
     this._activeScheduleOverview = null;
     this._editingConfig = null;
+    this._eligibleScriptConfigs = [];
   }
 
   zoomIn() {
@@ -357,6 +358,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   async fetchScriptConfigs() {
       try {
+          this._eligibleScriptConfigs = [];
           const scriptEntities = Object.keys(this._hass.states).filter(id => id.startsWith('script.'));
           const promises = scriptEntities.map(async (entityId) => {
               try {
@@ -372,20 +374,17 @@ class DynamicSchedulePanel extends HTMLElement {
                       console.log(`[Schedule Panel Debug] Resolved config for ${entityId}:`, config);
                       const sequence = config ? config.sequence : null;
                       if (sequence) {
-                          let filxt = ( Array.isArray(sequence) ? sequence : [sequence])
-                              .map( (seq)=>{ console.log('seq', seq, seq.response_variable)} ) ;
-                          let filt = ( Array.isArray(sequence) ? sequence : [sequence])
-                              .filter( (seq)=>{ return !!seq.response_variable} ) ;
-                          console.log('filt', filt);
-                          console.log('filtx', filt);
+                          if (( Array.isArray(sequence) ? sequence : [sequence])
+                              .filter( (seq)=>{ return !!seq.response_variable} )
+                              .length > 0) {
+                              this._eligibleScriptConfigs.push(config);
+                          }
+                          return response;
                           return {
                               alias: stateObj.attributes.friendly_name || config.alias || entityId.split('.')[1],
                               response_variable: true,
                               state: stateObj.state
                           };
-                      } else {
-                          console.log(`[Schedule Panel Debug] Script ${entityId} does not have response_variable in
- config:`, config);
                       }
                   }
               } catch (err) {
