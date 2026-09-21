@@ -86,9 +86,7 @@ class DynamicSchedulePanel extends HTMLElement {
   _onSchedSelClick() {
       const new_entid = document.getElementById("schedule_sel_entid").value;
       this.setShowingEntid( new_entid );
-      if (this._activeScheduleOverview && (new_entid != this._activeScheduleEntid.entid  )) {
-          this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
-      }
+      this._startEditing();
       this.render();
   }
 
@@ -156,6 +154,18 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+  }
+
+  _startEditing() {
+      if (this._editingConfig) {
+          console.error('startEditing : already editing', this._editingConfig );
+          return;
+      };
+
+      if (this._activeScheduleOverview && (new_entid != this._activeScheduleEntid.entid  )) {
+          console.log('starting to edit');
+          this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
+      }
   }
 
   _openNewScheduleModal() {
