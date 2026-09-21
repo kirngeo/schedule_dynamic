@@ -508,6 +508,7 @@ class DynamicSchedulePanel extends HTMLElement {
     if (this._activeScheduleOverview !== null) {
       let scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
 
+      console.log( 'xx', this._editingConfig, this._activeScheduleOverview);
       if ( !this._editingConfig   &&  this._activeScheduleOverview.edit ) {
           this._editingConfig = structuredClone( scheduleConfig);
       }
