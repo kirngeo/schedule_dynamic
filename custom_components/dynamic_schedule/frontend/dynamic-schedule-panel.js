@@ -718,7 +718,7 @@ div {
         }
 
         .sub-transitions {
-            flex: 1;
+            height: 100%;
             display: grid;
             grid-template-columns: repeat(${subsched_names.length}, [col-start] 1fr);
         }
