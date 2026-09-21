@@ -84,15 +84,15 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   _onSchedSelClick() {
-      const new_entid = document.getElementById("schedule_sel_entid").value;
+      const new_entid = this.shadowRoot.getElementById("schedule_sel_entid").value;
       this.setShowingEntid( new_entid );
       this._startEditing();
       this.render();
   }
 
   _onClick(e) {
-      console.log('_onClick', e );
-      console.log( e.target );
+    //  console.log('_onClick', e );
+    //  console.log( e.target );
 
       let clicked = null;
       let clicked2 = null;
@@ -102,7 +102,10 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('#main-test-btn');
       if (clicked) {
           e.preventDefault();
-          console.log('pressed test');
+          if (!this._activeScheduleOverview) return;
+
+          let dummy = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
+          console.log( 'test', dummy);
           return;
       }
 
