@@ -72,13 +72,24 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest( '#schedule-sel-entid');
       if (clicked) {
           e.preventDefault();
-          this.setShowingEntid( clicked.value );
-          if (this._activeSchweduleOverview) {
-              this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
-          }
+          this._onSchedSelClick();
+ //         this.setShowingEntid( clicked.value );
+ //         if (this._activeScheduleOverview) {
+ //             this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
+ //         }
+          this.render();
           return;
       }
 
+  }
+
+  _onSchedSelClick() {
+      const new_entid = document.getElementById("schedule_sel_entid").value;
+      this.setShowingEntid( new_entid );
+      if (this._activeScheduleOverview && (new_entid != this._activeScheduleEntid.entid  ) {
+          this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
+      }
+      this.render();
   }
 
   _onClick(e) {
@@ -282,6 +293,7 @@ class DynamicSchedulePanel extends HTMLElement {
           this._closeModal();
           this.fetchScheduleConfigs();
           this.setShowingEntid( returned.id );
+          this.render();
       } catch (err) {
           console.error("Failed to create dynamic schedule.", err);
           this.showToast(`Failed to create dynamic schedule: ${err.message || 'Unknown error'}`);
@@ -301,9 +313,6 @@ class DynamicSchedulePanel extends HTMLElement {
         this._activeScheduleOverview = null;
       }
     }
-
-    this.render();
-
   }
 
   set hass(hass) {
@@ -475,7 +484,18 @@ class DynamicSchedulePanel extends HTMLElement {
 
       schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
       this._schedulesOverview.forEach( ent => {
-        schedselHtml += `<option ${((this._activeScheduleOverview !== null) && (ent.entid === this._activeScheduleOverview.entid)) ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
+        let selected = false;
+
+        if ((this._activeScheduleOverview !== null) && (ent.entid === this._activeScheduleOverview.entid)) {
+            selected = true;
+        }
+
+        if (this._schedulesOverview.length === 1) {
+            selected = true;
+        }
+
+       schedselHtml += `<option ${selected  ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
+
         });
       schedselHtml += `</select>`;
 
@@ -487,6 +507,11 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._activeScheduleOverview !== null) {
       let scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+
+      if ( !this._editingConfig   &&  this._activeScheduleOverview.edit ) {
+          this._editingConfig = structuredClone( scheduleConfig);
+      }
+
    //   console.log( 'scheduleConfig', this._domaindot + this._activeScheduleOverview.entid, scheduleConfig);
       subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
       subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
