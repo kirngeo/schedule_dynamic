@@ -99,6 +99,13 @@ class DynamicSchedulePanel extends HTMLElement {
       let clicked3 = null;
       let clicked4 = null;
 
+      clicked = e.target.closest('#main-test-btn');
+      if (clicked) {
+          e.preventDefault();
+          console.log('pressed test');
+          return;
+      }
+
       clicked = e.target.closest('#new-schedule-btn');
       if (clicked) {
           e.preventDefault();
@@ -929,6 +936,7 @@ div {
               Dynamic Schedules
           </div>
           <div class="zoom-controls">
+              <button class="icon-btn" id="main-test-btn" title="test">test</button>
               ${schedselHtml}
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
