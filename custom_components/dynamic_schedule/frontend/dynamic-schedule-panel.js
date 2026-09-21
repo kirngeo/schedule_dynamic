@@ -113,12 +113,16 @@ class DynamicSchedulePanel extends HTMLElement {
           let ent = {at: {hh: 1, mm:2, ss:3}, state: 45};
           let ent2 = {at: {hh: 9, mm:0}, state: 18};
           let ent3 = {at: {hh: 12}, state: 31};
-          dummy.sub_schedules['Tue'].transitions.push( ent);
-          dummy.sub_schedules['Tue'].transitions.push( ent2);
-          dummy.sub_schedules['Tue'].transitions.push( ent3);
+   //       dummy.sub_schedules['Tue'].transitions.push( ent);
+   //       dummy.sub_schedules['Tue'].transitions.push( ent2);
+   //       dummy.sub_schedules['Tue'].transitions.push( ent3);
     //      dummy.name = 'Lounge Heating';
-          delete dummy['Off'];
-          delete dummy['Mon'];
+          delete dummy.sub_schedules['Off'];
+          delete dummy.sub_schedules['Mon'];
+
+          delete dummy.attributes['next_event'];
+          delete dummy.attributes['next_state'];
+          delete dummy.attributes['last_offset_refresh'];
 
           dummy.type = this._domain + '/update';
           dummy[ this._domain + '_id' ] = this._activeScheduleOverview.entid;
