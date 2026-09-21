@@ -575,7 +575,7 @@ class DynamicSchedulePanel extends HTMLElement {
     `).join('');
 
     subschedTransitionsHtml = `
-      <div class="sub-hrows">
+      <div class="sub-transitions">
        ${subschedTransitionsHtml}
       </div>
       `;
@@ -713,6 +713,12 @@ div {
         }
 
         .sub-hrows {
+            display: grid;
+            grid-template-columns: repeat(${subsched_names.length}, [col-start] 1fr);
+        }
+
+        .sub-transitions {
+            flex: 1;
             display: grid;
             grid-template-columns: repeat(${subsched_names.length}, [col-start] 1fr);
         }
