@@ -90,7 +90,10 @@ class DynamicSchedulePanel extends HTMLElement {
       this.render();
   }
 
-  _onClick(e) {
+  async _onTestClick() {
+  }
+
+  async _onClick(e) {
     //  console.log('_onClick', e );
     //  console.log( e.target );
 
