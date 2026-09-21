@@ -571,7 +571,7 @@ class DynamicSchedulePanel extends HTMLElement {
       `;
 
     let subschedTransitionsHtml = subsched_names.map( (sub, inx) => `
-      <div class="sub-header">${sub}</div>
+      <div class="sub-header">xx ${sub} yy</div>
     `).join('');
 
     subschedTransitionsHtml = `
@@ -630,13 +630,13 @@ class DynamicSchedulePanel extends HTMLElement {
           min-height: 100vh;
           box-sizing: border-box;
         }
-/*
+
 div {
    outline:1px blue solid;
    padding: 2px;
    margin: 2px;
  }
-*/
+
         * {
             box-sizing: border-box;
         }
