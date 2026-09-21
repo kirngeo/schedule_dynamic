@@ -576,7 +576,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     subschedTransitionsHtml = `
       <div class="sub-hrows">
-       ${subschedTransitionssHtml}
+       ${subschedTransitionsHtml}
       </div>
       `;
 
