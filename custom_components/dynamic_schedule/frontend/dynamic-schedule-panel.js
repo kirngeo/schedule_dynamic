@@ -162,7 +162,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       };
 
-      if (this._activeScheduleOverview && (new_entid != this._activeScheduleEntid.entid  )) {
+      if (this._activeScheduleOverview) {
           console.log('starting to edit');
           this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
       }
