@@ -516,13 +516,13 @@ class DynamicSchedulePanel extends HTMLElement {
 
     }
 
-    if (false    &&   this._activeScheduleOverview !== null) {
+    if (this._activeScheduleOverview !== null) {
       let scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
 
-      console.log( 'xx', this._editingConfig, this._activeScheduleOverview);
-      if ( !this._editingConfig   &&  this._activeScheduleOverview.edit ) {
-          this._editingConfig = structuredClone( scheduleConfig);
-      }
+ //     console.log( 'xx', this._editingConfig, this._activeScheduleOverview);
+ //     if ( !this._editingConfig   &&  this._activeScheduleOverview.edit ) {
+ //         this._editingConfig = structuredClone( scheduleConfig);
+ //     }
 
    //   console.log( 'scheduleConfig', this._domaindot + this._activeScheduleOverview.entid, scheduleConfig);
       subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
