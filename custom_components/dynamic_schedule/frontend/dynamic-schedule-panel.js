@@ -105,7 +105,10 @@ class DynamicSchedulePanel extends HTMLElement {
           if (!this._activeScheduleOverview) return;
 
           let dummy = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
-          console.log( 'test', dummy);
+          console.log( 'test1', dummy);
+          let ent = {at: {hh: 1, mm:2, ss:3}, state: 45};
+          dummy['Off'].transitions.push( ent);
+          console.log( 'test2', dummy);
           return;
       }
 
