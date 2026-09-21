@@ -570,6 +570,16 @@ class DynamicSchedulePanel extends HTMLElement {
       </div>
       `;
 
+    let subschedTransitionsHtml = subsched_names.map( (sub, inx) ==> `
+      <div class="sub-header">${sub}</div>
+    `).join('');
+
+    subschedTransitionsHtml = `
+      <div class="sub-hrows">
+       ${subschedTransitionssHtml}
+      </div>
+      `;
+
     let allContentHtml = '';
     let zoomHtml = '';
 
@@ -588,7 +598,7 @@ class DynamicSchedulePanel extends HTMLElement {
              ${timeGutterHtml}
             </div>
             <div id="subs">
-             subs
+             ${subschedTransitionsHtml}
             </div>
           </div>
         </ha-card>
