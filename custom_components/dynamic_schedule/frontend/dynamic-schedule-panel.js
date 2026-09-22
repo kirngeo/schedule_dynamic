@@ -613,7 +613,7 @@ class DynamicSchedulePanel extends HTMLElement {
     `;
 
     let subschedNamesHtml = subsched_names.map((sub, inx) => `
-      <div class="sub-header bord">${sub}</div>
+      <div class="sub-header">${sub}</div>
     `).join('');
 
     subschedNamesHtml = `
@@ -648,7 +648,7 @@ class DynamicSchedulePanel extends HTMLElement {
       <div class="content">
         <ha-card class="all-subschedules">
           <div class="subs-ed-ctr">
-            <div class="time-gutter-header">
+            <div class="time-gutter-header bord">
              ${timeGutterHeaderHtml}
             </div>
             <div id="sub-header">
