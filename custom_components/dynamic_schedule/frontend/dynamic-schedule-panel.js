@@ -605,7 +605,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     // Time Gutter (Y-Axis)
     const timeGutterHtml = `
-        <div class="time-gutter">
+        <div class="time-gutter bord">
             ${Array.from({length: 24}).map((_, i) => `
                 <div class="time-slot"><span>${i.toString().padStart(2, '0')}:00</span></div>
             `).join('')}
@@ -613,11 +613,11 @@ class DynamicSchedulePanel extends HTMLElement {
     `;
 
     let subschedNamesHtml = subsched_names.map((sub, inx) => `
-      <div class="sub-header">${sub}</div>
+      <div class="sub-header bord">${sub}</div>
     `).join('');
 
     subschedNamesHtml = `
-      <div class="sub-hrows">
+      <div class="sub-hrows bord">
        ${subschedNamesHtml}
       </div>
       `;
@@ -635,7 +635,7 @@ class DynamicSchedulePanel extends HTMLElement {
     }).join('');
 
     subschedTransitionsHtml = `
-      <div class="sub-transitions">
+      <div class="sub-transitions bord">
        ${subschedTransitionsHtml}
       </div>
       `;
@@ -697,6 +697,13 @@ div {
    margin: 2px;
  }
 */
+
+.bord {
+   outline:1px blue solid;
+   padding: 2px;
+   margin: 2px;
+ }
+
         * {
             box-sizing: border-box;
         }
