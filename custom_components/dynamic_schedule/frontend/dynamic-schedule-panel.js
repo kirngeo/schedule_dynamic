@@ -291,6 +291,13 @@ class DynamicSchedulePanel extends HTMLElement {
 
   }
 
+  transToSecs( trans ) {
+      try {
+          const at = trans.at;
+          return (((at.hh * 60) + at.mm) * 60) + at.ss;
+      } catche(e) {console.log(e); return 0;}
+  }
+
   async _onCreateScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('schedule-name');
       const iconInput = this.shadowRoot.getElementById('schedule-icon');
@@ -614,11 +621,10 @@ class DynamicSchedulePanel extends HTMLElement {
     console.log('XX scheduleConfig', scheduleConfig);
 
     let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
-        let cont = `<div class="sub-header">xzx`;
+        let cont = `<div class="sub-header">`;
         let subsched = scheduleConfig.sub_schedules[ sub ];
-        cont += sub;
         subsched.transitions.map( (trans, tinx) => {
-          cont += `<div>${JSON.stringify(trans)} ${inx} ${tinx}</div>`
+          cont += `<div>${JSON.stringify(trans)} ${inx} ${tinx} secs={this.transToSecs(trans)}</div>`
         });
         cont += '</div>';
         return cont;
