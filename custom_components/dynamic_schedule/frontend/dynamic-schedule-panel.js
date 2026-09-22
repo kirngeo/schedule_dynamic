@@ -295,7 +295,7 @@ class DynamicSchedulePanel extends HTMLElement {
       try {
           const at = trans.at;
           return (((at.hh * 60) + at.mm) * 60) + at.ss;
-      } catche(e) {console.log(e); return 0;}
+      } catche(e) {console.log(e); return 0;} finally{}
   }
 
   async _onCreateScheduleSubmit() {
