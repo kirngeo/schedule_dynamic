@@ -292,7 +292,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   transToPc (trans) {
-      return this.transToSecs(trans) / (24*60*60);
+      return (this.transToSecs(trans) / (24*60*60)) * 100;
   }
 
   transToSecs( trans ) {
