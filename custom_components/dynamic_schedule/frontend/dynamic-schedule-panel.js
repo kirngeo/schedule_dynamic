@@ -529,6 +529,7 @@ class DynamicSchedulePanel extends HTMLElement {
     let subsched_names = [];
     let subscheds = {};
     let timeGutterHeaderHtml = '';
+    let scheduleConfig = null;
 
     if (this._schedulesOverview.length > 0) {
 
@@ -557,7 +558,7 @@ class DynamicSchedulePanel extends HTMLElement {
     }
 
     if (this._activeScheduleOverview !== null) {
-      let scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+      scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
 
  //     console.log( 'xx', this._editingConfig, this._activeScheduleOverview);
  //     if ( !this._editingConfig   &&  this._activeScheduleOverview.edit ) {
@@ -613,9 +614,11 @@ class DynamicSchedulePanel extends HTMLElement {
     let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
         let cont = `<div class="sub-header">xzx`;
         cont += sub;
-        scheduleConfig.transitions.map( (trans, tinx) => {
+        if (scheduleConfig) {
+          scheduleConfig.transitions.map( (trans, tinx) => {
             cont += `<div>${trans}</div>`
-        });
+          });
+        }
         cont += '</div>';
         return cont;
     }).join('');
