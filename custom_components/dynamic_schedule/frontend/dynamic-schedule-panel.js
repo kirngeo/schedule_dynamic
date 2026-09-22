@@ -84,7 +84,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   _onSchedSelClick() {
-      const new_entid = this.shadowRoot.getElementById("schedule_sel_entid").value;
+      const new_entid = this.shadowRoot.getElementById("schedule-sel-entid").value;
       this.setShowingEntid( new_entid );
       this._startEditing();
       this.render();
