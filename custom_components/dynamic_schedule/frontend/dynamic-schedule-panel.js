@@ -606,9 +606,11 @@ class DynamicSchedulePanel extends HTMLElement {
     // Time Gutter (Y-Axis)
     const timeGutterHtml = `
         <div class="time-gutter bord">
+            <div class="time-slot-half"></div>
             ${Array.from({length: 24}).map((_, i) => `
                 <div class="time-slot"><span>${i.toString().padStart(2, '0')}:00</span></div>
             `).join('')}
+            <div class="time-slot-half"></div>
         </div>
     `;
 
@@ -773,8 +775,14 @@ div {
             justify-content: flex-end;
             align-items: center;
         }
+
         .time-slot {
             height: calc(60px * var(--zoom-level)); /* 1 hour */
+            position: relative;
+        }
+
+        .time-slot-half {
+            height: calc(60px * var(--zoom-level) * 0.5); /* 1/2 hour */
             position: relative;
         }
 
