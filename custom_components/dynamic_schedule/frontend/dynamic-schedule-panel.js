@@ -613,7 +613,7 @@ class DynamicSchedulePanel extends HTMLElement {
     let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
         let cont = `<div class="sub-header">xzx`;
         cont += sub;
-        this._scheduleConfig.transitions.map( (trans, tinx) => {
+        scheduleConfig.transitions.map( (trans, tinx) => {
             cont += `<div>${trans}</div>`
         });
         cont += '</div>';
