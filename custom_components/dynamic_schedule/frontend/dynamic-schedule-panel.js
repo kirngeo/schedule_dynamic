@@ -624,7 +624,7 @@ class DynamicSchedulePanel extends HTMLElement {
         let cont = `<div class="sub-header">`;
         let subsched = scheduleConfig.sub_schedules[ sub ];
         subsched.transitions.map( (trans, tinx) => {
-          cont += `<div>${JSON.stringify(trans)} ${inx} ${tinx} secs={this.transToSecs(trans)}</div>`
+          cont += `<div>${JSON.stringify(trans)} ${inx} ${tinx} secs=${this.transToSecs(trans)}</div>`
         });
         cont += '</div>';
         return cont;
