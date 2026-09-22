@@ -465,7 +465,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
 
   async fetchScheduleConfigs() {
-      try {
+ //     try {
           let parms2 = {nothing: 0};
           let response = null;
           this._schedulesOverview = Object.values(this._hass.states)
@@ -515,10 +515,10 @@ class DynamicSchedulePanel extends HTMLElement {
           }
 
           console.log('fetchScheduleConfigs success');
-      } catch (err) {
-       //   this._hasFetchedConfigs = false;
-          console.log("Could not fetch detailed schedule configs.", err);
-      }
+ //     } catch (err) {
+ //      //   this._hasFetchedConfigs = false;
+ //         console.log("Could not fetch detailed schedule configs.", err);
+ //     }
 
   }
 
