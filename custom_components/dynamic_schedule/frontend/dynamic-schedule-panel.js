@@ -619,7 +619,7 @@ class DynamicSchedulePanel extends HTMLElement {
         cont += sub;
         subsched.transitions.map( (trans, tinx) => {
           cont += `<div>${trans} ${inx} ${tinx}</div>`
-        }
+        });
         cont += '</div>';
         return cont;
     }).join('');
