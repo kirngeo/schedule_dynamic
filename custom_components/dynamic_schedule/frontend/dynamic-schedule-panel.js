@@ -634,9 +634,9 @@ class DynamicSchedulePanel extends HTMLElement {
           if (false &&rw) {
           } else {
             cont += `<span>
-              ${trans.hh.toString().padStart(2, '0')}
-             :${trans.mm.toString().padStart(2, '0')}
-             :${trans.ss.toString().padStart(2, '0')}
+              ${trans.at.hh.toString().padStart(2, '0')}
+             :${trans.at.mm.toString().padStart(2, '0')}
+             :${trans.at.ss.toString().padStart(2, '0')}
                  </span>`
             cont += `secs=${this.transToSecs(trans)}`
           }
