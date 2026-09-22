@@ -773,6 +773,18 @@ div {
             justify-content: flex-end;
             align-items: center;
         }
+        .time-slot {
+            height: calc(60px * var(--zoom-level)); /* 1 hour */
+            position: relative;
+        }
+
+        .time-slot span {
+            position: absolute;
+            top: -8px;
+            right: 8px;
+            font-size: 12px;
+            color: var(--secondary-text-color);
+        }
 
         .content {
             max-width: 1400px;
