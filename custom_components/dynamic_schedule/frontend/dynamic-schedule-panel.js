@@ -541,6 +541,7 @@ class DynamicSchedulePanel extends HTMLElement {
     let subscheds = {};
     let timeGutterHeaderHtml = '';
     let scheduleConfig = null;
+    let rw = false;
 
     if (this._schedulesOverview.length > 0) {
 
@@ -570,6 +571,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._activeScheduleOverview !== null) {
       scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+      rw = this._activeSchedu;eOverview.edit;
 
  //     console.log( 'xx', this._editingConfig, this._activeScheduleOverview);
  //     if ( !this._editingConfig   &&  this._activeScheduleOverview.edit ) {
@@ -628,7 +630,17 @@ class DynamicSchedulePanel extends HTMLElement {
         let cont = `<div class="sub-header" style="contain: content;">`;
         let subsched = scheduleConfig.sub_schedules[ sub ];
         subsched.transitions.map( (trans, tinx) => {
-          cont += `<div style="position:absolute;top:${this.transToPc(trans)}%;">${JSON.stringify(trans)} ${inx} ${tinx} secs=${this.transToSecs(trans)}</div>`
+          cont += `<div style="position:absolute;top:${this.transToPc(trans)}%;">`
+          if (false &&rw) {
+          } else {
+            cont += `<span>
+              ${trans.hh.toString().padStart(2, '0')}
+             :${trans.mm.toString().padStart(2, '0')}
+             :${trans.ss.toString().padStart(2, '0')}
+                 </span>`
+            cont += `secs=${this.transToSecs(trans)}`
+          }
+          cont += `</div>`
         });
         cont += '</div>';
         return cont;
