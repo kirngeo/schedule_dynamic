@@ -784,6 +784,7 @@ div {
         .time-slot-half {
             height: calc(60px * var(--zoom-level) * 0.5); /* 1/2 hour */
             position: relative;
+            border: 1px solid green;
         }
 
         .time-slot span {
