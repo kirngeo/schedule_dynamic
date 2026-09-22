@@ -630,15 +630,11 @@ class DynamicSchedulePanel extends HTMLElement {
         let cont = `<div class="sub-header" style="contain: content;">`;
         let subsched = scheduleConfig.sub_schedules[ sub ];
         subsched.transitions.map( (trans, tinx) => {
-          cont += `<div style="position:absolute;top:${this.transToPc(trans)}%;">`
+          cont += `<div class="bord" style="position:absolute;top:${this.transToPc(trans)}%;">`
           if (false &&rw) {
           } else {
-            cont += `<span>
-              ${trans.at.hh.toString().padStart(2, '0')}
-             :${trans.at.mm.toString().padStart(2, '0')}
-             :${trans.at.ss.toString().padStart(2, '0')}
-                 </span>`
-            cont += `secs=${this.transToSecs(trans)}`
+            cont += `<span>${trans.at.hh.toString().padStart(2, '0')}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`
+            cont += `<span> state=${trans.state}</span>`
           }
           cont += `</div>`
         });
