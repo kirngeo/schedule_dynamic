@@ -620,7 +620,9 @@ class DynamicSchedulePanel extends HTMLElement {
 
     subschedNamesHtml = `
       <div class="sub-hrows bord">
+            <div class="time-slot-half"></div>
        ${subschedNamesHtml}
+            <div class="time-slot-half"></div>
       </div>
       `;
 
