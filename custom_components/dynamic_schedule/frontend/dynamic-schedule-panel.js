@@ -294,7 +294,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   transToPc (trans) {
-      return (this.transToSecs(trans) / (24*60*60)) * 100;
+      return (this.transToSecs(trans) / (24*60*60)) * 95;
   }
 
   transToSecs( trans ) {
@@ -644,7 +644,7 @@ class DynamicSchedulePanel extends HTMLElement {
           }
           cont += `</div>`;
         });
-        cont += '</div><div>FILL2</div>';
+        cont += '</div>';
         return cont;
     }).join('');
 
