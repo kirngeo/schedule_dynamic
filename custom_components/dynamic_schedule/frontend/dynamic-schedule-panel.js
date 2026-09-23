@@ -128,7 +128,7 @@ class DynamicSchedulePanel extends HTMLElement {
                               t.state = trans.querySelector('.state').value;
                               transs.push( t );
                           });
-                      new_sub_schedules[ sub ] = {transitions : trans}
+                      new_sub_schedules[ sub ] = {transitions : transs}
                       } );
               });
               console.log( 'new_sub_schedules', new_sub_schedules );
