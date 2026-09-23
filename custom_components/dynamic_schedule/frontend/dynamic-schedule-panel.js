@@ -107,36 +107,48 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
           if (!this._activeScheduleOverview) return;
 
-          let dummy = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
-          console.log( 'test1', dummy);
+          if (true) {
+              if (!this._activeScheduleOverview) return;
+              scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
+              const subsched_names = Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b));
+              scheduleConfig.sub_schedules.forEach( (sub) => 
+              Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b).map((sub, inx) => {
+                  const transs = this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() );
+                  console.log( 'sub', sub, 'transs', transs )'
+              });
 
-          let ent = {at: {hh: 1, mm:2, ss:3}, state: 45};
-          let ent2 = {at: {hh: 9, mm:0}, state: 18};
-          let ent3 = {at: {hh: 12}, state: 31};
-          let ent4 = {at: {hh: 23, mm: 59, ss: 21}, state: 22}; 
-   //       dummy.sub_schedules['Tue'].transitions.push( ent);
-   //       dummy.sub_schedules['Tue'].transitions.push( ent2);
-   //       dummy.sub_schedules['Tue'].transitions.push( ent3);
-          dummy.sub_schedules['Tue'].transitions.push( ent4);
-    //      dummy.name = 'Lounge Heating';
-    //      delete dummy.sub_schedules['Off'];
-    //      delete dummy.sub_schedules['Mon'];
+          } else {
+              let dummy = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
+              console.log( 'test1', dummy);
 
-          delete dummy.attributes['next_event'];
-          delete dummy.attributes['next_state'];
-          delete dummy.attributes['last_offset_refresh'];
+              let ent = {at: {hh: 1, mm:2, ss:3}, state: 45};
+              let ent2 = {at: {hh: 9, mm:0}, state: 18};
+              let ent3 = {at: {hh: 12}, state: 31};
+              let ent4 = {at: {hh: 23, mm: 59, ss: 21}, state: 22}; 
+       //       dummy.sub_schedules['Tue'].transitions.push( ent);
+       //       dummy.sub_schedules['Tue'].transitions.push( ent2);
+       //       dummy.sub_schedules['Tue'].transitions.push( ent3);
+              dummy.sub_schedules['Tue'].transitions.push( ent4);
+        //      dummy.name = 'Lounge Heating';
+        //      delete dummy.sub_schedules['Off'];
+        //      delete dummy.sub_schedules['Mon'];
 
-          dummy.type = this._domain + '/update';
-          dummy[ this._domain + '_id' ] = this._activeScheduleOverview.entid;
-          dummy[ 'id' ] = this._activeScheduleOverview.entid;
+              delete dummy.attributes['next_event'];
+              delete dummy.attributes['next_state'];
+              delete dummy.attributes['last_offset_refresh'];
 
-        //  delete dummy.attributes;
-        //  delete dummy.n_attr_transitions;
+              dummy.type = this._domain + '/update';
+              dummy[ this._domain + '_id' ] = this._activeScheduleOverview.entid;
+              dummy[ 'id' ] = this._activeScheduleOverview.entid;
 
-          console.log('dummy', dummy);
+            //  delete dummy.attributes;
+            //  delete dummy.n_attr_transitions;
 
-          const returned = await this._hass.connection.sendMessagePromise(dummy);
-          console.log('returned', returned );
+              console.log('dummy', dummy);
+
+              const returned = await this._hass.connection.sendMessagePromise(dummy);
+              console.log('returned', returned );
+          }
           
           return;
       }
@@ -293,8 +305,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
   }
 
-  transToPc (trans) {
-      return (this.transToSecs(trans) / (24*60*60)) * 96;
+  transToPc (trans, pc=100) {
+      return (this.transToSecs(trans) / (24*60*60)) * pc;
   }
 
   transToSecs( trans ) {
@@ -629,15 +641,15 @@ class DynamicSchedulePanel extends HTMLElement {
     console.log('XX scheduleConfig', scheduleConfig);
 
     let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
-        let cont = `<div class="sub-header" style="contain: content; overflow: visible; position: relatve;">`;
+        let cont = `<div class="sub-header subsched-${inx}" style="contain: content; overflow: visible; position: relatve;">`;
         let subsched = scheduleConfig.sub_schedules[ sub ];
         subsched.transitions.map( (trans, tinx) => {
-          cont += `<div class="bord" style="z-index: 5;position:absolute;top:${this.transToPc(trans)}%;">`;
+          cont += `<div class="bord trans" style="z-index: 5;position:absolute;top:${this.transToPc(trans, 96)}%;">`;
           if (rw) {
-            cont += `<span>hh:<input type=number min=0 max=23 value=${trans.at.hh}>`;
-            cont += `<span>mm:<input type=number min=0 max=59 value=${trans.at.mm}>`;
-            cont += `<span>ss:<input type=number min=0 max=59 value=${trans.at.ss}>`;
-            cont += `<span> state=${trans.state}</span>`;
+            cont += `<span>hh:<input class="hh" type=number min=0 max=23 value=${trans.at.hh}></input>`;
+            cont += `<span>mm:<input class="mm" type=number min=0 max=59 value=${trans.at.mm}></input>`;
+            cont += `<span>ss:<input class="ss" type=number min=0 max=59 value=${trans.at.ss}></input>`;
+            cont += `<span> state=<input class="state" type="text" value="${trans.state}"></input></span>`;
           } else {
             cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
             cont += `<span> state=${trans.state}</span>`;
