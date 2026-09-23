@@ -108,9 +108,10 @@ class DynamicSchedulePanel extends HTMLElement {
           if (!this._activeScheduleOverview) return;
 
           if (true) {
-              if (!this._activeScheduleOverview) return;
               const scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+              console.log('schduleConfig', scheduleConfig);
               const subsched_names = Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b));
+              console.log('subs', subsched_names);
               Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b).map((sub, inx) => {
                   const transs = this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() );
                   console.log( 'sub', sub, 'transs', transs );
