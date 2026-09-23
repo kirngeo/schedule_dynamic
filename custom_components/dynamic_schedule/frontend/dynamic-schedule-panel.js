@@ -675,6 +675,7 @@ class DynamicSchedulePanel extends HTMLElement {
              ${subschedTransitionsHtml}
             </div>
           </div>
+          <div>filler</div>
         </ha-card>
         <ha-card class="schedule-details">
           ${contentHtml}
