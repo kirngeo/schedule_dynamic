@@ -112,9 +112,13 @@ class DynamicSchedulePanel extends HTMLElement {
               console.log('schduleConfig', scheduleConfig);
               const subsched_names = Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b));
               console.log('subs', subsched_names);
+              let new_sub_schedules = {};
               Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b)).map((sub, inx) => {
+                  let new_transitions = [];
                   console.log('sub', sub, 'inx', inx);
-                  const transs = this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() );
+                  const transs = this.shadowRoot
+                      .querySelectorAll( ".subschedule-" + inx.toString() )
+                      .querySelectorAll( ".trans" );
                   console.log( 'sub', sub, 'transs', transs );
               });
 
