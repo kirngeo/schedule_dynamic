@@ -602,6 +602,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._activeScheduleOverview !== null) {
       scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+      if (!scheduleConfig) return;
       rw = this._activeScheduleOverview.edit;
 
  //     console.log( 'xx', this._editingConfig, this._activeScheduleOverview);
