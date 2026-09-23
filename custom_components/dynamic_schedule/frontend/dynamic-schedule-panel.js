@@ -602,23 +602,24 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._activeScheduleOverview !== null) {
       scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
-      if (!scheduleConfig) return;
       rw = this._activeScheduleOverview.edit;
 
+      if (scheduleConfig) {
  //     console.log( 'xx', this._editingConfig, this._activeScheduleOverview);
  //     if ( !this._editingConfig   &&  this._activeScheduleOverview.edit ) {
  //         this._editingConfig = structuredClone( scheduleConfig);
  //     }
 
    //   console.log( 'scheduleConfig', this._domaindot + this._activeScheduleOverview.entid, scheduleConfig);
-      subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
-      subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
-      contentHtml += `<div>${JSON.stringify( this._activeScheduleOverview, null, "  " )}</div>`;
-      contentHtml += `<div>scheduleConfigs<pre>${JSON.stringify( this._scheduleConfigs, null, "  " )}</pre></div>`;
-      contentHtml += `<div>editingConfig<pre>${JSON.stringify( this._editingConfig, null, "  " )}</pre></div>`;
-      contentHtml += `<div>scheduleConfig<pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
- //     contentHtml += `<div>subscheds<pre>${JSON.stringify( subscheds, null, "  " )}</pre></div>`;
- //     contentHtml += `<div>subsched_names<pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
+        subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
+        subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
+        contentHtml += `<div>${JSON.stringify( this._activeScheduleOverview, null, "  " )}</div>`;
+        contentHtml += `<div>scheduleConfigs<pre>${JSON.stringify( this._scheduleConfigs, null, "  " )}</pre></div>`;
+        contentHtml += `<div>editingConfig<pre>${JSON.stringify( this._editingConfig, null, "  " )}</pre></div>`;
+        contentHtml += `<div>scheduleConfig<pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
+ //       contentHtml += `<div>subscheds<pre>${JSON.stringify( subscheds, null, "  " )}</pre></div>`;
+ //       contentHtml += `<div>subsched_names<pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
+    }
     } else if (this._schedulesOverview.length > 0) {
       contentHtml = 'please select a dynamic schedule';
     } else {
@@ -694,7 +695,7 @@ class DynamicSchedulePanel extends HTMLElement {
       <div class="content">
         <ha-card>
          <div>
-          <input id="schedule-name-input" type="text" value="${scheduleConfig.name}">
+          <input id="schedule-name-input" type="text" value="${schedu;eConfig ? cheduleConfig.name : ''}">
          </div>
         </ha-card>
         <ha-card class="all-subschedules">
