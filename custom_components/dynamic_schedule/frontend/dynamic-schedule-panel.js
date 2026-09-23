@@ -695,7 +695,7 @@ class DynamicSchedulePanel extends HTMLElement {
       <div class="content">
         <ha-card>
          <div>
-          <input id="schedule-name-input" type="text" value="${schedu;eConfig ? cheduleConfig.name : ''}">
+          <input id="schedule-name-input" type="text" value="${scheduleConfig ? scheduleConfig.name : ''}">
          </div>
         </ha-card>
         <ha-card class="all-subschedules">
