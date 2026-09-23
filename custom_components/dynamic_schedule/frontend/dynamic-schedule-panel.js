@@ -117,7 +117,12 @@ class DynamicSchedulePanel extends HTMLElement {
                   let new_transitions = [];
                   console.log('sub', sub, 'inx', inx);
                   const transs = this.shadowRoot
-                      .querySelectorAll( ".subschedule-" + inx.toString() );
+                      .querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
+                          console,log( 'schctr', schctr );
+                          schctr.querySelectorAll(".trans").forEach( trans => {
+                              console.log('trans', trans);
+                          });
+                      } );
                  //     .querySelectorAll( ".trans" );
                   console.log( 'sub', sub, 'transs', transs );
               });
