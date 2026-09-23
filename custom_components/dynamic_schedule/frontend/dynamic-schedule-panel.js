@@ -129,7 +129,7 @@ class DynamicSchedulePanel extends HTMLElement {
                   new_sub_schedules[ sub ] = {transitions : transs}
                   } );
               });
-              new_scheduleConfig.name = this.shadowRoot.querySelector("schedule-name-input").value;
+              new_scheduleConfig.name = this.shadowRoot.querySelector("#schedule-name-input").value;
               new_scheduleConfig.sub_schedules = new_sub_schedules;
               console.log( 'new_scheduleConfig', new_scheduleConfig );
 
