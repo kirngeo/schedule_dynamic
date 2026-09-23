@@ -121,9 +121,9 @@ class DynamicSchedulePanel extends HTMLElement {
                           let transs = [];
                           schctr.querySelectorAll(".trans").forEach( trans => {
                               let at = {};
-                              at.hh = trans.querySelector('.hh').value;
-                              at.mm = trans.querySelector('.mm').value;
-                              at.ss = trans.querySelector('.mm').value;
+                              at.hh = Number( trans.querySelector('.hh').value );
+                              at.mm = Number( trans.querySelector('.mm').value );
+                              at.ss = Number( trans.querySelector('.mm').value );
                               let t = {at : at};
                               t.state = trans.querySelector('.state').value;
                               transs.push( t );
