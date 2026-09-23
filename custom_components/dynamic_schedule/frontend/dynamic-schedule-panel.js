@@ -1041,7 +1041,8 @@ div {
 
       ${allContentHtml}
 
-      <ha-button id="save-button" size="l"  variant="brand" appearance="accent">Save </ha-button>
+      <ha-button id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
+
       <div id="schedule-modal" class="modal-overlay">
           <div class="modal-content">
               <div class="modal-header">
