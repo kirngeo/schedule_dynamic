@@ -109,29 +109,29 @@ class DynamicSchedulePanel extends HTMLElement {
 
           if (true) {
               const scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
-              console.log('schduleConfig', scheduleConfig);
+              let new_scheduleConfig = {};
+              console.log('scheduleConfig', scheduleConfig);
               const subsched_names = Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b));
               console.log('subs', subsched_names);
               let new_sub_schedules = {};
               Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b)).map((sub, inx) => {
-                  console.log('sub', sub, 'inx', inx);
-                  this.shadowRoot
-                      .querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
-                          console.log( 'schctr', schctr );
-                          let transs = [];
-                          schctr.querySelectorAll(".trans").forEach( trans => {
-                              let at = {};
-                              at.hh = Number( trans.querySelector('.hh').value );
-                              at.mm = Number( trans.querySelector('.mm').value );
-                              at.ss = Number( trans.querySelector('.mm').value );
-                              let t = {at : at};
-                              t.state = trans.querySelector('.state').value;
-                              transs.push( t );
-                          });
-                      new_sub_schedules[ sub ] = {transitions : transs}
-                      } );
+                  this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
+                      let transs = [];
+                      schctr.querySelectorAll(".trans").forEach( trans => {
+                          let at = {};
+                          at.hh = Number( trans.querySelector('.hh').value );
+                          at.mm = Number( trans.querySelector('.mm').value );
+                          at.ss = Number( trans.querySelector('.ss').value );
+                          let t = {at : at};
+                          t.state = trans.querySelector('.state').value;
+                          transs.push( t );
+                      });
+                  new_sub_schedules[ sub ] = {transitions : transs}
+                  } );
               });
-              console.log( 'new_sub_schedules', new_sub_schedules );
+              new_scheduleConfig.name = this.shadowRoot.querySelector("schedule-name-input").value;
+              new_scheduleConfig.sub_schedules = new_sub_schedules;
+              console.log( 'new_scheduleConfig', new_scheduleConfig );
 
           } else {
               let dummy = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
@@ -665,7 +665,7 @@ class DynamicSchedulePanel extends HTMLElement {
             cont += `<span>hh:<input class="hh" type=number min=0 max=23 value=${trans.at.hh}></input>`;
             cont += `<span>mm:<input class="mm" type=number min=0 max=59 value=${trans.at.mm}></input>`;
             cont += `<span>ss:<input class="ss" type=number min=0 max=59 value=${trans.at.ss}></input>`;
-            cont += `<span> state=<input class="state" type="text" value="${trans.state}"></input></span>`;
+            cont += `<span> state=<input class="state" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input></span>`;
           } else {
             cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
             cont += `<span> state=${trans.state}</span>`;
@@ -688,6 +688,11 @@ class DynamicSchedulePanel extends HTMLElement {
     if (this._activeScheduleOverview !== null) {
       allContentHtml = `
       <div class="content">
+        <ha-card>
+         <div>
+          <input id="schedule-name-input" type="text" value="${scheduleConfig.name}">
+         </div>
+        </ha-card>
         <ha-card class="all-subschedules">
           <div class="subs-ed-ctr">
             <div class="time-gutter-header bord">
