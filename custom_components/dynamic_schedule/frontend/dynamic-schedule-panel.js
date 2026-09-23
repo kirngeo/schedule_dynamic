@@ -629,7 +629,7 @@ class DynamicSchedulePanel extends HTMLElement {
     console.log('XX scheduleConfig', scheduleConfig);
 
     let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
-        let cont = `<div class="sub-header" style="contain: content; overflow: visible;">`;
+        let cont = `<div class="sub-header" style="contain: content; overflow-block: visible;">`;
         let subsched = scheduleConfig.sub_schedules[ sub ];
         subsched.transitions.map( (trans, tinx) => {
           cont += `<div class="bord" style="z-index: 5;position:absolute;top:${this.transToPc(trans)}%;">`;
@@ -660,7 +660,7 @@ class DynamicSchedulePanel extends HTMLElement {
     if (this._activeScheduleOverview !== null) {
       allContentHtml = `
       <div class="content">
-        <ha-card class="all-subschedules" style="overflow: visible">
+        <ha-card class="all-subschedules" style="overflow-block: visible;">
           <div class="subs-ed-ctr">
             <div class="time-gutter-header bord">
              ${timeGutterHeaderHtml}
