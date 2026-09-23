@@ -113,6 +113,7 @@ class DynamicSchedulePanel extends HTMLElement {
               const subsched_names = Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b));
               console.log('subs', subsched_names);
               Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b).map((sub, inx) => {
+                  console.log('sub', sub);
                   const transs = this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() );
                   console.log( 'sub', sub, 'transs', transs );
               }));
@@ -641,7 +642,7 @@ class DynamicSchedulePanel extends HTMLElement {
     console.log('XX scheduleConfig', scheduleConfig);
 
     let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
-        let cont = `<div class="sub-header subsched-${inx}" style="contain: content; overflow: visible; position: relatve;">`;
+        let cont = `<div class="sub-header subschedule-${inx}" style="contain: content; overflow: visible; position: relatve;">`;
         let subsched = scheduleConfig.sub_schedules[ sub ];
         subsched.transitions.map( (trans, tinx) => {
           cont += `<div class="bord trans" style="z-index: 5;position:absolute;top:${this.transToPc(trans, 96)}%;">`;
