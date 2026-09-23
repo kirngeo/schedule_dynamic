@@ -598,6 +598,7 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
     }
+    console.log('activeScheduleOverview', this._activeScheduleOverview);
 
     if (this._activeScheduleOverview !== null) {
       scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
@@ -622,6 +623,8 @@ class DynamicSchedulePanel extends HTMLElement {
     } else {
       contentHtml = 'no dynamic schedules exist yet';
     }
+
+    console.log( 'scheduleConfig', scheduleConfig );
 
     // subschedule columns
     let subschedHtml = '';
