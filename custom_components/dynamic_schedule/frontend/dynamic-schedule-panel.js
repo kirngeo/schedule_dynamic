@@ -567,6 +567,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     let contentHtml = '';
     let schedselHtml = '';
+    let scriptselHtml = '';
     let subsched_names = [];
     let subscheds = {};
     let timeGutterHeaderHtml = '';
@@ -597,7 +598,21 @@ class DynamicSchedulePanel extends HTMLElement {
         this._startEditing();
       }
 
+      //
+
+      scriptselHtml += `<select class="icon-btn" id="script-selector">`
+      this._eligibleScriptConfigs.forEach( cnf => {
+        let selected = false;
+
+        schedselHtml += `<option value="${cnf.id}>">${cnf.alias}</option>`
+
+      scriptselHtml += '</select>';
+
+
+
     }
+
+    if 
     console.log('activeScheduleOverview', this._activeScheduleOverview);
 
     if (this._activeScheduleOverview !== null) {
@@ -696,6 +711,9 @@ class DynamicSchedulePanel extends HTMLElement {
         <ha-card>
          <div>
           <input id="schedule-name-input" type="text" value="${scheduleConfig ? scheduleConfig.name : ''}">
+         </div>
+         <div>
+          ${scriptselHtml}
          </div>
         </ha-card>
         <ha-card class="all-subschedules">
