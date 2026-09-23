@@ -661,7 +661,7 @@ class DynamicSchedulePanel extends HTMLElement {
       allContentHtml = `
       <div class="content" style="overflow-block: visible;">
         <ha-card class="all-subschedules" style="overflow-block: visible;">
-          <div class="subs-ed-ctr" style="overflow-block: visible;>
+          <div class="subs-ed-ctr" style="overflow-block: visible;">
             <div class="time-gutter-header bord">
              ${timeGutterHeaderHtml}
             </div>
