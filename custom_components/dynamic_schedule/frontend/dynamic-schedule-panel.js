@@ -580,7 +580,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._schedulesOverview.length > 0) {
 
-      if (this._activeSchedueOverview) {
+      if (this._activeScheduleOverview) {
         scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
       }
 
