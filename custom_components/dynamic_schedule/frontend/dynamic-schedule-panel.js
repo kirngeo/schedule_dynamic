@@ -610,7 +610,7 @@ class DynamicSchedulePanel extends HTMLElement {
       //
       selected = false;
       const scriptids = this._eligibleScriptConfigs.map( scr => {scr.id.replace('script.','')});
-      selected = ! scriptids.includes( scheduleConfig.select_script );
+      selected = scheduleConfig && ! scriptids.includes( scheduleConfig.select_script );
 
       scriptselHtml += `<select class="icon-btn" id="schedule-script-selector">`;
       scriptselHtml += `<option ${selected ? "selected " : ""}value="">-- none --</option>`;
@@ -621,7 +621,7 @@ class DynamicSchedulePanel extends HTMLElement {
         console.log('cnf', cnf);
         if (this._eligibleScriptConfigs.length === 1) {
             selected = true;
-        } else if (scheduleConfig.select_script == cnf.id.replace("script.","")) {
+        } else if (scheduleConfig && scheduleConfig.select_script == cnf.id.replace("script.","")) {
             selected = true;
         }
 
