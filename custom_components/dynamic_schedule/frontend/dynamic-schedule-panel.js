@@ -130,7 +130,10 @@ class DynamicSchedulePanel extends HTMLElement {
                   } );
               });
               new_scheduleConfig.name = this.shadowRoot.querySelector("#schedule-name-input").value;
+              new_scheduleConfig.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value;
               new_scheduleConfig.sub_schedules = new_sub_schedules;
+              new_scheduleConfig[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
+
               console.log( 'new_scheduleConfig', new_scheduleConfig );
 
           } else {
@@ -577,9 +580,14 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._schedulesOverview.length > 0) {
 
+      if (this._activeSchedueOverview) {
+        scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+      }
+
+      let selected = false;
+
       schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
       this._schedulesOverview.forEach( ent => {
-        let selected = false;
 
         if ((this._activeScheduleOverview !== null) && (ent.entid === this._activeScheduleOverview.entid)) {
             selected = true;
@@ -600,14 +608,20 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       //
+      selected = false;
+      const scriptids = this._eligibleScriptConfigs.map( scr => {scr.id.replace('script.','')});
+      selected = ! scriptids.includes( scheduleConfig.select_script );
 
-      scriptselHtml += `<select class="icon-btn" id="script-selector">`
+      scriptselHtml += `<select class="icon-btn" id="schedule-script-selector">`;
+      scriptselHtml += `<option ${selected ? "selected " : ""}value="">-- none --</option>`;
       console.log('len', this._eligibleScriptConfigs.length);
       this._eligibleScriptConfigs.forEach( cnf => {
         let selected = false;
 
         console.log('cnf', cnf);
         if (this._eligibleScriptConfigs.length === 1) {
+            selected = true;
+        } else if (scheduleConfig.select_script == cnf.id.replace("script.","")) {
             selected = true;
         }
 
@@ -689,10 +703,22 @@ class DynamicSchedulePanel extends HTMLElement {
             cont += `<span>hh:<input class="hh" type=number min=0 max=23 value=${trans.at.hh}></input>`;
             cont += `<span>mm:<input class="mm" type=number min=0 max=59 value=${trans.at.mm}></input>`;
             cont += `<span>ss:<input class="ss" type=number min=0 max=59 value=${trans.at.ss}></input>`;
-            cont += `<span> state=<input class="state" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input></span>`;
+            cont += '<span> state';
+            if (scheduleConfig["boolean"]) {
+              cont += `<ha-switch class="boolean" ${!!trans.state ? "checked " : ""}></ha-switch>`
+            } else {
+              cont += `<input class="state" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
+            }
+            cont += '</span>';
           } else {
             cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
-            cont += `<span> state=${trans.state}</span>`;
+            cont += '<span> state';
+            if (scheduleConfig["boolean"]) {
+              cont += `<ha-switch disabled ${!!trans.state ? "checked " : ""}></ha-switch>`
+            } else {
+              cont += `${trans.state}`;
+            }
+            cont += '</span>'
           }
           cont += `</div>`;
         });
