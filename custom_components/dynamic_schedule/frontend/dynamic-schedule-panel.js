@@ -502,6 +502,7 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       console.log('_eligibleScriptConfigs', this._eligibleScriptConfigs);
+      this.render();
   }
 
 
