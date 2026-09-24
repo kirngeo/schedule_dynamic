@@ -601,9 +601,11 @@ class DynamicSchedulePanel extends HTMLElement {
       //
 
       scriptselHtml += `<select class="icon-btn" id="script-selector">`
+      console.log('len', this._eligibleScriptConfigs.length);
       this._eligibleScriptConfigs.forEach( cnf => {
         let selected = false;
 
+        console.log('cnf', cnf);
         if (this._eligibleScriptConfigs.length === 1) {
             selected = true;
         }
