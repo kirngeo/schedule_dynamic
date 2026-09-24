@@ -604,7 +604,11 @@ class DynamicSchedulePanel extends HTMLElement {
       this._eligibleScriptConfigs.forEach( cnf => {
         let selected = false;
 
-        schedselHtml += `<option value="${cnf.id}">${cnf.alias}</option>`
+        if (this._eligibleScriptConfigs.length === 1) {
+            selected = true;
+        }
+
+        scriptselHtml += `<option ${selected  ? "selected " : ""}value="${cnf.id}">${cnf.alias}</option>`
 
         });
       scriptselHtml += '</select>';
