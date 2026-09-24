@@ -606,10 +606,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
         schedselHtml += `<option value="${cnf.id}">${cnf.alias}</option>`
 
+        });
       scriptselHtml += '</select>';
-
-
-
     }
 
     console.log('activeScheduleOverview', this._activeScheduleOverview);
