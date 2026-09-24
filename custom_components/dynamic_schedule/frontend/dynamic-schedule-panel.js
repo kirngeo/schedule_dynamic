@@ -612,7 +612,6 @@ class DynamicSchedulePanel extends HTMLElement {
 
     }
 
-    if 
     console.log('activeScheduleOverview', this._activeScheduleOverview);
 
     if (this._activeScheduleOverview !== null) {
