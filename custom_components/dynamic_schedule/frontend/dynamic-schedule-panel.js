@@ -204,6 +204,7 @@ class DynamicSchedulePanel extends HTMLElement {
           new_scheduleConfig[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
           new_scheduleConfig.type = this._domain + '/update';
 
+
           console.log( 'new_scheduleConfig', new_scheduleConfig );
 
           const returned = await this._hass.connection.sendMessagePromise(new_scheduleConfig);
