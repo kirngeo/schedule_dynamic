@@ -645,7 +645,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
       //
  
-      attrHtml += `<ha-yaml-editor>`;
+      const yaml = {a : 'aa', b : 'bb', c : {d : 'dd'}};
+      attrHtml += `<ha-yaml-editor label="yaml label" .defaultValue=${yaml}>`;
       attrHtml += '</ha-yaml-editor>';
     }
 
