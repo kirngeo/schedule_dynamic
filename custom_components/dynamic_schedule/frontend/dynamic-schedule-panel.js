@@ -635,6 +635,7 @@ class DynamicSchedulePanel extends HTMLElement {
             selected = true;
         }
 
+        console.log(`OPT "${cnf.id.replace('script.','')}");
         scriptselHtml += `<option ${selected  ? "selected " : ""}value="${cnf.id.replace('script.','')}">${cnf.alias}</option>`
 
         });
