@@ -572,6 +572,7 @@ class DynamicSchedulePanel extends HTMLElement {
     let contentHtml = '';
     let schedselHtml = '';
     let scriptselHtml = '';
+    let attrHtml = '';
     let subsched_names = [];
     let subscheds = {};
     let timeGutterHeaderHtml = '';
@@ -606,41 +607,39 @@ class DynamicSchedulePanel extends HTMLElement {
         this._activeScheduleOverview = this._schedulesOverview[0];
         this._startEditing();
       }
+    }
 
+    if (scheduleConfig) {
       //
       selected = false;
       const long_scriptids = this._eligibleScriptConfigs.map( scr => scr.id);
       console.log('long_scriptids', long_scriptids);
       const short_scriptids = long_scriptids.map( scr => scr.replace("script.",""));
-      if (scheduleConfig) {
-        selected = ((! long_scriptids.includes( scheduleConfig.select_script ))
-                  &&
-                   (! short_scriptids.includes( scheduleConfig.select_script )) );
-      }
+      selected = ((! long_scriptids.includes( scheduleConfig.select_script ))
+                &&
+                 (! short_scriptids.includes( scheduleConfig.select_script )) );
 
       scriptselHtml += `<select class="icon-btn" id="schedule-script-selector">`;
       scriptselHtml += `<option ${selected ? "selected " : ""}value="">-- none --</option>`;
       console.log('len', this._eligibleScriptConfigs.length);
       this._eligibleScriptConfigs.forEach( cnf => {
         let selected = false;
-        if (scheduleConfig) { 
-
-          console.log('cnf', cnf);
-          if (this._eligibleScriptConfigs.length === 1) {
-            selected = true;
-          } else if (
-              (scheduleConfig.select_script == cnf.id.replace("script.",""))
-                ||
-              (scheduleConfig.select_script == cnf.id)) {
-            selected = true;
-          }
+        if (this._eligibleScriptConfigs.length === 1) {
+          selected = true;
+        } else if (
+            (scheduleConfig.select_script == cnf.id.replace("script.",""))
+              ||
+            (scheduleConfig.select_script == cnf.id)) {
+          selected = true;
         }
-
-        console.log(`OPT "${cnf.id.replace('script.','')}"`);
-        scriptselHtml += `<option ${selected  ? "selected " : ""}value="${cnf.id.replace('script.','')}">${cnf.alias}</option>`
-
+        scriptselHtml += `<option ${selected  ? "selected " : ""}value="${cnf.id.replace('script.','')}">${cnf.alias}</option>`;
         });
       scriptselHtml += '</select>';
+
+      //
+
+      attrHtml += `<ha-yaml-editor>`;
+      attrHtml += '</ha-yaml-editor>';
     }
 
     console.log('activeScheduleOverview', this._activeScheduleOverview);
@@ -704,13 +703,11 @@ class DynamicSchedulePanel extends HTMLElement {
       </div>
       `;
 
-    console.log('XX scheduleConfig', scheduleConfig);
-
     let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
         let cont = `<div class="sub-header subschedule-${inx}" style="contain: content; overflow: visible; position: relatve;">`;
         let subsched = scheduleConfig.sub_schedules[ sub ];
         subsched.transitions.map( (trans, tinx) => {
-          cont += `<div class="bord trans" style="z-index: 5;position:absolute;top:${this.transToPc(trans, 96)}%;">`;
+          cont += `<div class="bord trans" style="z-index: 5;position:absolute;top:${this.transToPc(trans, 97)}%;">`;
           if (rw) {
             cont += `<span>hh:<input class="hh" type=number min=0 max=23 value=${trans.at.hh}></input>`;
             cont += `<span>mm:<input class="mm" type=number min=0 max=59 value=${trans.at.mm}></input>`;
@@ -756,6 +753,9 @@ class DynamicSchedulePanel extends HTMLElement {
          </div>
          <div>
           ${scriptselHtml}
+         </div>
+         <div>
+          ${attrHtml}
          </div>
         </ha-card>
         <ha-card class="all-subschedules">
