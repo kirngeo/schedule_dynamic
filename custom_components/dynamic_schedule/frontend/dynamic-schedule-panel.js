@@ -759,7 +759,7 @@ class DynamicSchedulePanel extends HTMLElement {
           <input id="schedule-name-input" type="text" value="${scheduleConfig ? scheduleConfig.name : ''}">
          </div>
          <div>
-          <ha-switch ${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean"></ha-switch>
+          ${boolHtml}
          </div>
          <div>
           ${scriptselHtml}
