@@ -646,7 +646,7 @@ class DynamicSchedulePanel extends HTMLElement {
       //
  
       const yaml = {a : 'aa', b : 'bb', c : {d : 'dd'}};
-      attrHtml += `<ha-yaml-editor label="yaml label" .defaultValue=${yaml}>`;
+      attrHtml += `<ha-yaml-editor id="attr-yaml" label="yaml label" .defaultValue=${yaml}>`;
       attrHtml += '</ha-yaml-editor>';
     }
 
@@ -1232,6 +1232,32 @@ div {
   }
 
 }
+customElements.whenDefined('card-tools').then(() => {
+  var cardTools = customElements.get('card-tools');
+  // YOUR CODE GOES IN HERE
+  console.log('hello wrd');
+  class MyPlugin extends cardTools.LitElement {
+    setConfig(config) {
+      this.name = config.name;
+    }
+
+    render() {
+      return cardTools.LitHtml`
+        ${this.name}
+      `;
+    }
+  }
+
+  customElements.define("my-plugin", MyPlugin);
+}); // END OF .then(() => {
+
+setTimeout(() => {
+  if(customElements.get('card-tools')) return;
+  customElements.define('my-plugin', class extends HTMLElement{
+    setConfig() { throw new Error("Can't find card-tools. See https://github.com/thomasloven/lovelace-card-tools");}
+  });
+}, 2000);
+
 
 if (false) {
     [
