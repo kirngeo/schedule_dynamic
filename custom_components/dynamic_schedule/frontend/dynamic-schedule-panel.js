@@ -202,7 +202,7 @@ class DynamicSchedulePanel extends HTMLElement {
           new_scheduleConfig.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
           new_scheduleConfig.sub_schedules = new_sub_schedules;
           new_scheduleConfig[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
-          new_scheduleConfig.type: this._domain + '/update';
+          new_scheduleConfig.type = this._domain + '/update';
 
           console.log( 'new_scheduleConfig', new_scheduleConfig );
 
