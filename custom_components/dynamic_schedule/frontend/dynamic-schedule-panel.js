@@ -1232,6 +1232,8 @@ div {
   }
 
 }
+
+console.log('about to...');
 customElements.whenDefined('card-tools').then(() => {
   var cardTools = customElements.get('card-tools');
   // YOUR CODE GOES IN HERE
@@ -1253,6 +1255,7 @@ customElements.whenDefined('card-tools').then(() => {
 
 setTimeout(() => {
   if(customElements.get('card-tools')) return;
+  console.log('about to define');
   customElements.define('my-plugin', class extends HTMLElement{
     setConfig() { throw new Error("Can't find card-tools. See https://github.com/thomasloven/lovelace-card-tools");}
   });
