@@ -655,7 +655,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     console.log('activeScheduleOverview', this._activeScheduleOverview);
 
-    if (this._activeScheduleOverview !== null) {
+    if (this._activeScheduleOverview) {
       scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
       rw = this._activeScheduleOverview.edit;
 
@@ -705,7 +705,13 @@ class DynamicSchedulePanel extends HTMLElement {
     `;
 
     let subschedNamesHtml = subsched_names.map((sub, inx) => `
-      <div class="sub-header">${sub}</div>
+      <div class="sub-header">
+       <div>${sub}</div>
+       <div class="icon-btn">
+         <span>+</span>
+         <span>X</span>
+       </div>
+      </div>
     `).join('');
 
     subschedNamesHtml = `
