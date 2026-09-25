@@ -130,6 +130,7 @@ class DynamicSchedulePanel extends HTMLElement {
                   } );
               });
               new_scheduleConfig.name = this.shadowRoot.querySelector("#schedule-name-input").value;
+              new_schedule["boolean"] = this.shadowRoot.querySelector("#schedule-is-boolean").value;
               new_scheduleConfig.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
               new_scheduleConfig.sub_schedules = new_sub_schedules;
               new_scheduleConfig[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
@@ -572,6 +573,7 @@ class DynamicSchedulePanel extends HTMLElement {
     let contentHtml = '';
     let schedselHtml = '';
     let scriptselHtml = '';
+    let boolHtml = '';
     let attrHtml = '';
     let subsched_names = [];
     let subscheds = {};
@@ -639,6 +641,10 @@ class DynamicSchedulePanel extends HTMLElement {
 
       //
 
+      boolHtml = `<ha-switch ${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean"></ha-switch>`;
+
+      //
+ 
       attrHtml += `<ha-yaml-editor>`;
       attrHtml += '</ha-yaml-editor>';
     }
@@ -751,6 +757,9 @@ class DynamicSchedulePanel extends HTMLElement {
         <ha-card>
          <div>
           <input id="schedule-name-input" type="text" value="${scheduleConfig ? scheduleConfig.name : ''}">
+         </div>
+         <div>
+          <ha-switch ${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean"></ha-switch>
          </div>
          <div>
           ${scriptselHtml}
