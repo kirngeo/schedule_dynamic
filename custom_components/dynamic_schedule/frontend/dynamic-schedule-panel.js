@@ -624,18 +624,18 @@ class DynamicSchedulePanel extends HTMLElement {
         let selected = false;
         if (scheduleConfig) { 
 
-        console.log('cnf', cnf);
-        if (this._eligibleScriptConfigs.length === 1) {
+          console.log('cnf', cnf);
+          if (this._eligibleScriptConfigs.length === 1) {
             selected = true;
-        } else if (
-            (scheduleConfig && scheduleConfig.select_script == cnf.id.replace("script.",""))
-            ||
-            (scheduleConfig && scheduleConfig.select_script == cnf.id))
-         )
+          } else if (
+              (scheduleConfig && scheduleConfig.select_script == cnf.id.replace("script.",""))
+                ||
+              (scheduleConfig && scheduleConfig.select_script == cnf.id)) {
             selected = true;
+          }
         }
 
-        console.log(`OPT "${cnf.id.replace('script.','')}");
+        console.log(`OPT "${cnf.id.replace('script.','')}"`);
         scriptselHtml += `<option ${selected  ? "selected " : ""}value="${cnf.id.replace('script.','')}">${cnf.alias}</option>`
 
         });
