@@ -726,6 +726,7 @@ class Schedule(CollectionEntity):
                  }
             ]
 
+            LOGGER.debug( '%s actions=%s', self.name, actions)
             try:
                 await async_validate_actions_config( self.hass, actions )
             except ValueError as _:
