@@ -126,7 +126,8 @@ class DynamicSchedulePanel extends HTMLElement {
                           t.state = trans.querySelector('.state').value;
                           transs.push( t );
                       });
-                  new_sub_schedules[ sub ] = {transitions : transs}
+                      trans.sort( (a,b) => this.transToSecs(a) < this.transToSecs(b) );
+                      new_sub_schedules[ sub ] = {transitions : transs.sort( (a,b) => this.transToSecs(a) < this.transToSecs(b) )}
                   } );
               });
               new_scheduleConfig.name = this.shadowRoot.querySelector("#schedule-name-input").value;
