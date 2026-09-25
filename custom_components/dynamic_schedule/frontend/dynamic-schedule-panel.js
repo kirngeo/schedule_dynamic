@@ -176,8 +176,8 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('#new-schedule-btn');
       if (clicked) {
           e.preventDefault();
-          const iconBool = this.shadowRoot.getElementById('schedule-bool');
-          if (iconBool) iconBool.checked = false;
+      //    const iconBool = this.shadowRoot.getElementById('schedule-bool');
+      //    if (iconBool) iconBool.checked = false;
           this._openNewScheduleModal();
           return;
       }
@@ -338,12 +338,12 @@ class DynamicSchedulePanel extends HTMLElement {
 
   async _onCreateScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('schedule-name');
-      const iconInput = this.shadowRoot.getElementById('schedule-icon');
-      const iconBool = this.shadowRoot.getElementById('schedule-bool');
+  //    const iconInput = this.shadowRoot.getElementById('schedule-icon');
+   //   const iconBool = this.shadowRoot.getElementById('schedule-bool');
 
       const name = nameInput ? nameInput.value.trim() : '';
-      const icon = iconInput ? iconInput.value.trim() : 'mdi:table-clock';
-      const bool = iconBool ? iconBool.checked : false;
+  //    const icon = iconInput ? iconInput.value.trim() : 'mdi:table-clock';
+  //    const bool = iconBool ? iconBool.checked : false;
       
       if (!name) {
           this.showToast('Please enter a dynamic schedule name');
@@ -356,8 +356,11 @@ class DynamicSchedulePanel extends HTMLElement {
           const parms = {
               type: this._domain + '/create',
               name: name,
-              icon: icon || 'mdi:table-clock',
-              "boolean" : Boolean( bool ),
+              select_script: null,
+              icon: 'mdi:table-clock',
+//              icon: icon || 'mdi:table-clock',
+              "boolean" : false,
+//              "boolean" : Boolean( bool ),
               ...updatedConfig
           };
 /* eg parms
