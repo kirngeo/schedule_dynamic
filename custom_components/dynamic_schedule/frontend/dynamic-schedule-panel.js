@@ -609,8 +609,9 @@ class DynamicSchedulePanel extends HTMLElement {
 
       //
       selected = false;
-      const long_scriptids = this._eligibleScriptConfigs.map( scr => {scr.id;});
-      const short_scriptids = long_scriptids.map( scr => {scr.replace("script.","");});
+      const long_scriptids = this._eligibleScriptConfigs.map( scr => scr.id);
+      console.log('long_scriptids', long_scriptids);
+      const short_scriptids = long_scriptids.map( scr => scr.replace("script.",""));
       if (scheduleConfig) {
         selected = ((! long_scriptids.includes( scheduleConfig.select_script ))
                   &&
