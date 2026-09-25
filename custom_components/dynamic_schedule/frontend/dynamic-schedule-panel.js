@@ -628,9 +628,9 @@ class DynamicSchedulePanel extends HTMLElement {
           if (this._eligibleScriptConfigs.length === 1) {
             selected = true;
           } else if (
-              (scheduleConfig && scheduleConfig.select_script == cnf.id.replace("script.",""))
+              (scheduleConfig.select_script == cnf.id.replace("script.",""))
                 ||
-              (scheduleConfig && scheduleConfig.select_script == cnf.id)) {
+              (scheduleConfig.select_script == cnf.id)) {
             selected = true;
           }
         }
