@@ -609,23 +609,33 @@ class DynamicSchedulePanel extends HTMLElement {
 
       //
       selected = false;
-      const scriptids = this._eligibleScriptConfigs.map( scr => {scr.id.replace('script.','')});
-      selected = scheduleConfig && ! scriptids.includes( scheduleConfig.select_script );
+      const long_scriptids = this._eligibleScriptConfigs.map( scr => {scr.id;});
+      const short_scriptids = long_scriptids.map( scr => {scr.replace("script.","");});
+      if (scheduleConfig) {
+        selected = ((! long_scriptids.includes( scheduleConfig.select_script ))
+                  &&
+                   (! short_scriptids.includes( scheduleConfig.select_script )) );
+      }
 
       scriptselHtml += `<select class="icon-btn" id="schedule-script-selector">`;
       scriptselHtml += `<option ${selected ? "selected " : ""}value="">-- none --</option>`;
       console.log('len', this._eligibleScriptConfigs.length);
       this._eligibleScriptConfigs.forEach( cnf => {
         let selected = false;
+        if (scheduleConfig) { 
 
         console.log('cnf', cnf);
         if (this._eligibleScriptConfigs.length === 1) {
             selected = true;
-        } else if (scheduleConfig && scheduleConfig.select_script == cnf.id.replace("script.","")) {
+        } else if (
+            (scheduleConfig && scheduleConfig.select_script == cnf.id.replace("script.",""))
+            ||
+            (scheduleConfig && scheduleConfig.select_script == cnf.id))
+         )
             selected = true;
         }
 
-        scriptselHtml += `<option ${selected  ? "selected " : ""}value="${cnf.id}">${cnf.alias}</option>`
+        scriptselHtml += `<option ${selected  ? "selected " : ""}value="${cnf.id.replace('script.','')}">${cnf.alias}</option>`
 
         });
       scriptselHtml += '</select>';
