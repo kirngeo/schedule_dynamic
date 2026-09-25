@@ -126,11 +126,11 @@ class DynamicSchedulePanel extends HTMLElement {
                           t.state = trans.querySelector('.state').value;
                           transs.push( t );
                       });
-                      new_sub_schedules[ sub ] = {transitions : transs.sort( (a,b) => this.transToSecs(a) < this.transToSecs(b) )}
+                      new_sub_schedules[ sub ] = {transitions : transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) )}
                   } );
               });
               new_scheduleConfig.name = this.shadowRoot.querySelector("#schedule-name-input").value;
-              new_scheduleConfig.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value;
+              new_scheduleConfig.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
               new_scheduleConfig.sub_schedules = new_sub_schedules;
               new_scheduleConfig[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
 
