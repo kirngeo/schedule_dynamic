@@ -578,6 +578,7 @@ class DynamicSchedulePanel extends HTMLElement {
     let timeGutterHeaderHtml = '';
     let scheduleConfig = null;
     let rw = false;
+    let selected = false;
 
     if (this._schedulesOverview.length > 0) {
 
@@ -585,7 +586,7 @@ class DynamicSchedulePanel extends HTMLElement {
         scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
       }
 
-      let selected = false;
+      selected = false;
 
       schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
       this._schedulesOverview.forEach( ent => {
