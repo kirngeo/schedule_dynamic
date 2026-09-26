@@ -218,7 +218,7 @@ class DynamicSchedulePanel extends HTMLElement {
           console.log('save-button');
           e.preventDefault();
 
-          const returned = await this._hass.connection.sendMessagePromise( this.gatherConfig );
+          const returned = await this._hass.connection.sendMessagePromise( this.gatherConfig() );
           console.log('returned', returned );
           
           this.fetchScheduleConfigs();
