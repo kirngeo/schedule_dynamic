@@ -828,7 +828,7 @@ class DynamicSchedulePanel extends HTMLElement {
           desiredpc = this.transToPc(trans, 97);
 
           if (tinx) {
-              desiredpc = Math.max( desiredpc, lastpc + 5 );
+              desiredpc = Math.max( desiredpc, lastpc + 4 );
           }
 
           cont += `<div class="bord trans" style="z-index: 5;position:absolute;top:${desiredpc}%;">`;
@@ -873,17 +873,23 @@ class DynamicSchedulePanel extends HTMLElement {
       allContentHtml = `
       <div class="content">
         <ha-card>
-         <div>
-          <input id="schedule-name-input" type="text" value="${scheduleConfig ? scheduleConfig.name : ''}">
-         </div>
-         <div>
-          ${boolHtml}
-         </div>
-         <div>
-          ${scriptselHtml}
-         </div>
-         <div>
-          ${attrHtml}
+         <div class="attrs-ctr">
+          <div>Name</div>
+          <div>
+           <input id="schedule-name-input" type="text" value="${scheduleConfig ? scheduleConfig.name : ''}">
+          </div>
+          <div>Boolean</div>
+          <div>
+           ${boolHtml}
+          </div>
+          <div>Selector script</div>
+          <div>
+           ${scriptselHtml}
+          </div>
+          <div>attributes</div>
+          <div>
+           ${attrHtml}
+          </div>
          </div>
         </ha-card>
         <ha-card class="all-subschedules">
@@ -1048,6 +1054,11 @@ div {
             height: 100%;
             display: grid;
             grid-template-columns: repeat(${subsched_names.length}, [col-start] 1fr);
+        }
+
+        .attrs-ctr {
+            display: grid;
+            grid-template-columns: min-content auto;
         }
 
         .subs-ed-ctr {
