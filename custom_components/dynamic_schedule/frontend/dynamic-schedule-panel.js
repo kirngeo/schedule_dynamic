@@ -617,11 +617,11 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   gatherConfig() {
-      console.log('gatherConfig', this.shadowRoot.querySelectorAll('.sh-name') );
-
-      const subs = this.shadowRoot.querySelectorAll('.sh-name').forEach( sh => {
-          console.log( 'dataset', sh, sh.dataset );
+      const subs = [];
+      this.shadowRoot.querySelectorAll('.sh-name').forEach( sh => {
+          subs.push( [ sh.dataset.sub, Number( sh.dataset.inx ) ] );
       });
+      console.log('subs', subs);
   }
 
   render() {
