@@ -617,7 +617,8 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   gatherConfig() {
-      console.log('gatherConfig');
+      console.log('gatherConfig', this.shadowRoot.querySelectorAll('.sub-header') );
+
       const subs = this.shadowRoot.querySelectorAll('.sub-header').map( sh => {
           console.log( 'dataset', sh, sh.dataset );
       });
