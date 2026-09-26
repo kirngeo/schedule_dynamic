@@ -617,9 +617,9 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   gatherConfig() {
-      console.log('gatherConfig', this.shadowRoot.querySelectorAll('.sub-header') );
+      console.log('gatherConfig', this.shadowRoot.querySelectorAll('.sh-name') );
 
-      const subs = this.shadowRoot.querySelectorAll('.sub-header').forEach( sh => {
+      const subs = this.shadowRoot.querySelectorAll('.sh-name').forEach( sh => {
           console.log( 'dataset', sh, sh.dataset );
       });
   }
@@ -758,11 +758,11 @@ class DynamicSchedulePanel extends HTMLElement {
     `;
 
     let subschedNamesHtml = subsched_names.map((sub, inx) => `
-      <div class="sub-header" data-sub="${sub}" data-inx=${inx}>
+      <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
        <div>${sub}</div>
        <div class="icon-btn">
-         <span title="add a >+</span>
-         <span>X</span>
+         <span title="add a transition">+</span>
+         <span title="remove sub-schedule">X</span>
        </div>
       </div>
     `).join('');
