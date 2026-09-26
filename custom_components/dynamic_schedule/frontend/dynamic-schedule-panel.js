@@ -105,6 +105,8 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('#main-test-btn');
       if (clicked) {
           e.preventDefault();
+          this.gatherConfig();
+          return;
           if (!this._activeScheduleOverview) return;
 
           if (true) {
@@ -246,9 +248,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('#modal-test-btn');
       if (clicked) {
           e.preventDefault();
-          const iconBool = this.shadowRoot.getElementById('schedule-bool');
-          console.log('iconBool', iconBool);
-          console.log('iconBool.checked', iconBool.checked);
+          this.gatherConfig();
           return;
       }
 
@@ -614,6 +614,12 @@ class DynamicSchedulePanel extends HTMLElement {
 
   }
 
+  gatherConfig() {
+      const subs = this.shadowRoot.querySelectorAll('.sub-header').map( sh => {
+          console.log( 'dataset', sh, sh.dataset );
+      });
+  }
+
   render() {
 
     let contentHtml = '';
@@ -748,10 +754,10 @@ class DynamicSchedulePanel extends HTMLElement {
     `;
 
     let subschedNamesHtml = subsched_names.map((sub, inx) => `
-      <div class="sub-header">
+      <div class="sub-header" data-sub="${sub} data-inx=${inx}>
        <div>${sub}</div>
        <div class="icon-btn">
-         <span>+</span>
+         <span title="add a >+</span>
          <span>X</span>
        </div>
       </div>
