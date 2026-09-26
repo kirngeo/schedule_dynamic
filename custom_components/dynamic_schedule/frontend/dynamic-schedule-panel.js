@@ -1237,7 +1237,9 @@ div {
     bottom: calc(-80px - var(--safe-area-inset-bottom));
     transition: bottom 0.3s;
   }
-
+  .fab-positioner ha-button[slot="fab"].dirty {
+    bottom: calc(16px + var(--safe-area-inset-bottom, 0px));
+  }
 
       </style>
 
