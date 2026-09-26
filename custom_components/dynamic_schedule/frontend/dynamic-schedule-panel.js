@@ -180,14 +180,36 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           console.log('add-transition', clicked);
           e.preventDefault();
+          const data = clicked.closest( '.sh-name' ).dataset
+          let conf = this.gatherConfig();
+          let transs = conf.sub_schedules.transitions;
+          transs.push( {at: {hh: 12, mm:0, ss:0}, state: 0} );
+          transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) );
+
+          const returned = await this._hass.connection.sendMessagePromise( conf );
+          console.log('returned', returned );
+          
+          this.fetchScheduleConfigs();
+          this.setShowingEntid( returned.id );
+          this.render();
+
           return;
       }
 
       clicked = e.target.closest('.delete-subschedule');
       if (clicked) {
-          const data = clicked.closest( '.sh-name' ).dataset
-          console.log('delete-subschedule', data.sub);
           e.preventDefault();
+          const data = clicked.closest( '.sh-name' ).dataset
+          let conf = this.gatherConfig();
+          delete conf.sub_schedules[ data.sub ];
+
+          const returned = await this._hass.connection.sendMessagePromise( conf );
+          console.log('returned', returned );
+          
+          this.fetchScheduleConfigs();
+          this.setShowingEntid( returned.id );
+          this.render();
+
           return;
       }
 
