@@ -180,9 +180,8 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           console.log('add-transition', clicked);
           e.preventDefault();
-          const data = clicked.closest( '.sh-name' ).dataset
           let conf = this.gatherConfig();
-          let transs = conf.sub_schedules.transitions;
+          let transs = conf.sub_schedules[ clicked.closest( '.sh-name' ).dataset.sub ].transitions;
           transs.push( {at: {hh: 12, mm:0, ss:0}, state: 0} );
           transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) );
 
