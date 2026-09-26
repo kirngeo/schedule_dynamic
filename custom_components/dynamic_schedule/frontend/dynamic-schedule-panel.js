@@ -853,7 +853,9 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
          </div>
         </ha-card>
-        <ha-button id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
+        <div class="fab-positioner">
+        <ha-button slot="fab" id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
+        </div>
         <ha-card class="all-subschedules">
           <div class="subs-ed-ctr">
             <div class="time-gutter-header">
@@ -1223,6 +1225,18 @@ div {
         .btn.secondary:hover {
             background-color: var(--divider-color, rgba(0, 0, 0, 0.05));
         }
+  .fab-positioner {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .fab-positioner ha-button[slot="fab"] {
+    position: fixed;
+    right: unset;
+    left: unset;
+    bottom: calc(-80px - var(--safe-area-inset-bottom));
+    transition: bottom 0.3s;
+  }
 
 
       </style>
