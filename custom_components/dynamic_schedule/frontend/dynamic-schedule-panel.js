@@ -108,7 +108,8 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
           let conf = this.gatherConfig();
           clicked.closest( '.trans' ).remove();
-          return
+          return;
+      }
 
       clicked = e.target.closest('#main-test-btn');
       if (clicked) {
