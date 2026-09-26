@@ -822,8 +822,16 @@ class DynamicSchedulePanel extends HTMLElement {
     let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
         let cont = `<div class="sub-header subschedule-${inx}" style="contain: content; overflow: visible; position: relatve;">`;
         let subsched = scheduleConfig.sub_schedules[ sub ];
+        let lastpc = 0;
+        let desiredpc;
         subsched.transitions.map( (trans, tinx) => {
-          cont += `<div class="bord trans" style="z-index: 5;position:absolute;top:${this.transToPc(trans, 97)}%;">`;
+          desiredpc = this.transToPc(trans, 97);
+
+          if (tinx) {
+              desiredpc = Math.max( desiredpc, lastpc + 5 );
+          }
+
+          cont += `<div class="bord trans" style="z-index: 5;position:absolute;top:${desiredpc}%;">`;
           if (rw) {
             cont += `<span>hh:<input class="hh" type=number min=0 max=23 value=${trans.at.hh}></input>`;
             cont += `<span>mm:<input class="mm" type=number min=0 max=59 value=${trans.at.mm}></input>`;
@@ -846,6 +854,7 @@ class DynamicSchedulePanel extends HTMLElement {
             cont += '</span>'
           }
           cont += `</div>`;
+          lastpc = desiredpc;
         });
         cont += '</div>';
         return cont;
