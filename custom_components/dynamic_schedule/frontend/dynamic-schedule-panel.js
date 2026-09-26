@@ -131,7 +131,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('.add-transition');
       if (clicked) {
           console.log('add-transition', clicked);
-          const ctr = clicked.closest('.sh-name')l
+          const ctr = clicked.closest('.sh-name');
           e.preventDefault();
           if (this._activeScheduleOverview) {
             let transs = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
