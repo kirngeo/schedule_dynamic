@@ -766,10 +766,10 @@ class DynamicSchedulePanel extends HTMLElement {
     // time gutter header 
     // 1) add a subschedule
     timeGutterHeaderHtml += `
-          <button style="font-size: 0.75em;" id="add-subschedule" class="XXicon-btn-small style="XXbackground-color:;"" title="add a subschedule">
-              <ha-icon icon="mdi:plus"></ha-icon>
+          <button style="font-size: 0.75em;" id="add-subschedule" class="XXicon-btn-small style="XXbackground-color:;"" title="add a subschedule">+
           </button>
     `;
+    //          <ha-icon icon="mdi:plus"></ha-icon>
 
 
     // Time Gutter (Y-Axis)
@@ -785,8 +785,8 @@ class DynamicSchedulePanel extends HTMLElement {
       <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
        <div>${sub}</div>
        <div class="icon-btn">
-         <span class="add-transition" title="add a transition">+</span>
-         <span class="delete-subschedule" title="remove sub-schedule">-</span>
+         <button class="add-transition" title="add a transition">+</button>
+         <button class="delete-subschedule" title="remove this entire sub-schedule">-</button>
        </div>
       </div>
     `).join('');
