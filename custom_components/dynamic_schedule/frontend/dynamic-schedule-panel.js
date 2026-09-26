@@ -621,8 +621,12 @@ class DynamicSchedulePanel extends HTMLElement {
       this.shadowRoot.querySelectorAll('.sh-name').forEach( sh => {
           subnames.push( sh.dataset.sub );
       });
-      console.log('subnames', subnames);
+
       let conf = {};
+      conf.name = this.shadowRoot.querySelector("#schedule-name-input").value;
+      conf["boolean"] = this.shadowRoot.querySelector("#schedule-is-boolean").checked;
+      conf.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
+
       let subs = {};
       subnames.map((sub, inx) => {
           this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
@@ -639,10 +643,8 @@ class DynamicSchedulePanel extends HTMLElement {
               new_sub_schedules[ sub ] = {transitions : transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) )}
           } );
       });
-      conf.name = this.shadowRoot.querySelector("#schedule-name-input").value;
-      conf["boolean"] = this.shadowRoot.querySelector("#schedule-is-boolean").checked;
-      conf.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
-      conf.sub_schedules = new_sub_schedules;
+      conf.sub_schedules = subs;
+
       conf[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
       conf.type = this._domain + '/update';
 
