@@ -773,6 +773,7 @@ class DynamicSchedulePanel extends HTMLElement {
         contentHtml += `<div>scheduleConfig<pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
  //       contentHtml += `<div>subscheds<pre>${JSON.stringify( subscheds, null, "  " )}</pre></div>`;
  //       contentHtml += `<div>subsched_names<pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
+        contentHtml = '';
     }
     } else if (this._schedulesOverview.length > 0) {
       contentHtml = 'please select a dynamic schedule';
@@ -907,8 +908,8 @@ class DynamicSchedulePanel extends HTMLElement {
              ${subschedTransitionsHtml}
             </div>
           </div>
-          <div>filler</div>
         </ha-card>
+        <ha-button id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
         <ha-card class="schedule-details">
           ${contentHtml}
         </ha-card>
@@ -1061,7 +1062,7 @@ div {
             grid-template-columns: min-content auto;
         }
 
-        .attr-names {
+        .attr-name {
             white-space: nowrap;
             padding: 6px;
         }
@@ -1283,7 +1284,6 @@ div {
 
       ${allContentHtml}
 
-      <ha-button id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
 
       <div id="schedule-modal" class="modal-overlay">
           <div class="modal-content">
