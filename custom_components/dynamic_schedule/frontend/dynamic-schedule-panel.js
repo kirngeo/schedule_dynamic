@@ -106,8 +106,28 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           console.log('rm-trans', clicked);
           e.preventDefault();
-          let conf = this.gatherConfig();
-          clicked.closest( '.trans' ).remove();
+
+          const trans = clicked.closest( '.trans' );
+          const tinx = trans.dataset.inx;
+          const sub = trans.dataset.sub;
+          console.log('rm-trans', tinx, sub );
+          trans.remove();
+
+          if (this._activeScheduleOverview) {
+            console.log('pre', this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
+              .sub_schedules[ sub ]
+              .transitions )
+
+            this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
+              .sub_schedules[ sub ]
+              .transitions
+              .splice( tinx, 1 );
+
+            console.log('post', this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
+              .sub_schedules[ sub ]
+              .transitions )
+
+          }
           return;
       }
 
@@ -774,7 +794,7 @@ class DynamicSchedulePanel extends HTMLElement {
               desiredpc = Math.max( desiredpc, lastpc + 4 );
           }
 
-          cont += `<div class="trans" data-inx=${tinx} style="z-index: 5;position:absolute;top:${desiredpc}%;">`;
+          cont += `<div class="trans" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${desiredpc}%;">`;
           if (rw) {
             cont += `<span>hh:<input class="hh ch" type=number min=0 max=23 value=${trans.at.hh}></input>`;
             cont += `<span>mm:<input class="mm ch" type=number min=0 max=59 value=${trans.at.mm}></input>`;
@@ -786,7 +806,7 @@ class DynamicSchedulePanel extends HTMLElement {
               cont += `<input class="state ch" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
             }
             cont += '</span>';
-            cont += `<ha-icon class="rm-trans" icon="mdi:close"></ha-icon>`;
+            cont += `<ha-icon class="rm-trans" icon="mdi:close" title="delete transition"></ha-icon>`;
           } else {
             cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
             cont += '<span> state';
