@@ -109,7 +109,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
           if (!this._activeScheduleOverview) return;
 
-          if (true) {
+          if (false) {
               const scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
               let new_scheduleConfig = {};
               console.log('scheduleConfig', scheduleConfig);
@@ -139,7 +139,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
               console.log( 'new_scheduleConfig', new_scheduleConfig );
 
-          } else {
+          } else if (false) {
               let dummy = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
               console.log( 'test1', dummy);
 
@@ -615,6 +615,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   gatherConfig() {
+      console.log('gatherConfig');
       const subs = this.shadowRoot.querySelectorAll('.sub-header').map( sh => {
           console.log( 'dataset', sh, sh.dataset );
       });
