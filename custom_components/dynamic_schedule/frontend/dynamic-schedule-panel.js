@@ -797,7 +797,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     // Time Gutter (Y-Axis)
     const timeGutterHtml = `
-        <div class="time-gutter bord">
+        <div class="time-gutter">
             ${Array.from({length: 24}).map((_, i) => `
                 <div class="time-slot"><span>${i.toString().padStart(2, '0')}:00</span></div>
             `).join('')}
@@ -815,7 +815,7 @@ class DynamicSchedulePanel extends HTMLElement {
     `).join('');
 
     subschedNamesHtml = `
-      <div class="sub-hrows bord">
+      <div class="sub-hrows">
        ${subschedNamesHtml}
       </div>
       `;
@@ -832,7 +832,7 @@ class DynamicSchedulePanel extends HTMLElement {
               desiredpc = Math.max( desiredpc, lastpc + 4 );
           }
 
-          cont += `<div class="bord trans" style="z-index: 5;position:absolute;top:${desiredpc}%;">`;
+          cont += `<div class="trans" style="z-index: 5;position:absolute;top:${desiredpc}%;">`;
           if (rw) {
             cont += `<span>hh:<input class="hh" type=number min=0 max=23 value=${trans.at.hh}></input>`;
             cont += `<span>mm:<input class="mm" type=number min=0 max=59 value=${trans.at.mm}></input>`;
@@ -862,7 +862,7 @@ class DynamicSchedulePanel extends HTMLElement {
     }).join('');
 
     subschedTransitionsHtml = `
-      <div class="sub-transitions bord">
+      <div class="sub-transitions">
        ${subschedTransitionsHtml}
       </div>
       `;
@@ -893,9 +893,10 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
          </div>
         </ha-card>
+        <ha-button id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
         <ha-card class="all-subschedules">
           <div class="subs-ed-ctr">
-            <div class="time-gutter-header bord">
+            <div class="time-gutter-header">
              ${timeGutterHeaderHtml}
             </div>
             <div id="sub-header">
@@ -909,7 +910,6 @@ class DynamicSchedulePanel extends HTMLElement {
             </div>
           </div>
         </ha-card>
-        <ha-button id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
         <ha-card class="schedule-details">
           ${contentHtml}
         </ha-card>
