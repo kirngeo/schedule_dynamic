@@ -181,12 +181,14 @@ class DynamicSchedulePanel extends HTMLElement {
           console.log('add-transition', clicked);
           e.preventDefault();
           return;
+      }
 
       clicked = e.target.closest('.delete-subschedule');
       if (clicked) {
           console.log('delete-subschedule', clicked);
           e.preventDefault();
           return;
+      }
 
       clicked = e.target.closest('#save-button');
       if (clicked) {
