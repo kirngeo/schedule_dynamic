@@ -176,42 +176,24 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      clicked = e.target.closest('.add-transition');
+      if (clicked) {
+          console.log('add-transition', clicked);
+          e.preventDefault();
+          return;
+
+      clicked = e.target.closest('.delete-subschedule');
+      if (clicked) {
+          console.log('delete-subschedule', clicked);
+          e.preventDefault();
+          return;
+
       clicked = e.target.closest('#save-button');
       if (clicked) {
           console.log('save-button');
           e.preventDefault();
-          const scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
-          let new_scheduleConfig = {};
-          console.log('scheduleConfig', scheduleConfig);
-          const subsched_names = Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b));
-          console.log('subs', subsched_names);
-          let new_sub_schedules = {};
-          Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b)).map((sub, inx) => {
-              this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
-                  let transs = [];
-                  schctr.querySelectorAll(".trans").forEach( trans => {
-                      let at = {};
-                      at.hh = Number( trans.querySelector('.hh').value );
-                      at.mm = Number( trans.querySelector('.mm').value );
-                      at.ss = Number( trans.querySelector('.ss').value );
-                      let t = {at : at};
-                      t.state = trans.querySelector('.state').value;
-                      transs.push( t );
-                  });
-                  new_sub_schedules[ sub ] = {transitions : transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) )}
-              } );
-          });
-          new_scheduleConfig.name = this.shadowRoot.querySelector("#schedule-name-input").value;
-          new_scheduleConfig["boolean"] = this.shadowRoot.querySelector("#schedule-is-boolean").checked;
-          new_scheduleConfig.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
-          new_scheduleConfig.sub_schedules = new_sub_schedules;
-          new_scheduleConfig[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
-          new_scheduleConfig.type = this._domain + '/update';
 
-
-          console.log( 'new_scheduleConfig', new_scheduleConfig );
-
-          const returned = await this._hass.connection.sendMessagePromise(new_scheduleConfig);
+          const returned = await this._hass.connection.sendMessagePromise( this.gatherConfig );
           console.log('returned', returned );
           
           this.fetchScheduleConfigs();
@@ -343,7 +325,19 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      sub_schedules[ name ] = {transitions: []};
+      let conf = this.gatherConfig();
+      conf.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
+
+      const returned = await this._hass.connection.sendMessagePromise( conf );
+      console.log('returned', returned );
+      
+      this.showToast(`sub-schedule "${name}" added successfully`);
+      this._closeModal();
+      this.fetchScheduleConfigs();
+      this.setShowingEntid( returned.id );
+      this.render();
+
+      return;
       
       try {
           let parms = {
@@ -789,8 +783,8 @@ class DynamicSchedulePanel extends HTMLElement {
       <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
        <div>${sub}</div>
        <div class="icon-btn">
-         <span title="add a transition">+</span>
-         <span title="remove sub-schedule">X</span>
+         <span class="add-transition" title="add a transition">+</span>
+         <span class="delete-subschedule" title="remove sub-schedule">-</span>
        </div>
       </div>
     `).join('');
