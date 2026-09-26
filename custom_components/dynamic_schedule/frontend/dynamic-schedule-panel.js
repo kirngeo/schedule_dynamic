@@ -102,77 +102,18 @@ class DynamicSchedulePanel extends HTMLElement {
       let clicked3 = null;
       let clicked4 = null;
 
+      clicked = e.target.closest('.rm-trans');
+      if (clicked) {
+          console.log('rm-trans', clicked);
+          e.preventDefault();
+          let conf = this.gatherConfig();
+          clicked.closest( '.trans' ).remove();
+          return
+
       clicked = e.target.closest('#main-test-btn');
       if (clicked) {
-          console.log('main-test-btn');
           e.preventDefault();
-          this.gatherConfig();
-          return;
-          if (!this._activeScheduleOverview) return;
-
-          if (false) {
-              const scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
-              let new_scheduleConfig = {};
-              console.log('scheduleConfig', scheduleConfig);
-              const subsched_names = Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b));
-              console.log('subs', subsched_names);
-              let new_sub_schedules = {};
-              Object.keys(scheduleConfig.sub_schedules).sort((a,b) => a.localeCompare(b)).map((sub, inx) => {
-                  this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
-                      let transs = [];
-                      schctr.querySelectorAll(".trans").forEach( trans => {
-                          let at = {};
-                          at.hh = Number( trans.querySelector('.hh').value );
-                          at.mm = Number( trans.querySelector('.mm').value );
-                          at.ss = Number( trans.querySelector('.ss').value );
-                          let t = {at : at};
-                          t.state = trans.querySelector('.state').value;
-                          transs.push( t );
-                      });
-                      new_sub_schedules[ sub ] = {transitions : transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) )}
-                  } );
-              });
-              new_scheduleConfig.name = this.shadowRoot.querySelector("#schedule-name-input").value;
-              new_scheduleConfig["boolean"] = this.shadowRoot.querySelector("#schedule-is-boolean").checked;
-              new_scheduleConfig.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
-              new_scheduleConfig.sub_schedules = new_sub_schedules;
-              new_scheduleConfig[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
-
-              console.log( 'new_scheduleConfig', new_scheduleConfig );
-
-          } else if (false) {
-              let dummy = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
-              console.log( 'test1', dummy);
-
-              let ent = {at: {hh: 1, mm:2, ss:3}, state: 45};
-              let ent2 = {at: {hh: 9, mm:0}, state: 18};
-              let ent3 = {at: {hh: 12}, state: 31};
-              let ent4 = {at: {hh: 23, mm: 59, ss: 21}, state: 22}; 
-       //       dummy.sub_schedules['Tue'].transitions.push( ent);
-       //       dummy.sub_schedules['Tue'].transitions.push( ent2);
-       //       dummy.sub_schedules['Tue'].transitions.push( ent3);
-              dummy.sub_schedules['Tue'].transitions.push( ent4);
-        //      dummy.name = 'Lounge Heating';
-        //      delete dummy.sub_schedules['Off'];
-        //      delete dummy.sub_schedules['Mon'];
-
-              delete dummy.attributes['next_event'];
-              delete dummy.attributes['next_state'];
-              delete dummy.attributes['last_offset_refresh'];
-
-              dummy.type = this._domain + '/update';
-              dummy[ this._domain + '_id' ] = this._activeScheduleOverview.entid;
-              dummy[ 'id' ] = this._activeScheduleOverview.entid;
-
-            //  delete dummy.attributes;
-            //  delete dummy.n_attr_transitions;
-
-              console.log('dummy', dummy);
-
-              const returned = await this._hass.connection.sendMessagePromise(dummy);
-              console.log('returned', returned );
-          }
-          
+          console.log( 'main-test-btn', this.gatherConfig() );
           return;
       }
 
@@ -832,18 +773,19 @@ class DynamicSchedulePanel extends HTMLElement {
               desiredpc = Math.max( desiredpc, lastpc + 4 );
           }
 
-          cont += `<div class="trans" style="z-index: 5;position:absolute;top:${desiredpc}%;">`;
+          cont += `<div class="trans" data-inx=${tinx} style="z-index: 5;position:absolute;top:${desiredpc}%;">`;
           if (rw) {
-            cont += `<span>hh:<input class="hh" type=number min=0 max=23 value=${trans.at.hh}></input>`;
-            cont += `<span>mm:<input class="mm" type=number min=0 max=59 value=${trans.at.mm}></input>`;
-            cont += `<span>ss:<input class="ss" type=number min=0 max=59 value=${trans.at.ss}></input>`;
+            cont += `<span>hh:<input class="hh ch" type=number min=0 max=23 value=${trans.at.hh}></input>`;
+            cont += `<span>mm:<input class="mm ch" type=number min=0 max=59 value=${trans.at.mm}></input>`;
+            cont += `<span>ss:<input class="ss ch" type=number min=0 max=59 value=${trans.at.ss}></input>`;
             cont += '<span> state';
             if (scheduleConfig["boolean"]) {
-              cont += `<ha-switch class="boolean" ${!!trans.state ? "checked " : ""}></ha-switch>`
+              cont += `<ha-switch class="boolean ch" ${!!trans.state ? "checked " : ""}></ha-switch>`
             } else {
-              cont += `<input class="state" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
+              cont += `<input class="state ch" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
             }
             cont += '</span>';
+            cont += `<ha-icon class="rm-trans" icon="mdi:close"></ha-icon>`;
           } else {
             cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
             cont += '<span> state';
