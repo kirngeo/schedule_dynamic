@@ -104,30 +104,20 @@ class DynamicSchedulePanel extends HTMLElement {
 
       clicked = e.target.closest('.rm-trans');
       if (clicked) {
-          console.log('rm-trans', clicked);
           e.preventDefault();
 
           const trans = clicked.closest( '.trans' );
           const tinx = trans.dataset.inx;
           const sub = trans.dataset.sub;
-          console.log('rm-trans', tinx, sub );
-          trans.remove();
+          trans.remove();  // remove from display
 
           if (this._activeScheduleOverview) {
-            console.log('pre', Array.from( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
-              .sub_schedules[ sub ]
-              .transitions ));
-
             this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
               .sub_schedules[ sub ]
               .transitions
-              .splice( tinx, 1 );
-
-            console.log('post', this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
-              .sub_schedules[ sub ]
-              .transitions );
-
+              .splice( tinx, 1 ); // remove from curremt config
           }
+          this.render();
           return;
       }
 
@@ -141,17 +131,23 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('.add-transition');
       if (clicked) {
           console.log('add-transition', clicked);
+          const ctr = clicked.closest('.sh-name')l
           e.preventDefault();
-          let conf = this.gatherConfig();
-          let transs = conf.sub_schedules[ clicked.closest( '.sh-name' ).dataset.sub ].transitions;
-          transs.push( {at: {hh: 12, mm:0, ss:0}, state: 0} );
-          transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) );
-
+          if (this._activeScheduleOverview) {
+            let transs = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
+              .sub_schedules[ ctr.dataset.sub ]
+              .transitions;
+              transs.push( {at: {hh: 12, mm:0, ss:0}, state: 0} );
+              transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) );
+          }
+     //     let transs = conf.sub_schedules[ clicked.closest( '.sh-name' ).dataset.sub ].transitions;
+/*
           const returned = await this._hass.connection.sendMessagePromise( conf );
           console.log('returned', returned );
           
           this.fetchScheduleConfigs();
           this.setShowingEntid( returned.id );
+*/
           this.render();
 
           return;
@@ -163,12 +159,13 @@ class DynamicSchedulePanel extends HTMLElement {
           const data = clicked.closest( '.sh-name' ).dataset
           let conf = this.gatherConfig();
           delete conf.sub_schedules[ data.sub ];
-
+/*
           const returned = await this._hass.connection.sendMessagePromise( conf );
           console.log('returned', returned );
           
           this.fetchScheduleConfigs();
           this.setShowingEntid( returned.id );
+*/
           this.render();
 
           return;
