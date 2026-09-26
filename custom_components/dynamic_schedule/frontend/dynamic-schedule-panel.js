@@ -104,6 +104,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
       clicked = e.target.closest('#main-test-btn');
       if (clicked) {
+          console.log('main-test-btn');
           e.preventDefault();
           this.gatherConfig();
           return;
@@ -177,6 +178,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
       clicked = e.target.closest('#save-button');
       if (clicked) {
+          console.log('save-button');
           e.preventDefault();
           const scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
           let new_scheduleConfig = {};
