@@ -185,7 +185,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
       clicked = e.target.closest('.delete-subschedule');
       if (clicked) {
-          console.log('delete-subschedule', clicked);
+          const data = clicked.closest( '.sh-name' ).dataset
+          console.log('delete-subschedule', data.sub);
           e.preventDefault();
           return;
       }
@@ -766,7 +767,7 @@ class DynamicSchedulePanel extends HTMLElement {
     // time gutter header 
     // 1) add a subschedule
     timeGutterHeaderHtml += `
-          <button style="font-size: 0.75em;" id="add-subschedule" class="XXicon-btn-small style="XXbackground-color:;"" title="add a subschedule">+
+          <button style="font-size: 0.75em;" id="add-subschedule" class="icon-btn-small" title="add a subschedule">+
           </button>
     `;
     //          <ha-icon icon="mdi:plus"></ha-icon>
@@ -784,9 +785,9 @@ class DynamicSchedulePanel extends HTMLElement {
     let subschedNamesHtml = subsched_names.map((sub, inx) => `
       <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
        <div>${sub}</div>
-       <div class="icon-btn">
-         <button class="add-transition" title="add a transition">+</button>
-         <button class="delete-subschedule" title="remove this entire sub-schedule">-</button>
+       <div>
+         <button class="icon-btn add-transition" title="add a transition">+</button>
+         <button class="icon-btn delete-subschedule" title="remove this entire sub-schedule">-</button>
        </div>
       </div>
     `).join('');
