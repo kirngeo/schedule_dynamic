@@ -747,9 +747,9 @@ class DynamicSchedulePanel extends HTMLElement {
 
       //
  
-      const yaml = {a : 'aa', b : 'bb', c : {d : 'dd'}};
-      attrHtml += `<ha-yaml-editor id="attr-yaml" label="yaml label" .defaultValue=${yaml}>`;
-      attrHtml += '</ha-yaml-editor>';
+ //     const yaml = {a : 'aa', b : 'bb', c : {d : 'dd'}};
+ //     attrHtml += `<ha-yaml-editor id="attr-yaml" label="yaml label" .defaultValue=${yaml}>`;
+ //     attrHtml += '</ha-yaml-editor>';
     }
 
     console.log('activeScheduleOverview', this._activeScheduleOverview);
@@ -874,19 +874,19 @@ class DynamicSchedulePanel extends HTMLElement {
       <div class="content">
         <ha-card>
          <div class="attrs-ctr">
-          <div>Name</div>
+          <div class="attr-name">Name</div>
           <div>
            <input id="schedule-name-input" type="text" value="${scheduleConfig ? scheduleConfig.name : ''}">
           </div>
-          <div>Boolean</div>
+          <div class="attr-name">Boolean</div>
           <div>
            ${boolHtml}
           </div>
-          <div>Selector script</div>
+          <div class="attr-name">Selector script</div>
           <div>
            ${scriptselHtml}
           </div>
-          <div>attributes</div>
+          <div class="attr-name">Attributes</div>
           <div>
            ${attrHtml}
           </div>
@@ -1059,6 +1059,11 @@ div {
         .attrs-ctr {
             display: grid;
             grid-template-columns: min-content auto;
+        }
+
+        .attr-names {
+            white-space: nowrap;
+            padding: 6px;
         }
 
         .subs-ed-ctr {
