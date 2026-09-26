@@ -114,9 +114,9 @@ class DynamicSchedulePanel extends HTMLElement {
           trans.remove();
 
           if (this._activeScheduleOverview) {
-            console.log('pre', this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
+            console.log('pre', Array.from( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
               .sub_schedules[ sub ]
-              .transitions )
+              .transitions ));
 
             this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
               .sub_schedules[ sub ]
@@ -125,7 +125,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
             console.log('post', this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
               .sub_schedules[ sub ]
-              .transitions )
+              .transitions );
 
           }
           return;
