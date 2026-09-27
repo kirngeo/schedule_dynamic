@@ -81,6 +81,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      this.shadowRoot.querySelector('#fabp').addClass('dirty');
   }
 
   _onSchedSelClick() {
@@ -853,7 +854,7 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
          </div>
         </ha-card>
-        <div class="fab-positioner">
+        <div id=fabp class="fab-positioner">
         <ha-button slot="fab" id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
         </div>
         <ha-card class="all-subschedules">
