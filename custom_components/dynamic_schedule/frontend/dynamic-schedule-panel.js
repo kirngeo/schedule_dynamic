@@ -125,6 +125,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('#main-test-btn');
       if (clicked) {
           e.preventDefault();
+          this.shadowRoot.querySelector('#fabp').classList.add('dirty');
           console.log( 'main-test-btn', this.gatherConfig() );
           return;
       }
