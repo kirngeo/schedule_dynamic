@@ -1228,7 +1228,13 @@ div {
         .btn.secondary:hover {
             background-color: var(--divider-color, rgba(0, 0, 0, 0.05));
         }
+
   .fab-positioner {
+    display: none;
+    z-index: 10;
+  }
+
+  .fab-positionerX {
     display: flex;
     justify-content: flex-end;
   }
