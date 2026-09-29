@@ -856,7 +856,7 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
          </div>
         </ha-card>
-        <div id=fabp class="fab-positioner">
+        <div id=fabp class="afab-positioner">
         <ha-button slot="fab" id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
         </div>
         <ha-card class="all-subschedules">
@@ -1229,17 +1229,17 @@ div {
             background-color: var(--divider-color, rgba(0, 0, 0, 0.05));
         }
 
-  .fab-positioner {
+  .afab-positioner {
     display: none;
     z-index: 10;
   }
 
-  .fab-positionerX {
+  .afab-positionerX {
     display: flex;
     justify-content: flex-end;
   }
 
-  .fab-positioner ha-button[slot="fab"] {
+  .afab-positioner ha-button[slot="fab"] {
     position: fixed;
     right: unset;
     left: unset;
@@ -1247,7 +1247,8 @@ div {
     bottom: calc(80px - var(--safe-area-inset-bottom));
     transition: bottom 0.3s;
   }
-  .fab-positioner ha-button[slot="fab"].dirty {
+
+  .afab-positioner ha-button[slot="fab"].dirty {
     bottom: calc(16px + var(--safe-area-inset-bottom, 0px));
   }
 
