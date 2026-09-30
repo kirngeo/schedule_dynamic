@@ -252,6 +252,13 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      clicked = e.target.closest('#modal-submit-btn');
+      if (clicked) {
+          e.preventDefault();
+          this._onCreateScheduleSubmit();
+          return;
+      }
+
       clicked = e.target.closest('#modal-sub-submit-btn');
       if (clicked) {
           e.preventDefault();
@@ -399,7 +406,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      const updatedConfig = {};
+ //     const updatedConfig = {};
       
       try {
           const parms = {
@@ -408,9 +415,9 @@ class DynamicSchedulePanel extends HTMLElement {
               select_script: null,
               icon: 'mdi:table-clock',
 //              icon: icon || 'mdi:table-clock',
-              "boolean" : false,
+              "boolean" : false
 //              "boolean" : Boolean( bool ),
-              ...updatedConfig
+ //             ...updatedConfig
           };
 /* eg parms
 {
@@ -1324,6 +1331,7 @@ div {
                           </ha-input>
                       </ha-settings-row>
                   </div>
+                  <!--
                   <div class="form-group">
                       <ha-settings-row>
                           <span slot="heading">Icon</span>
@@ -1344,6 +1352,7 @@ div {
                           </ha-switch>
                       </ha-settings-row>
                   </div>
+                  -->
                   <div class="modal-footer">
                       <button type="button" class="btn secondary" id="modal-test-btn">Test</button>
                       <button type="button" class="btn secondary" id="modal-cancel-btn">Cancel</button>
