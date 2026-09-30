@@ -1,16 +1,3 @@
-/*
-try {
-    import 'https://ka-f.webawesome.com/webawesome@3.12.0/components/select/select.js';
-} catch (e) {
-    console.log(e);
-}
-*/
-
-class Subschedule extends HTMLElement {
-}
-
-class Transition extends HTMLElement {
-}
 
 class DynamicSchedulePanel extends HTMLElement {
   constructor() {
@@ -455,6 +442,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   setShowingEntid( entid ) {
+    console.log('setShowingEntid entry', entid);
     if (this._schedulesOverview.length === 0) {
         this._activeScheduleOverview = null;
     } else if (this._schedulesOverview.length === 1) {
@@ -467,6 +455,7 @@ class DynamicSchedulePanel extends HTMLElement {
         this._activeScheduleOverview = null;
       }
     }
+    console.log('setShowingEntid exit', this._activeScheduleOverview);
   }
 
   set hass(hass) {
@@ -1396,51 +1385,8 @@ div {
 
 }
 
-console.log('about to...');
-customElements.whenDefined('card-tools').then(() => {
-  var cardTools = customElements.get('card-tools');
-  // YOUR CODE GOES IN HERE
-  console.log('hello wrd');
-  class MyPlugin extends cardTools.LitElement {
-    setConfig(config) {
-      this.name = config.name;
-    }
+if (!customElements.get('dynamic-schedule-panel')) {
+    customElements.define('dynamic-schedule-panel', DynamicSchedulePanel);
+}
 
-    render() {
-      return cardTools.LitHtml`
-        ${this.name}
-      `;
-    }
-  }
-
-  customElements.define("my-plugin", MyPlugin);
-}); // END OF .then(() => {
-
-setTimeout(() => {
-  if(customElements.get('card-tools')) return;
-  console.log('about to define');
-  customElements.define('my-plugin', class extends HTMLElement{
-    setConfig() { throw new Error("Can't find card-tools. See https://github.com/thomasloven/lovelace-card-tools");}
-  });
-}, 2000);
-
-
-if (false) {
-    [
-      ['dynamic-schedule-panel', DynamicSchedulePanel],
-      ['ds-subschedule', Subschedule],
-      ['ds-transition', Transition],
-    ].forEach( (el, cls) => {if (!customElements.get(el)) {customElements.define(el, cls);}} );
-} else {
-    if (!customElements.get('dynamic-schedule-panel')) {
-        customElements.define('dynamic-schedule-panel', DynamicSchedulePanel);
-    }
-
-    if (!customElements.get('ds-subschedule')) {
-        customElements.define('ds-subschedule', Subschedule);
-    }
-
-    if (!customElements.get('ds-transition')) {
-        customElements.define('ds-transition', Transition);
-    }
 }
