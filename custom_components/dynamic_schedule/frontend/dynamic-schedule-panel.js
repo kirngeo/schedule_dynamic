@@ -1378,8 +1378,6 @@ div {
               </form>
           </div>
       </div>
-
-
       `;
   }
 
@@ -1389,4 +1387,3 @@ if (!customElements.get('dynamic-schedule-panel')) {
     customElements.define('dynamic-schedule-panel', DynamicSchedulePanel);
 }
 
-}
