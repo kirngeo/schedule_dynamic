@@ -18,6 +18,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._eligibleScriptConfigs = [];
     this._isEditing = false;
     this._preEditConfig = null;
+    this._activeScheduleId = null;
   }
 
   zoomIn() {
@@ -61,7 +62,9 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           console.log( e.target );
           e.preventDefault();
-          this._onSchedSelClick();
+    //      this._onSchedSelClick();
+          this._activeScheduleId = clicked.value;
+          console.log('activeScheduleId A', this._activeScheduleId );
  //         this.setShowingEntid( clicked.value );
  //         if (this._activeScheduleOverview) {
  //             this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
@@ -89,13 +92,6 @@ class DynamicSchedulePanel extends HTMLElement {
           console.log('stopping editing');
       }
       this._isEditing = onoff;
-  }
-
-  _onSchedSelClick() {
-      const new_entid = this.shadowRoot.getElementById("schedule-sel-entid").value;
-      this.setShowingEntid( new_entid );
-      this._startEditing();
-      this.render();
   }
 
   async _onTestClick() {
@@ -338,7 +334,9 @@ class DynamicSchedulePanel extends HTMLElement {
       this.showToast(`sub-schedule "${name}" added successfully`);
       this._closeModal();
       this.fetchScheduleConfigs();
-      this.setShowingEntid( returned.id );
+      this._activeScheduleId = returned.id;
+      console.log('activeScheduleId B', this._activeScheduleId );
+  //    this.setShowingEntid( returned.id );
  //     this.render();
 
       return;
@@ -670,8 +668,10 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._schedulesOverview.length > 0) {
 
-      if (this._activeScheduleOverview) {
-        scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+  //    if (this._activeScheduleOverview) {
+      if (this._activeScheduleId) {
+       // scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+        scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleId ];
       }
 
       selected = false;
@@ -679,7 +679,8 @@ class DynamicSchedulePanel extends HTMLElement {
       schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
       this._schedulesOverview.forEach( ent => {
 
-        if ((this._activeScheduleOverview !== null) && (ent.entid === this._activeScheduleOverview.entid)) {
+     //   if ((this._activeScheduleOverview !== null) && (ent.entid === this._activeScheduleOverview.entid)) {
+        if ((this._activeScheduleId !== null) && (ent.entid === this._activeScheduleId)) {
             selected = true;
         }
 
@@ -688,14 +689,20 @@ class DynamicSchedulePanel extends HTMLElement {
         }
 
        schedselHtml += `<option ${selected  ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
+       if (selected) {
+           this._activeScheduleId = ent.entid;
+          console.log('activeScheduleId C', this._activeScheduleId );
+       }
 
         });
       schedselHtml += `</select>`;
 
+        /*
       if (this._activeScheduleOverview === null) {
         this._activeScheduleOverview = this._schedulesOverview[0];
         this._startEditing();
       }
+      */
     }
 
     if (scheduleConfig) {
@@ -736,9 +743,11 @@ class DynamicSchedulePanel extends HTMLElement {
 
     console.log('activeScheduleOverview', this._activeScheduleOverview);
 
-    if (this._activeScheduleOverview) {
-      scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+  //  if (this._activeScheduleOverview) {
+    if (this._activeScheduleId) {
+      scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleId ];
       rw = this._activeScheduleOverview.edit;
+      rw = true;
 
       if (scheduleConfig) {
  //     console.log( 'xx', this._editingConfig, this._activeScheduleOverview);
@@ -853,7 +862,8 @@ class DynamicSchedulePanel extends HTMLElement {
     let allContentHtml = '';
     let zoomHtml = '';
 
-    if (this._activeScheduleOverview !== null) {
+  //  if (this._activeScheduleOverview !== null) {
+    if (this._activeScheduleId !== null) {
       allContentHtml = `
       <div class="content">
         <ha-card>
