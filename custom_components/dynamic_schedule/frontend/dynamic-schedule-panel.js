@@ -690,6 +690,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
        schedselHtml += `<option ${selected  ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
        if (selected) {
+           this._activeScheduleOverview = ent;
            this._activeScheduleId = ent.entid;
           console.log('activeScheduleId C', this._activeScheduleId );
        }
@@ -746,7 +747,8 @@ class DynamicSchedulePanel extends HTMLElement {
   //  if (this._activeScheduleOverview) {
     if (this._activeScheduleId) {
       scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleId ];
-      rw = this._activeScheduleOverview.edit;
+      console.log('scheduleConfig', scheduleConfig);
+    //  rw = this._activeScheduleOverview.edit;
       rw = true;
 
       if (scheduleConfig) {
