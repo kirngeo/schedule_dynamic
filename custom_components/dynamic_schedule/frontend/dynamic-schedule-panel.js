@@ -291,7 +291,7 @@ class DynamicSchedulePanel extends HTMLElement {
       if (modal) {
           // Reset form fields
           this.shadowRoot.getElementById('schedule-name').value = '';
-          this.shadowRoot.getElementById('schedule-icon').value = 'mdi:table-clock';
+    //      this.shadowRoot.getElementById('schedule-icon').value = 'mdi:table-clock';
           
           modal.classList.add('open');
       }
