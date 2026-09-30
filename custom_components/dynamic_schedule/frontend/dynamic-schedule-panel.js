@@ -30,6 +30,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._editingConfig = null;
     this._eligibleScriptConfigs = [];
     this._isEditing = false;
+    this._preEditConfig = null;
   }
 
   zoomIn() {
@@ -93,10 +94,14 @@ class DynamicSchedulePanel extends HTMLElement {
       if (this._isEditing === onoff) return;
       if (onoff) {
           console.log('starting to edit');
+          this.shadowRoot.querySelector('#saver').style.visibility = 'visible';
+          this._preEditConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
           this.shadowRoot.querySelector('#save-button').classList.add('dirty');
       } else {
+          this.shadowRoot.querySelector('#saver').style.visibility = 'hidden';
           console.log('stopping editing');
       }
+      this._isEditing = onoff;
   }
 
   _onSchedSelClick() {
@@ -122,6 +127,7 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           e.preventDefault();
 
+          this._editing( true );
           const trans = clicked.closest( '.trans' );
           const tinx = trans.dataset.inx;
           const sub = trans.dataset.sub;
@@ -131,7 +137,7 @@ class DynamicSchedulePanel extends HTMLElement {
             this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
               .sub_schedules[ sub ]
               .transitions
-              .splice( tinx, 1 ); // remove from curremt config
+              .splice( tinx, 1 ); // remove from current config
           }
           this.render();
           return;
@@ -152,6 +158,7 @@ class DynamicSchedulePanel extends HTMLElement {
           const ctr = clicked.closest('.sh-name');
           e.preventDefault();
           if (this._activeScheduleOverview) {
+            this._editing( true );
             let transs = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
               .sub_schedules[ ctr.dataset.sub ]
               .transitions;
@@ -174,6 +181,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('.delete-subschedule');
       if (clicked) {
           e.preventDefault();
+          this._editing( true );
           const data = clicked.closest( '.sh-name' ).dataset
           let conf = this.gatherConfig();
           delete conf.sub_schedules[ data.sub ];
@@ -193,10 +201,11 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           console.log('save-button');
           e.preventDefault();
+          this._editing( false );
 
           const returned = await this._hass.connection.sendMessagePromise( this.gatherConfig() );
           console.log('returned', returned );
-          
+            
           this.fetchScheduleConfigs();
           this.setShowingEntid( returned.id );
           this.render();
@@ -871,7 +880,7 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
          </div>
         </ha-card>
-        <div>
+        <div id=saver style="visibility: hidden">
         <ha-button slot="fab" id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
         </div>
         <!--
