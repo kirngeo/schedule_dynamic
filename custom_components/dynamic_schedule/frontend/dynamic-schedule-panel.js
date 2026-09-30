@@ -339,7 +339,7 @@ class DynamicSchedulePanel extends HTMLElement {
       this._closeModal();
       this.fetchScheduleConfigs();
       this.setShowingEntid( returned.id );
-      this.render();
+ //     this.render();
 
       return;
       
@@ -434,7 +434,7 @@ class DynamicSchedulePanel extends HTMLElement {
           this._closeModal();
           this.fetchScheduleConfigs();
           this.setShowingEntid( returned.id );
-          this.render();
+       //   this.render();
       } catch (err) {
           console.error("Failed to create dynamic schedule.", err);
           this.showToast(`Failed to create dynamic schedule: ${err.message || 'Unknown error'}`);
