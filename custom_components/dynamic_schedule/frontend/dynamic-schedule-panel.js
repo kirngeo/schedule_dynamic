@@ -559,6 +559,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
 
   async fetchScheduleConfigs() {
+      console.log('fetchScheduleConfigs');
  //     try {
           let parms2 = {nothing: 0};
           let response = null;
@@ -654,6 +655,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   render() {
 
+    console.log('render');
     let contentHtml = '';
     let schedselHtml = '';
     let scriptselHtml = '';
@@ -700,7 +702,6 @@ class DynamicSchedulePanel extends HTMLElement {
       //
       selected = false;
       const long_scriptids = this._eligibleScriptConfigs.map( scr => scr.id);
-      console.log('long_scriptids', long_scriptids);
       const short_scriptids = long_scriptids.map( scr => scr.replace("script.",""));
       selected = ((! long_scriptids.includes( scheduleConfig.select_script ))
                 &&
@@ -708,7 +709,6 @@ class DynamicSchedulePanel extends HTMLElement {
 
       scriptselHtml += `<select class="icon-btn" id="schedule-script-selector">`;
       scriptselHtml += `<option ${selected ? "selected " : ""}value="">-- none --</option>`;
-      console.log('len', this._eligibleScriptConfigs.length);
       this._eligibleScriptConfigs.forEach( cnf => {
         let selected = false;
         if (this._eligibleScriptConfigs.length === 1) {
