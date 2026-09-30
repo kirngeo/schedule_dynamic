@@ -1001,7 +1001,7 @@ class Schedule(CollectionEntity):
         now = dt_util.now()
 
         if duration:
-            # If "until" is spacified, use it.
+            # If "until" is specified, use it.
             until = now + duration
         else:
             # If "until" is not specified, then just alter the state until the next transition.

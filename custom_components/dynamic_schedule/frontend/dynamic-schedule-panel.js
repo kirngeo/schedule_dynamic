@@ -856,9 +856,14 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
          </div>
         </ha-card>
+        <div>
+        <ha-button slot="fab" id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
+        </div>
+        <!--
         <div id=fabp class="afab-positioner">
         <ha-button slot="fab" id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
         </div>
+        -->
         <ha-card class="all-subschedules">
           <div class="subs-ed-ctr">
             <div class="time-gutter-header">
