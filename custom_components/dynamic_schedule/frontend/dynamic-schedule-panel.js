@@ -66,12 +66,12 @@ class DynamicSchedulePanel extends HTMLElement {
 
   _onChange(e) {
       console.log('_onChange', e );
-      console.log( e.target );
 
       let clicked = null;
 
       clicked = e.target.closest( '#schedule-sel-entid');
       if (clicked) {
+          console.log( e.target );
           e.preventDefault();
           this._onSchedSelClick();
  //         this.setShowingEntid( clicked.value );
@@ -93,7 +93,7 @@ class DynamicSchedulePanel extends HTMLElement {
       if (this._isEditing === onoff) return;
       if (onoff) {
           console.log('starting to edit');
-          this.shadowRoot.querySelector('#save-button').addClass('dirty');
+          this.shadowRoot.querySelector('#save-button').classList.add('dirty');
       } else {
           console.log('stopping editing');
       }
