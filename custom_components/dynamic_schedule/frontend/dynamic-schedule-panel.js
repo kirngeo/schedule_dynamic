@@ -29,6 +29,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._activeScheduleOverview = null;
     this._editingConfig = null;
     this._eligibleScriptConfigs = [];
+    this._isEditing = false;
   }
 
   zoomIn() {
@@ -81,7 +82,21 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      this.shadowRoot.querySelector('#fabp').addClass('dirty');
+      if (e.target.classList.contains('ch')) {
+          console.log('changed', e.target);
+          this._editing( true );
+      }
+
+  }
+
+  _editing( onoff ) {
+      if (this._isEditing === onoff) return;
+      if (onoff) {
+          console.log('starting to edit');
+          this.shadowRoot.querySelector('#save-button').addClass('dirty');
+      } else {
+          console.log('stopping editing');
+      }
   }
 
   _onSchedSelClick() {
