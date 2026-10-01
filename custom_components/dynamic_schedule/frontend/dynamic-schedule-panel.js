@@ -84,13 +84,13 @@ class DynamicSchedulePanel extends HTMLElement {
       if (this._isEditing === onoff) return;
       if (onoff) {
           console.log('starting to edit');
-          this.shadowRoot.querySelector('#save-container').classList.add("open");
+      //    this.shadowRoot.querySelector('#save-container').classList.add("open");
           this._preEditConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
-          this.shadowRoot.querySelector('#save-button').classList.add('dirty');
+     //     this.shadowRoot.querySelector('#save-button').classList.add('dirty');
           this.shadowRoot.querySelector('#save-btn').style.display = 'block';
           this.shadowRoot.querySelector('#save-btn').classList.remove('clean');
       } else {
-          this.shadowRoot.querySelector('#saver').style.visibility = 'hidden';
+    //      this.shadowRoot.querySelector('#saver').style.visibility = 'hidden';
           this.shadowRoot.querySelector('#save-btn').style.display = 'hide';
           this.shadowRoot.querySelector('#save-btn').classList.add('clean');
           console.log('stopping editing');
@@ -706,7 +706,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (scheduleConfig) {
       //
-      scriptselHtml += `<select class="icon-btn" id="schedule-script-selector">`;
+      scriptselHtml += `<select class="icon-btn ch" id="schedule-script-selector">`;
 
       selected = false;
       const long_scriptids = this._eligibleScriptConfigs.map( scr => scr.id);
@@ -872,7 +872,7 @@ class DynamicSchedulePanel extends HTMLElement {
          <div class="attrs-ctr">
           <div class="attr-name">Name</div>
           <div>
-           <input id="schedule-name-input" type="text" value="${scheduleConfig ? scheduleConfig.name : ''}">
+           <input id="schedule-name-input" type="text" class="ch" value="${scheduleConfig ? scheduleConfig.name : ''}">
           </div>
           <div class="attr-name">Boolean</div>
           <div>
@@ -888,10 +888,10 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
          </div>
         </ha-card>
+        <!--
         <div class="save-container">
         <ha-button slot="fab" id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
         </div>
-        <!--
         <div id=fabp class="afab-positioner">
         <ha-button slot="fab" id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
         </div>
