@@ -321,7 +321,8 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       this._editing(true);
-      let conf = this._gatherConfig();
+   //   let conf = this._gatherConfig();
+      let conf = this._preEditConfig;
       conf.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
 
       if (false) {
