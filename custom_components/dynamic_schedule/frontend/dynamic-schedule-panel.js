@@ -698,12 +698,11 @@ class DynamicSchedulePanel extends HTMLElement {
         });
       schedselHtml += `</select>`;
 
-        /*
       if (this._activeScheduleOverview === null) {
         this._activeScheduleOverview = this._schedulesOverview[0];
-        this._startEditing();
+        this._activeScheduleId = this._activeScheduleOverview.entid;
+      //  this._startEditing();
       }
-      */
     }
 
     if (scheduleConfig) {
