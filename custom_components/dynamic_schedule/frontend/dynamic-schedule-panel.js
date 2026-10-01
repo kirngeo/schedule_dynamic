@@ -84,7 +84,7 @@ class DynamicSchedulePanel extends HTMLElement {
       if (this._isEditing === onoff) return;
       if (onoff) {
           console.log('starting to edit');
-          this.shadowRoot.querySelector('#saver').style.visibility = 'visible';
+          this.shadowRoot.querySelector('#save-container').classList.add("open");
           this._preEditConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
           this.shadowRoot.querySelector('#save-button').classList.add('dirty');
       } else {
