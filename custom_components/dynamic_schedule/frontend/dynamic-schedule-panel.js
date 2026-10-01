@@ -321,10 +321,10 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       this._editing(true);
+      let conf = this._gatherConfig();
       conf.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
 
       if (false) {
-      let conf = this._gatherConfig();
 
       const returned = await this._hass.connection.sendMessagePromise( conf );
       console.log('returned', returned );
