@@ -87,7 +87,7 @@ class DynamicSchedulePanel extends HTMLElement {
           this.shadowRoot.querySelector('#save-container').classList.add("open");
           this._preEditConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
           this.shadowRoot.querySelector('#save-button').classList.add('dirty');
-          this.shadowRoot.querySelector('#save-btn').style.display = 'block');
+          this.shadowRoot.querySelector('#save-btn').style.display = 'block';
           this.shadowRoot.querySelector('#save-btn').classList.remove('clean');
       } else {
           this.shadowRoot.querySelector('#saver').style.visibility = 'hidden';
