@@ -1137,8 +1137,8 @@ div {
         }
 
         .clean {
-            opacity: 0.5;
-            display: hide;
+         /*   opacity: 0.5; */
+            display: none;
         }
 
         .dirty {
