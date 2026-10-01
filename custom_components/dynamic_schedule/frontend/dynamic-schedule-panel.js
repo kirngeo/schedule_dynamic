@@ -330,13 +330,13 @@ class DynamicSchedulePanel extends HTMLElement {
       console.log('returned', returned );
       
       this.showToast(`sub-schedule "${name}" added successfully`);
-      this._closeModal();
       this.fetchScheduleConfigs();
       this._activeScheduleId = returned.id;
       console.log('activeScheduleId B', this._activeScheduleId );
   //    this.setShowingEntid( returned.id );
  //     this.render();
       } // if false
+      this._closeModal();
 
       return;
       
