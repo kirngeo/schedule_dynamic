@@ -745,7 +745,9 @@ class DynamicSchedulePanel extends HTMLElement {
 
   //  if (this._activeScheduleOverview) {
     if (this._activeScheduleId) {
-      scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleId ];
+      if (!scheduleConfig) {
+        scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleId ];
+      }
       console.log('scheduleConfig', scheduleConfig);
     //  rw = this._activeScheduleOverview.edit;
       rw = true;
@@ -773,7 +775,7 @@ class DynamicSchedulePanel extends HTMLElement {
       contentHtml = 'no dynamic schedules exist yet';
     }
 
-    console.log( 'scheduleConfig', scheduleConfig );
+ //   console.log( 'scheduleConfig', scheduleConfig );
 
     // subschedule columns
     let subschedHtml = '';
