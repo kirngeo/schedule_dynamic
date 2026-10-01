@@ -674,17 +674,11 @@ class DynamicSchedulePanel extends HTMLElement {
         scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleId ];
       }
 
-      selected = false;
-
       schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
       this._schedulesOverview.forEach( ent => {
+        selected = false;
 
-     //   if ((this._activeScheduleOverview !== null) && (ent.entid === this._activeScheduleOverview.entid)) {
-        if ((this._activeScheduleId !== null) && (ent.entid === this._activeScheduleId)) {
-            selected = true;
-        }
-
-        if (this._schedulesOverview.length === 1) {
+        if ((ent.entid === this._activeScheduleId)  ||  (this._schedulesOverview.length === 1)) {
             selected = true;
         }
 
@@ -707,6 +701,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (scheduleConfig) {
       //
+      scriptselHtml += `<select class="icon-btn" id="schedule-script-selector">`;
+
       selected = false;
       const long_scriptids = this._eligibleScriptConfigs.map( scr => scr.id);
       const short_scriptids = long_scriptids.map( scr => scr.replace("script.",""));
@@ -714,10 +710,10 @@ class DynamicSchedulePanel extends HTMLElement {
                 &&
                  (! short_scriptids.includes( scheduleConfig.select_script )) );
 
-      scriptselHtml += `<select class="icon-btn" id="schedule-script-selector">`;
       scriptselHtml += `<option ${selected ? "selected " : ""}value="">-- none --</option>`;
+
       this._eligibleScriptConfigs.forEach( cnf => {
-        let selected = false;
+        selected = false;
         if (this._eligibleScriptConfigs.length === 1) {
           selected = true;
         } else if (
