@@ -87,13 +87,14 @@ class DynamicSchedulePanel extends HTMLElement {
       //    this.shadowRoot.querySelector('#save-container').classList.add("open");
           this._preEditConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
      //     this.shadowRoot.querySelector('#save-button').classList.add('dirty');
-          this.shadowRoot.querySelector('#save-btn').style.display = 'block';
+       //   this.shadowRoot.querySelector('#save-btn').style.display = 'block';
           this.shadowRoot.querySelector('#save-btn').classList.remove('clean');
       } else {
     //      this.shadowRoot.querySelector('#saver').style.visibility = 'hidden';
-          this.shadowRoot.querySelector('#save-btn').style.display = 'hide';
+     //     this.shadowRoot.querySelector('#save-btn').style.display = 'hide';
           this.shadowRoot.querySelector('#save-btn').classList.add('clean');
           console.log('stopping editing');
+          this._preEditConfig = null;
       }
       this._isEditing = onoff;
   }
@@ -135,7 +136,7 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
           this.shadowRoot.querySelector('#fabp').classList.add('dirty');
           this.shadowRoot.querySelector('#save-button').classList.add('dirty');
-          console.log( 'main-test-btn', this.gatherConfig() );
+          console.log( 'main-test-btn', this._gatherConfig() );
           return;
       }
 
@@ -170,7 +171,7 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
           this._editing( true );
           const data = clicked.closest( '.sh-name' ).dataset
-          let conf = this.gatherConfig();
+          let conf = this._gatherConfig();
           delete conf.sub_schedules[ data.sub ];
 /*
           const returned = await this._hass.connection.sendMessagePromise( conf );
@@ -189,13 +190,14 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked || clicked2) {
           console.log('save-button');
           e.preventDefault();
-          this._editing( false );
 
-          const returned = await this._hass.connection.sendMessagePromise( this.gatherConfig() );
-          console.log('returned', returned );
+          console.log('save _gatherConfig', this._gatherConfig() );
+          const returned = await this._hass.connection.sendMessagePromise( this._gatherConfig() );
+          console.log('save returned', returned );
             
           this.fetchScheduleConfigs();
           this.setShowingEntid( returned.id );
+          this._editing( false );
           this.render();
           return;
       }
@@ -230,7 +232,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('#modal-test-btn');
       if (clicked) {
           e.preventDefault();
-          this.gatherConfig();
+          this._gatherConfig();
           return;
       }
 
@@ -260,18 +262,6 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-  }
-
-  _startEditing() {
-      if (this._editingConfig) {
-          console.error('startEditing : already editing', this._editingConfig );
-          return;
-      };
-
-      if (this._activeScheduleOverview) {
-          console.log('starting to edit');
-          this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
-      }
   }
 
   _openNewScheduleModal() {
@@ -330,8 +320,11 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      let conf = this.gatherConfig();
+      this._editing(true);
       conf.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
+
+      if (false) {
+      let conf = this._gatherConfig();
 
       const returned = await this._hass.connection.sendMessagePromise( conf );
       console.log('returned', returned );
@@ -343,6 +336,7 @@ class DynamicSchedulePanel extends HTMLElement {
       console.log('activeScheduleId B', this._activeScheduleId );
   //    this.setShowingEntid( returned.id );
  //     this.render();
+      } // if false
 
       return;
       
@@ -620,7 +614,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   }
 
-  gatherConfig() {
+  _gatherConfig() {
       const subnames = [];
       this.shadowRoot.querySelectorAll('.sh-name').forEach( sh => {
           subnames.push( sh.dataset.sub );
@@ -652,7 +646,7 @@ class DynamicSchedulePanel extends HTMLElement {
       conf[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
       conf.type = this._domain + '/update';
 
-      console.log( 'gatherConfig', conf );
+   //   console.log( '_gatherConfig', conf );
       return conf;
   }
 
@@ -700,7 +694,6 @@ class DynamicSchedulePanel extends HTMLElement {
       if (this._activeScheduleOverview === null) {
         this._activeScheduleOverview = this._schedulesOverview[0];
         this._activeScheduleId = this._activeScheduleOverview.entid;
-      //  this._startEditing();
       }
     }
 
@@ -1145,6 +1138,7 @@ div {
 
         .clean {
             opacity: 0.5;
+            display: hide;
         }
 
         .dirty {
@@ -1340,7 +1334,7 @@ div {
           </div>
           <div class="zoom-controls">
               <button class="icon-btn" id="main-test-btn" title="test">test</button>
-              <button class="icon-btn clean" id="save-btn" title="save" style="display:none">save</button>
+              <button class="icon-btn clean" id="save-btn" title="save">save</button>
               ${schedselHtml}
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
