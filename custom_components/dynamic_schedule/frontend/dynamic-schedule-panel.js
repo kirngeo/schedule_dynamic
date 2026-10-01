@@ -334,9 +334,9 @@ class DynamicSchedulePanel extends HTMLElement {
       this._activeScheduleId = returned.id;
       console.log('activeScheduleId B', this._activeScheduleId );
   //    this.setShowingEntid( returned.id );
- //     this.render();
       } // if false
       this._closeModal();
+      this.render();
 
       return;
       
