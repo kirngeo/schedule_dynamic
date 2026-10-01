@@ -728,7 +728,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
       //
 
-      boolHtml = `<ha-switch ${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean"></ha-switch>`;
+      boolHtml = `<ha-switch ${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean" class="ch"></ha-switch>`;
 
       //
  
@@ -883,7 +883,7 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
          </div>
         </ha-card>
-        <div id=saver style="visibility: hidden">
+        <div class="save-container">
         <ha-button slot="fab" id="save-button" size="l"  variant="brand" appearance="accent">Save <ha-icon slot="start" icon="mdi:content-save"></ha-icon></ha-button>
         </div>
         <!--
@@ -1109,6 +1109,22 @@ div {
             z-index: 10;
         }
 
+        /* Save button */
+        .save-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .save-container.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         /* Modal Overlay */
         .modal-overlay {
             position: fixed;
@@ -1327,28 +1343,6 @@ div {
                           </ha-input>
                       </ha-settings-row>
                   </div>
-                  <!--
-                  <div class="form-group">
-                      <ha-settings-row>
-                          <span slot="heading">Icon</span>
-                          <ha-icon-picker
-                            id="schedule-icon"
-                            value="mdi:table-clock"
-                          >
-                          </ha-icon-picker>
-                      </ha-settings-row>
-                  </div>
-                  <div class="form-group">
-                      <ha-settings-row>
-                          <span slot="heading">boolean state</span>
-                          <span slot="description">entity states will be boolean</span>
-                          <ha-switch
-                            id="schedule-bool"
-                          >
-                          </ha-switch>
-                      </ha-settings-row>
-                  </div>
-                  -->
                   <div class="modal-footer">
                       <button type="button" class="btn secondary" id="modal-test-btn">Test</button>
                       <button type="button" class="btn secondary" id="modal-cancel-btn">Cancel</button>
