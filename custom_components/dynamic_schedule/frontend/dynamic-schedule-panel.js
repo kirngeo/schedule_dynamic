@@ -87,11 +87,11 @@ class DynamicSchedulePanel extends HTMLElement {
           this.shadowRoot.querySelector('#save-container').classList.add("open");
           this._preEditConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
           this.shadowRoot.querySelector('#save-button').classList.add('dirty');
-          this.shadowRoot.querySelector('#save-btn').classList.add('dirty');
+          this.shadowRoot.querySelector('#save-btn').style.display = 'block');
           this.shadowRoot.querySelector('#save-btn').classList.remove('clean');
       } else {
           this.shadowRoot.querySelector('#saver').style.visibility = 'hidden';
-          this.shadowRoot.querySelector('#save-btn').classList.remove('dirty');
+          this.shadowRoot.querySelector('#save-btn').style.display = 'hide';
           this.shadowRoot.querySelector('#save-btn').classList.add('clean');
           console.log('stopping editing');
       }
@@ -1340,7 +1340,7 @@ div {
           </div>
           <div class="zoom-controls">
               <button class="icon-btn" id="main-test-btn" title="test">test</button>
-              <button class="icon-btn clean" id="save-btn" title="save">save</button>
+              <button class="icon-btn clean" id="save-btn" title="save" style="display:none">save</button>
               ${schedselHtml}
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
