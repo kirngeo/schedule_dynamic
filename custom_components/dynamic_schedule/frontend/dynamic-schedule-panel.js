@@ -697,6 +697,8 @@ class DynamicSchedulePanel extends HTMLElement {
       }
     }
 
+    if (this._isEditing) {scheduleConfig = this._preEditConfig;}
+
     if (scheduleConfig) {
       //
       scriptselHtml += `<select class="icon-btn ch" id="schedule-script-selector">`;
