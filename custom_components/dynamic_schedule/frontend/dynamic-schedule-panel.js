@@ -1125,6 +1125,19 @@ div {
             pointer-events: auto;
         }
 
+        .save-container ha-button[slot="fab"] {
+            position: fixed;
+            right: unset;
+            left: unset;
+            bXXottom: calc(-80px - var(--safe-area-inset-bottom));
+            bottom: calc(80px - var(--safe-area-inset-bottom));
+            transition: bottom 0.3s;
+        }
+
+        .save-container ha-button[slot="fab"].dirty {
+            bottom: calc(16px + var(--safe-area-inset-bottom, 0px));
+        }
+
         /* Modal Overlay */
         .modal-overlay {
             position: fixed;
