@@ -88,13 +88,11 @@ class DynamicSchedulePanel extends HTMLElement {
           console.log('starting to edit, preEditConfig:', this._preEditConfig);
      //     this.shadowRoot.querySelector('#save-button').classList.add('dirty');
        //   this.shadowRoot.querySelector('#save-btn').style.display = 'block';
-          console.log('contains clean A', this.shadowRoot.querySelector('#save-btn').classList.contains('clean'));
-          this.shadowRoot.querySelector('#save-btn').classList.remove('clean');
-          console.log('contains clean B', this.shadowRoot.querySelector('#save-btn').classList.contains('clean'));
+          this.shadowRoot.querySelector('#save-btn').classList.add('dirty');
       } else {
     //      this.shadowRoot.querySelector('#saver').style.visibility = 'hidden';
      //     this.shadowRoot.querySelector('#save-btn').style.display = 'hide';
-          this.shadowRoot.querySelector('#save-btn').classList.add('clean');
+          this.shadowRoot.querySelector('#save-btn').classList.remove('dirty');
           console.log('stopping editing');
           this._preEditConfig = null;
       }
@@ -701,8 +699,11 @@ class DynamicSchedulePanel extends HTMLElement {
     }
 
     if (this._isEditing) {
+        this.shadowRoot.querySelector('#save-btn').classList.add('dirty');
         scheduleConfig = this._preEditConfig;
         console.log('switching to _preEditConfig', scheduleConfig);
+    } else {
+        this.shadowRoot.querySelector('#save-btn').classList.remove('dirty');
     }
 
     if (scheduleConfig) {
@@ -1153,6 +1154,7 @@ div {
 
         .dirty {
             opacity: 1;
+            background-color: red;
         }
 
         /* Modal Overlay */
@@ -1344,7 +1346,7 @@ div {
           </div>
           <div class="zoom-controls">
               <button class="icon-btn" id="main-test-btn" title="test">test</button>
-              <button class="icon-btn clean" id="save-btn" title="save">save</button>
+              <button class="icon-btn${this._isEditing?' dirty':''}" id="save-btn" title="save">save</button>
               ${schedselHtml}
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
