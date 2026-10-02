@@ -77,6 +77,7 @@ class DynamicSchedulePanel extends HTMLElement {
           console.log('changed', e.target);
           e.preventDefault();
           this._editing( true );
+          this._editingConfig = this._gatherConfig();
           this.render();
           return;
       }
@@ -159,22 +160,33 @@ class DynamicSchedulePanel extends HTMLElement {
             .sub_schedules[ ctr.dataset.sub ]
             .transitions;
 
-          let prevsecs = 0;
+          let hh = 0;
+          let mm = 0;
+          let ss = 0;
+          let sincelast;
+          let untilnext;
           let tsecs;
-          for (const trans of transs) {
-              tsecs = this.transToSecs(trans);
-              if (tsecs - prevsecs > 60*60) {
-                  break;
+          let gaps = [];
+
+          if (transs.length) {
+              let prevsecs = 0;
+              transs.map( (trans, inx) => {
+                  tsecs = this.transToSecs(trans);
+                  gaps.push( [tsecs - prevsecs, inx] );
+                  prevsecs = tsecs;
               }
-              prevsecs = tsecs;
+              gaps.push( [(24*60*60) - prevsecs, -1] );
+              console.log('gaps', gaps);
+
+              gaps = gaps.filter( (gap, inx) => gap > 60*60 ).sort( (a, b) => a[0] > b[0] );
+              console.log( 'gaps SF', gaps );
+
+              hh = 1);
+              mm = 0;
+              ss = 0;
           }
 
-          const hh = prevsecs % (60*60);
-          prevsecs -= (hh * 60 * 60);
-          const mm = prevsecs % 60;
-          prevsecs -= (mm * 60);
-
-          transs.push( {at: {hh: hh, mm:mm, ss:prevsecs}, state: 0} );
+          transs.push( {at: {hh: hh, mm:mm, ss:ss}, state: 0} );
           transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) );
        //   }
      //     let transs = conf.sub_schedules[ clicked.closest( '.sh-name' ).dataset.sub ].transitions;
