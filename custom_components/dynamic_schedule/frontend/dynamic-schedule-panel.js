@@ -148,13 +148,31 @@ class DynamicSchedulePanel extends HTMLElement {
           const ctr = clicked.closest('.sh-name');
           this._editing( true );
           e.preventDefault();
+
+
        //   if (this._activeScheduleOverview) {
          //   let transs = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
-            let transs = this._editingConfig
-              .sub_schedules[ ctr.dataset.sub ]
-              .transitions;
-              transs.push( {at: {hh: 12, mm:0, ss:0}, state: 0} );
-              transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) );
+          let transs = this._editingConfig
+            .sub_schedules[ ctr.dataset.sub ]
+            .transitions;
+
+          let prevsecs = 0;
+          let tsecs;
+          for (const trans of transs) {
+              tsecs = this.transtoSecs(trans);
+              if (tsecs - prevsecs > 60*60) {
+                  break;
+              }
+              prevsecs = tsecs;
+          }
+
+          const hh = prevsecs % (60*60);
+          prevsecs -= (hh * 60 * 60);
+          const mm = prevsecs % 60;
+          prevsecs -= (mm * 60);
+
+          transs.push( {at: {hh: hh, mm:mm, ss:prevsecs}, state: 0} );
+          transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) );
        //   }
      //     let transs = conf.sub_schedules[ clicked.closest( '.sh-name' ).dataset.sub ].transitions;
 /*
