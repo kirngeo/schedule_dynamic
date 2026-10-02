@@ -1011,6 +1011,10 @@ div {
             box-sizing: border-box;
         }
 
+        .trans {
+            width: max-content;
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
