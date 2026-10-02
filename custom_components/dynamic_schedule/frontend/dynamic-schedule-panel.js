@@ -684,7 +684,11 @@ class DynamicSchedulePanel extends HTMLElement {
                   at.ss = Number( trans.querySelector('.ss').value );
                   let t = {at : at};
                   const state = trans.querySelector('.state').value;
-                  t.state = Number.isNaN(state) ? state : Number(state);
+                  if (conf.boolean) {
+                      t.state = Boolean(state);
+                  } else {
+                      t.state = Number.isNaN(state) ? state : Number(state);
+                  }
                   transs.push( t );
               });
               subs[ sub ] = {transitions : transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) )}
