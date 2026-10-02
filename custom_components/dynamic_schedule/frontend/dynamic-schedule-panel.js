@@ -881,7 +881,7 @@ class DynamicSchedulePanel extends HTMLElement {
             cont += `<span>ss:<input class="ss ch" type=number min=0 max=59 value=${trans.at.ss}></input>`;
             cont += '<span> state';
             if (scheduleConfig["boolean"]) {
-              cont += `<ha-switch class="boolean ch" ${!!trans.state ? "checked " : ""}></ha-switch>`
+              cont += `<ha-switch class="state ch" ${!!trans.state ? "checked " : ""}></ha-switch>`
             } else {
               cont += `<input class="state ch" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
             }
