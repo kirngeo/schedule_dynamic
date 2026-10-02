@@ -159,7 +159,7 @@ class DynamicSchedulePanel extends HTMLElement {
           let prevsecs = 0;
           let tsecs;
           for (const trans of transs) {
-              tsecs = this.transtoSecs(trans);
+              tsecs = this.transToSecs(trans);
               if (tsecs - prevsecs > 60*60) {
                   break;
               }
