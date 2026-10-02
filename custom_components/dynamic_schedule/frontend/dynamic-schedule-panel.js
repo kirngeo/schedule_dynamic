@@ -184,7 +184,7 @@ class DynamicSchedulePanel extends HTMLElement {
               let trans;
               if (gaps[0][1] < 0) {
                   // insert after the last transition
-                  trans = transs[ trans.length - 1 ];
+                  trans = transs[ transs.length - 1 ];
               } else {
                   trans = transs[ gaps[0][1] ];
               }
