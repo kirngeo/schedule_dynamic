@@ -75,7 +75,10 @@ class DynamicSchedulePanel extends HTMLElement {
 
       if (e.target.classList.contains('ch')) {
           console.log('changed', e.target);
+          e.preventDefault();
           this._editing( true );
+          this.render();
+          return;
       }
 
   }
