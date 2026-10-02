@@ -178,12 +178,20 @@ class DynamicSchedulePanel extends HTMLElement {
               gaps.push( [(24*60*60) - prevsecs, -1] );
               console.log('gaps', gaps);
 
-              gaps = gaps.filter( (gap, inx) => gap[0] > 60*60 ).sort( (a, b) => a[0] > b[0] );
+              gaps = gaps.filter( (gap, inx) => gap[0] > 45*60 ).sort( (a, b) => a[0] > b[0] );
               console.log( 'gaps SF', gaps );
 
-              hh = 1;
-              mm = 0;
-              ss = 0;
+              let trans;
+              if (gaps[0][1] < 0) {
+                  // insert after the last transition
+                  trans = transs[ trans.length - 1 ];
+              } else {
+                  trans = transs[ gaps[0][1] ];
+              }
+
+              hh = trans.at.hh + 1;
+              mm = trans.at.mm;
+              ss = trans.at.ss'
           }
 
           transs.push( {at: {hh: hh, mm:mm, ss:ss}, state: 0} );
