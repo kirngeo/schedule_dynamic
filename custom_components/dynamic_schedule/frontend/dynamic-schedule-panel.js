@@ -871,7 +871,7 @@ class DynamicSchedulePanel extends HTMLElement {
           desiredpc = this._transToPc(trans, 97);
 
           if (tinx) {
-              desiredpc = Math.max( desiredpc, lastpc + 4 );
+              desiredpc = Math.max( desiredpc, lastpc + 3.5 );  // was 4
           }
 
           cont += `<div class="trans" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${desiredpc}%;">`;
