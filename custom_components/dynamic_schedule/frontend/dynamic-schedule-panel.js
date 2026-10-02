@@ -1011,6 +1011,12 @@ div {
             box-sizing: border-box;
         }
 
+        .trans {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
