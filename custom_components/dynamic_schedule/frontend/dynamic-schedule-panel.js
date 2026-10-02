@@ -699,11 +699,11 @@ class DynamicSchedulePanel extends HTMLElement {
     }
 
     if (this._isEditing) {
-        this.shadowRoot.querySelector('#save-btn').classList.add('dirty');
+     //   this.shadowRoot.querySelector('#save-btn').classList.add('dirty');
         scheduleConfig = this._preEditConfig;
         console.log('switching to _preEditConfig', scheduleConfig);
     } else {
-        this.shadowRoot.querySelector('#save-btn').classList.remove('dirty');
+     //   this.shadowRoot.querySelector('#save-btn').classList.remove('dirty');
     }
 
     if (scheduleConfig) {
