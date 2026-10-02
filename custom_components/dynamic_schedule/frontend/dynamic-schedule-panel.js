@@ -191,7 +191,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
               hh = trans.at.hh + 1;
               mm = trans.at.mm;
-              ss = trans.at.ss'
+              ss = trans.at.ss;
           }
 
           transs.push( {at: {hh: hh, mm:mm, ss:ss}, state: 0} );
