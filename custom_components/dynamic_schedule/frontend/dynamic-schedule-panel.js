@@ -160,18 +160,13 @@ class DynamicSchedulePanel extends HTMLElement {
             .sub_schedules[ ctr.dataset.sub ]
             .transitions;
 
-          let hh = 0;
-          let mm = 0;
-          let ss = 0;
-          let sincelast;
-          let untilnext;
           let tsecs;
           let gaps = [];
 
           if (transs.length) {
               let prevsecs = 0;
               transs.map( (trans, inx) => {
-                  tsecs = this.transToSecs(trans);
+                  tsecs = this._transToSecs(trans);
                   gaps.push( [tsecs - prevsecs, inx] );
                   prevsecs = tsecs;
               })
@@ -189,13 +184,12 @@ class DynamicSchedulePanel extends HTMLElement {
                   trans = transs[ gaps[0][1] ];
               }
 
-              hh = trans.at.hh + 1;
-              mm = trans.at.mm;
-              ss = trans.at.ss;
+              transs.push( {at: this._secsToAt( this._transToSecs(trans) + 45*60 ), state: 0} );
+          } else {
+              transs.push( {at: {hh: 0, mm:0, ss:0}, state: 0} );
           }
 
-          transs.push( {at: {hh: hh, mm:mm, ss:ss}, state: 0} );
-          transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) );
+          transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) );
        //   }
      //     let transs = conf.sub_schedules[ clicked.closest( '.sh-name' ).dataset.sub ].transitions;
 /*
@@ -411,15 +405,23 @@ class DynamicSchedulePanel extends HTMLElement {
 
   }
 
-  transToPc (trans, pc=100) {
-      return (this.transToSecs(trans) / (24*60*60)) * pc;
+  _transToPc (trans, pc=100) {
+      return (this._transToSecs(trans) / (24*60*60)) * pc;
   }
 
-  transToSecs( trans ) {
+  _transToSecs( trans ) {
       try {
           const at = trans.at;
           return (((at.hh * 60) + at.mm) * 60) + at.ss;
       } catch(e) {console.log(e); return 0;}
+  }
+
+  _secsToAt( secs ) {
+    const ss = secs % 60;
+    let xx = (secs-ss) / 60;
+    const mm = xx % 60;
+    xx -= mm;
+    return {hh: xx/60, mm: mm, ss: ss};
   }
 
   async _onCreateScheduleSubmit() {
@@ -681,10 +683,11 @@ class DynamicSchedulePanel extends HTMLElement {
                   at.mm = Number( trans.querySelector('.mm').value );
                   at.ss = Number( trans.querySelector('.ss').value );
                   let t = {at : at};
-                  t.state = trans.querySelector('.state').value;
+                  const state = trans.querySelector('.state').value;
+                  t.state = Number.isNaN(state) ? state : Number(state);
                   transs.push( t );
               });
-              subs[ sub ] = {transitions : transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) )}
+              subs[ sub ] = {transitions : transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) )}
           } );
       });
       conf.sub_schedules = subs;
@@ -865,7 +868,7 @@ class DynamicSchedulePanel extends HTMLElement {
         let lastpc = 0;
         let desiredpc;
         subsched.transitions.map( (trans, tinx) => {
-          desiredpc = this.transToPc(trans, 97);
+          desiredpc = this._transToPc(trans, 97);
 
           if (tinx) {
               desiredpc = Math.max( desiredpc, lastpc + 4 );
