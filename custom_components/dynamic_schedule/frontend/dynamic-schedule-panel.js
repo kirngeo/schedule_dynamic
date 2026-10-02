@@ -17,7 +17,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._editingConfig = null;
     this._eligibleScriptConfigs = [];
     this._isEditing = false;
-    this._preEditConfig = null;
+    this._editingConfig = null;
     this._activeScheduleId = null;
   }
 
@@ -84,17 +84,19 @@ class DynamicSchedulePanel extends HTMLElement {
       if (this._isEditing === onoff) return;
       if (onoff) {
       //    this.shadowRoot.querySelector('#save-container').classList.add("open");
-          this._preEditConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
-          console.log('starting to edit, preEditConfig:', this._preEditConfig);
+          this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
+          console.log('starting to edit, _editingConfig:', this._editingConfig);
      //     this.shadowRoot.querySelector('#save-button').classList.add('dirty');
        //   this.shadowRoot.querySelector('#save-btn').style.display = 'block';
           this.shadowRoot.querySelector('#save-btn').classList.add('dirty');
+          this.shadowRoot.querySelector('#save-btn').classList.remove('clean');
       } else {
     //      this.shadowRoot.querySelector('#saver').style.visibility = 'hidden';
      //     this.shadowRoot.querySelector('#save-btn').style.display = 'hide';
           this.shadowRoot.querySelector('#save-btn').classList.remove('dirty');
+          this.shadowRoot.querySelector('#save-btn').classList.add('clean');
           console.log('stopping editing');
-          this._preEditConfig = null;
+          this._editingConfig = null;
       }
       this._isEditing = onoff;
   }
@@ -144,15 +146,16 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           console.log('add-transition', clicked);
           const ctr = clicked.closest('.sh-name');
+          this._editing( true );
           e.preventDefault();
-          if (this._activeScheduleOverview) {
-            this._editing( true );
-            let transs = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
+       //   if (this._activeScheduleOverview) {
+         //   let transs = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
+            let transs = this._editingConfig
               .sub_schedules[ ctr.dataset.sub ]
               .transitions;
               transs.push( {at: {hh: 12, mm:0, ss:0}, state: 0} );
               transs.sort( (a,b) => this.transToSecs(a) > this.transToSecs(b) );
-          }
+       //   }
      //     let transs = conf.sub_schedules[ clicked.closest( '.sh-name' ).dataset.sub ].transitions;
 /*
           const returned = await this._hass.connection.sendMessagePromise( conf );
@@ -171,8 +174,9 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
           this._editing( true );
           const data = clicked.closest( '.sh-name' ).dataset
-          let conf = this._gatherConfig();
-          delete conf.sub_schedules[ data.sub ];
+      //    let conf = this._gatherConfig();
+      //    delete conf.sub_schedules[ data.sub ];
+          delete this._editingConfig.sub_schedules[ data.sub ];
 /*
           const returned = await this._hass.connection.sendMessagePromise( conf );
           console.log('returned', returned );
@@ -322,7 +326,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
       this._editing(true);
    //   let conf = this._gatherConfig();
-      let conf = this._preEditConfig;
+      let conf = this._editingConfig;
       conf.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
 
       if (false) {
@@ -699,11 +703,8 @@ class DynamicSchedulePanel extends HTMLElement {
     }
 
     if (this._isEditing) {
-     //   this.shadowRoot.querySelector('#save-btn').classList.add('dirty');
-        scheduleConfig = this._preEditConfig;
-        console.log('switching to _preEditConfig', scheduleConfig);
-    } else {
-     //   this.shadowRoot.querySelector('#save-btn').classList.remove('dirty');
+        scheduleConfig = this._editingConfig;
+        console.log('switching to _editingConfig', scheduleConfig);
     }
 
     if (scheduleConfig) {
@@ -1155,6 +1156,8 @@ div {
         .dirty {
             opacity: 1;
             background-color: red;
+            font-weight: bold;
+            color: white;
         }
 
         /* Modal Overlay */
@@ -1346,7 +1349,7 @@ div {
           </div>
           <div class="zoom-controls">
               <button class="icon-btn" id="main-test-btn" title="test">test</button>
-              <button class="icon-btn${this._isEditing?' dirty':''}" id="save-btn" title="save">save</button>
+              <button class="icon-btn ${this._isEditing?'dirty':'clean'}" id="save-btn" title="save">save</button>
               ${schedselHtml}
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
