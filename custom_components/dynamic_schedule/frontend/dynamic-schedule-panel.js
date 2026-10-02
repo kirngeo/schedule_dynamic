@@ -174,7 +174,7 @@ class DynamicSchedulePanel extends HTMLElement {
                   tsecs = this.transToSecs(trans);
                   gaps.push( [tsecs - prevsecs, inx] );
                   prevsecs = tsecs;
-              }
+              })
               gaps.push( [(24*60*60) - prevsecs, -1] );
               console.log('gaps', gaps);
 
