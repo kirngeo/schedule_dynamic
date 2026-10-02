@@ -178,7 +178,7 @@ class DynamicSchedulePanel extends HTMLElement {
               gaps.push( [(24*60*60) - prevsecs, -1] );
               console.log('gaps', gaps);
 
-              gaps = gaps.filter( (gap, inx) => gap > 60*60 ).sort( (a, b) => a[0] > b[0] );
+              gaps = gaps.filter( (gap, inx) => gap[0] > 60*60 ).sort( (a, b) => a[0] > b[0] );
               console.log( 'gaps SF', gaps );
 
               hh = 1;
