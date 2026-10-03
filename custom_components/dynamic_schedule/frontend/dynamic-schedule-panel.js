@@ -295,12 +295,6 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      clicked = e.target.closest('#tester');
-      if (clicked) {
-          e.preventDefault();
-          return;
-      }
-
   }
 
   _openNewScheduleModal() {
@@ -852,10 +846,10 @@ class DynamicSchedulePanel extends HTMLElement {
 
     let subschedNamesHtml = subsched_names.map((sub, inx) => `
       <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
-       <div>${sub}</div>
        <div>
-         <button class="icon-btn add-transition" title="add a transition">+</button>
          <button class="icon-btn delete-subschedule" title="remove this entire sub-schedule">-</button>
+         <span>${sub}</span>
+         <button class="icon-btn add-transition" title="add a transition">+</button>
        </div>
       </div>
     `).join('');
@@ -1395,7 +1389,7 @@ div {
       </style>
 
       <div class="header">
-          <div class="title" id="tester">
+          <div class="title">
               <ha-icon icon="mdi:table-clock"></ha-icon>
               Dynamic Schedules
           </div>
