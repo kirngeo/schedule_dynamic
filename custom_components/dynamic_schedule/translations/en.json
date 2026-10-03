@@ -25,7 +25,7 @@
     },
     "entity_component": {
         "_": {
-            "name": "Schedule",
+            "name": "Dynamic Schedule",
             "state": {
                 "off": "Off",
                 "on": "On"
