@@ -8,7 +8,7 @@
       "description": "Tests if one or more schedule blocks are currently not active.",
       "fields": {
         "behavior": {
-          "name": "[%key:component::schedule::common::condition_behavior_name%]"
+          "name": "[%key:component::dynamic_schedule::common::condition_behavior_name%]"
         }
       },
       "name": "Schedule is off"
@@ -17,7 +17,7 @@
       "description": "Tests if one or more schedule blocks are currently active.",
       "fields": {
         "behavior": {
-          "name": "[%key:component::schedule::common::condition_behavior_name%]"
+          "name": "[%key:component::dynamic_schedule::common::condition_behavior_name%]"
         }
       },
       "name": "Schedule is on"
@@ -25,7 +25,7 @@
   },
   "entity_component": {
     "_": {
-      "name": "[%key:component::schedule::title%]",
+      "name": "[%key:component::dynamic_schedule::title%]",
       "state": {
         "off": "[%key:common::state::off%]",
         "on": "[%key:common::state::on%]"
@@ -113,7 +113,7 @@
       "description": "Triggers when a schedule block ends.",
       "fields": {
         "behavior": {
-          "name": "[%key:component::schedule::common::trigger_behavior_name%]"
+          "name": "[%key:component::dynamic_schedule::common::trigger_behavior_name%]"
         }
       },
       "name": "Schedule block ended"
@@ -122,7 +122,7 @@
       "description": "Triggers when a schedule block starts.",
       "fields": {
         "behavior": {
-          "name": "[%key:component::schedule::common::trigger_behavior_name%]"
+          "name": "[%key:component::dynamic_schedule::common::trigger_behavior_name%]"
         }
       },
       "name": "Schedule block started"
