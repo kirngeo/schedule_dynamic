@@ -1400,7 +1400,7 @@ div {
               Dynamic Schedules
           </div>
           <div class="zoom-controls">
-              <button class="icon-btn" id="main-test-btn" title="test">test</button>
+        <!--      <button class="icon-btn" id="main-test-btn" title="test">test</button> -->
               <button class="icon-btn ${this._isEditing?'dirty':'clean'}" id="save-btn" title="save">save</button>
               ${schedselHtml}
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
@@ -1432,7 +1432,7 @@ div {
                       </ha-settings-row>
                   </div>
                   <div class="modal-footer">
-                      <button type="button" class="btn secondary" id="modal-test-btn">Test</button>
+               <!--       <button type="button" class="btn secondary" id="modal-test-btn">Test</button> -->
                       <button type="button" class="btn secondary" id="modal-cancel-btn">Cancel</button>
                       <button type="submit" class="btn primary" id="modal-submit-btn">Create Dynamic Schedule</button>
                   </div>
@@ -1460,7 +1460,7 @@ div {
                       </ha-settings-row>
                   </div>
                   <div class="modal-footer">
-                      <button type="button" class="btn secondary" id="modal-sub-test-btn">Test</button>
+           <!--           <button type="button" class="btn secondary" id="modal-sub-test-btn">Test</button>  -->
                       <button type="button" class="btn secondary" id="modal-sub-cancel-btn">Cancel</button>
                       <button type="submit" class="btn primary" id="modal-sub-submit-btn">Create Sub-schedule</button>
                   </div>

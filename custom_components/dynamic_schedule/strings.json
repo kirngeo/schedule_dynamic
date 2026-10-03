@@ -107,7 +107,7 @@
       }
     }
   },
-  "title": "Schedule",
+  "title": "Dynamic Schedule",
   "triggers": {
     "turned_off": {
       "description": "Triggers when a schedule block ends.",
