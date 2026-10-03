@@ -1133,6 +1133,8 @@ div {
 
         .subh {
             display: flex;
+            flex: 1 2 1;
+            width: 100%;
         }
 
         .sub-header {
