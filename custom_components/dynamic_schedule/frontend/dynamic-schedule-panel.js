@@ -849,7 +849,7 @@ class DynamicSchedulePanel extends HTMLElement {
         <div class="subh">
          <span><button class="icon-btn delete-subschedule" title="remove this entire sub-schedule">-</button></span>
          <span>${sub}</span>
-         <span><button class="icon-btn add-transition" title="add a transition">+</button></span>
+         <span style="float:right;"><button class="icon-btn add-transition" title="add a transition">+</button></span>
         </div>
       </div>
     `).join('');
