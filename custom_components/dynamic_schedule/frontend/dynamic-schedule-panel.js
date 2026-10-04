@@ -942,6 +942,10 @@ class DynamicSchedulePanel extends HTMLElement {
           <div>
            ${scriptselHtml}
           </div>
+          <div class="attr-name">Icon</div>
+          <div>
+           <ha-icon-picker ${rw?"":"disabled "} value="mdbled "} value=${scheduleConfig.icon}></ha-icon-picker>
+          </div>
           <div class="attr-name">Attributes</div>
           <div>
            ${attrHtml}
