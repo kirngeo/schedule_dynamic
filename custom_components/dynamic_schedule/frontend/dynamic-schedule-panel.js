@@ -937,19 +937,19 @@ class DynamicSchedulePanel extends HTMLElement {
         <ha-card>
          <div class="attrs-ctr">
           <div class="attr-name">Name</div>
-          <div>
+          <div class="attr-value">
            <input ${rw ? "" : "readonly "}id="schedule-name-input" type="text" class="ch" value="${scheduleConfig ? scheduleConfig.name : ''}">
           </div>
           <div class="attr-name">Boolean</div>
-          <div>
+          <div class="attr-value">
            ${boolHtml}
           </div>
           <div class="attr-name">Selector script</div>
-          <div>
+          <div class="attr-value">
            ${scriptselHtml}
           </div>
           <div class="attr-name">Icon</div>
-          <div>
+          <div class="attr-value">
            <ha-icon-picker
             id="schedule-icon"
             class="ch"
@@ -958,7 +958,7 @@ class DynamicSchedulePanel extends HTMLElement {
            ></ha-icon-picker>
           </div>
           <div class="attr-name">Attributes</div>
-          <div>
+          <div class="attr-value">
            ${attrHtml}
           </div>
          </div>
@@ -1149,6 +1149,10 @@ div {
             align-items: center;
             white-space: nowrap;
       /*      padding: 6px; */
+        }
+
+        .attr-value {
+            padding: 4px;
         }
 
         .subs-ed-ctr {
