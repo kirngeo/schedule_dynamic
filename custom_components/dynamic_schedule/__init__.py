@@ -284,6 +284,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up a schedule."""
 
     LOGGER.debug( "async_setup" )
+    LOGGER.debug( config )
+
     component = EntityComponent[Schedule](LOGGER, DOMAIN, hass)
 
     id_manager = IDManager()
