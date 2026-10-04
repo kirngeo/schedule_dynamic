@@ -944,7 +944,7 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
           <div class="attr-name">Icon</div>
           <div>
-           <ha-icon-picker
+           <ha-icon-picker class="ch"
             ${rw?"":"disabled "} 
             value="${ (scheduleConfig && scheduleConfig.icon) ? scheduleConfig.icon:'mdi:table-clock'}"
            ></ha-icon-picker>
@@ -1136,8 +1136,11 @@ div {
         }
 
         .attr-name {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             white-space: nowrap;
-            padding: 6px;
+      /*      padding: 6px; */
         }
 
         .subs-ed-ctr {
