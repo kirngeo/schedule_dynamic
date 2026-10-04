@@ -847,9 +847,9 @@ class DynamicSchedulePanel extends HTMLElement {
     let subschedNamesHtml = subsched_names.map((sub, inx) => `
       <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
         <div class="subh">
-         <span><button class="icon-btn delete-subschedule" title="remove this entire sub-schedule">-</button></span>
+         <span><button class="icon-btn delete-subschedule" title="remove this entire ${sub} sub-schedule">-</button></span>
          <span>${sub}</span>
-         <span><button class="icon-btn add-transition" title="add a transition">+</button></span>
+         <span><button class="icon-btn add-transition" title="add a transition to this ${sub} sub-schedule">+</button></span>
         </div>
       </div>
     `).join('');

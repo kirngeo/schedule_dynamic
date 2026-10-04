@@ -1,7 +1,7 @@
 """Config flow for Dynamic Schedule Panel."""
 from homeassistant import config_entries
 
-from .const import DOMAIN
+from .const import DOMAIN, LOGGER
 
 class DynamicSchedulePanelConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Dynamic Schedule Panel."""
@@ -10,6 +10,9 @@ class DynamicSchedulePanelConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
+
+        LOGGER.debug( 'async_step_user user_input=%s', user_input )
+
         if self._async_current_entries():
             return self.async_abort(reason="single_instance_allowed")
 
