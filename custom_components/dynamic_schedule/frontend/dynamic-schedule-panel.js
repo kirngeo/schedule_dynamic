@@ -39,7 +39,7 @@ class DynamicSchedulePanel extends HTMLElement {
       this.shadowRoot.addEventListener('click', this._onClick.bind(this));
       this.shadowRoot.addEventListener('change', this._onChange.bind(this));
       this.shadowRoot.addEventListener('select', this._onSelect.bind(this));
-      this.shadowRoot.addEventListener('value-changed', this._onSelect.bind(this));
+      this.shadowRoot.addEventListener('value-changed', this._onValueChanged.bind(this));
   }
 
   showToast(message) {
@@ -48,6 +48,10 @@ class DynamicSchedulePanel extends HTMLElement {
           bubbles: true,
           composed: true
       }));
+  }
+
+  _onValueChanged(e) {
+      console.log('####### _onValueChanged', e );
   }
 
   _onSelect(e) {
@@ -948,7 +952,7 @@ class DynamicSchedulePanel extends HTMLElement {
           <div>
            <ha-icon-picker
             id="schedule-icon"
-            class="Xch"
+            class="ch"
             ${rw?"":"disabled "} 
             value="${ (scheduleConfig && scheduleConfig.icon) ? scheduleConfig.icon:'mdi:table-clock'}"
            ></ha-icon-picker>
