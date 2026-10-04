@@ -758,7 +758,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (scheduleConfig) {
       //
-      scriptselHtml += `<select class="icon-btn ch" id="schedule-script-selector">`;
+      scriptselHtml += `<select ${rw?'' : 'disabled '}class="icon-btn ch" id="schedule-script-selector">`;
 
       selected = false;
       const long_scriptids = this._eligibleScriptConfigs.map( scr => scr.id);
@@ -779,13 +779,17 @@ class DynamicSchedulePanel extends HTMLElement {
             (scheduleConfig.select_script == cnf.id)) {
           selected = true;
         }
+
         scriptselHtml += `<option ${selected  ? "selected " : ""}value="${cnf.id.replace('script.','')}">${cnf.alias}</option>`;
         });
-      scriptselHtml += '</select>';
+
+      if (rw) {
+        scriptselHtml += '</select>';
+      }
 
       //
 
-      boolHtml = `<ha-switch ${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean" class="ch"></ha-switch>`;
+      boolHtml = `<ha-switch ${rw ? '' : 'disabled '}${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean" class="ch"></ha-switch>`;
 
       //
  
@@ -836,10 +840,12 @@ class DynamicSchedulePanel extends HTMLElement {
 
     // time gutter header 
     // 1) add a subschedule
-    timeGutterHeaderHtml += `
+    if (rw) {
+        timeGutterHeaderHtml += `
           <button style="font-size: 0.75em;" id="add-subschedule" class="icon-btn-small" title="add a subschedule">+
           </button>
-    `;
+        `;
+    }
     //          <ha-icon icon="mdi:plus"></ha-icon>
 
 
@@ -855,9 +861,9 @@ class DynamicSchedulePanel extends HTMLElement {
     let subschedNamesHtml = subsched_names.map((sub, inx) => `
       <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
         <div class="subh">
-         <span><button class="icon-btn delete-subschedule" title="remove this entire ${sub} sub-schedule">-</button></span>
+         ${rw ? `<span><button class="icon-btn delete-subschedule" title="remove this entire ${sub} sub-schedule">-</button></span>` : ''}
          <span>${sub}</span>
-         <span><button class="icon-btn add-transition" title="add a transition to this ${sub} sub-schedule">+</button></span>
+         ${rw ? `<span><button class="icon-btn add-transition" title="add a transition to this ${sub} sub-schedule">+</button></span>` : ''}
         </div>
       </div>
     `).join('');
@@ -895,7 +901,7 @@ class DynamicSchedulePanel extends HTMLElement {
             cont += `<ha-icon class="rm-trans" icon="mdi:close" title="delete transition"></ha-icon>`;
           } else {
             cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
-            cont += '<span> state';
+            cont += '<span> state ';
             if (scheduleConfig["boolean"]) {
               cont += `<ha-switch disabled ${!!trans.state ? "checked " : ""}></ha-switch>`
             } else {
@@ -927,7 +933,7 @@ class DynamicSchedulePanel extends HTMLElement {
          <div class="attrs-ctr">
           <div class="attr-name">Name</div>
           <div>
-           <input id="schedule-name-input" type="text" class="ch" value="${scheduleConfig ? scheduleConfig.name : ''}">
+           <input ${rw ? '' : 'readonly '}id="schedule-name-input" type="text" class="ch" value="${scheduleConfig ? scheduleConfig.name : ''}">
           </div>
           <div class="attr-name">Boolean</div>
           <div>
