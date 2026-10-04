@@ -39,6 +39,7 @@ class DynamicSchedulePanel extends HTMLElement {
       this.shadowRoot.addEventListener('click', this._onClick.bind(this));
       this.shadowRoot.addEventListener('change', this._onChange.bind(this));
       this.shadowRoot.addEventListener('select', this._onSelect.bind(this));
+      this.shadowRoot.addEventListener('value-changed', this._onSelect.bind(this));
   }
 
   showToast(message) {
