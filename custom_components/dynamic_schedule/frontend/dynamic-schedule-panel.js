@@ -673,6 +673,7 @@ class DynamicSchedulePanel extends HTMLElement {
       conf.name = this.shadowRoot.querySelector("#schedule-name-input").value;
       conf["boolean"] = this.shadowRoot.querySelector("#schedule-is-boolean").checked;
       conf.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
+      conf.icon = this.shadowRoot.querySelector("#schedule-icon").value || null;
 
       let subs = {};
       subnames.map((sub, inx) => {
@@ -944,7 +945,9 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
           <div class="attr-name">Icon</div>
           <div>
-           <ha-icon-picker class="ch"
+           <ha-icon-picker
+            id="schedule-icon"
+            class="ch"
             ${rw?"":"disabled "} 
             value="${ (scheduleConfig && scheduleConfig.icon) ? scheduleConfig.icon:'mdi:table-clock'}"
            ></ha-icon-picker>
