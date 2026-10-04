@@ -735,14 +735,15 @@ class DynamicSchedulePanel extends HTMLElement {
             selected = true;
         }
 
-       schedselHtml += `<option ${selected  ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
-       if (selected) {
+        schedselHtml += `<option ${selected  ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
+        if (selected) {
            this._activeScheduleOverview = ent;
            this._activeScheduleId = ent.entid;
-          console.log('activeScheduleId C', this._activeScheduleId );
-       }
+           console.log('activeScheduleId C', this._activeScheduleId );
+           rw = this._rws && this._rws[ this._activeScheduleId ];
+        }
 
-        });
+      });
       schedselHtml += `</select>`;
 
       if (this._activeScheduleOverview === null) {
@@ -758,7 +759,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (scheduleConfig) {
       //
-      scriptselHtml += `<select ${rw?'' : 'disabled '}class="icon-btn ch" id="schedule-script-selector">`;
+      scriptselHtml += `<select ${rw?"" : "disabled "}class="icon-btn ch" id="schedule-script-selector">`;
 
       selected = false;
       const long_scriptids = this._eligibleScriptConfigs.map( scr => scr.id);
@@ -783,13 +784,11 @@ class DynamicSchedulePanel extends HTMLElement {
         scriptselHtml += `<option ${selected  ? "selected " : ""}value="${cnf.id.replace('script.','')}">${cnf.alias}</option>`;
         });
 
-      if (rw) {
-        scriptselHtml += '</select>';
-      }
+      scriptselHtml += '</select>';
 
       //
 
-      boolHtml = `<ha-switch ${rw ? '' : 'disabled '}${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean" class="ch"></ha-switch>`;
+      boolHtml = `<ha-switch ${rw ? "" : "disabled "}${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean" class="ch"></ha-switch>`;
 
       //
  
@@ -807,8 +806,8 @@ class DynamicSchedulePanel extends HTMLElement {
       }
       console.log('scheduleConfig', scheduleConfig);
     //  rw = this._activeScheduleOverview.edit;
-      rw = true;
-      rw = this._rws && this._rws[ this._activeScheduleId ];
+ //     rw = true;
+ //     rw = this._rws && this._rws[ this._activeScheduleId ];
 
       if (scheduleConfig) {
  //     console.log( 'xx', this._editingConfig, this._activeScheduleOverview);
@@ -933,7 +932,7 @@ class DynamicSchedulePanel extends HTMLElement {
          <div class="attrs-ctr">
           <div class="attr-name">Name</div>
           <div>
-           <input ${rw ? '' : 'readonly '}id="schedule-name-input" type="text" class="ch" value="${scheduleConfig ? scheduleConfig.name : ''}">
+           <input ${rw ? "" : "readonly "}id="schedule-name-input" type="text" class="ch" value="${scheduleConfig ? scheduleConfig.name : ''}">
           </div>
           <div class="attr-name">Boolean</div>
           <div>
