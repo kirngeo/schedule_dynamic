@@ -944,7 +944,10 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
           <div class="attr-name">Icon</div>
           <div>
-           <ha-icon-picker ${rw?"":"disabled "} value="mdbled "} value=${scheduleConfig.icon}></ha-icon-picker>
+           <ha-icon-picker
+            ${rw?"":"disabled "} 
+            value="${ (scheduleConfig && scheduleConfig.icon) ? scheduleConfig.icon:'mdi:table-clock'}"
+           ></ha-icon-picker>
           </div>
           <div class="attr-name">Attributes</div>
           <div>
