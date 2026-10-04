@@ -19,6 +19,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._isEditing = false;
     this._editingConfig = null;
     this._activeScheduleId = null;
+    this._rws = {};
   }
 
   zoomIn() {
@@ -604,11 +605,17 @@ class DynamicSchedulePanel extends HTMLElement {
           let response = null;
           this._schedulesOverview = Object.values(this._hass.states)
               .filter(state => state.entity_id.startsWith( this._domaindot))
-              .map(state => ({
-                  'entid'  : state.entity_id.replace( this._domaindot, ''),
-                  'name'   : Object.hasOwn(state,'attributes') && state.attributes.friendly_name ? state.attributes.friendly_name : state.entity_id,
-                  'edit' : Boolean( Object.hasOwn(state,'attributes') && state.attributes.editable)
-                  }))
+              .map(state => {
+                  const entid = state.entity_id.replace( this._domaindot, '');
+                  const editable = Boolean( Object.hasOwn(state,'attributes') && state.attributes.editable);
+                  this._rws[ entid ] = editable;
+
+                  return {
+                    'entid'  : entid,
+                    'name'   : Object.hasOwn(state,'attributes') && state.attributes.friendly_name ? state.attributes.friendly_name : state.entity_id,
+                    'edit' : editable
+                  }
+              })
               .sort((a,b) => a.name.localeCompare(b.name));
 
           if (this._schedulesOverview.length === 0) return;
@@ -797,6 +804,7 @@ class DynamicSchedulePanel extends HTMLElement {
       console.log('scheduleConfig', scheduleConfig);
     //  rw = this._activeScheduleOverview.edit;
       rw = true;
+      rw = this._rws && this._rws[ this._activeScheduleId ];
 
       if (scheduleConfig) {
  //     console.log( 'xx', this._editingConfig, this._activeScheduleOverview);
@@ -813,7 +821,7 @@ class DynamicSchedulePanel extends HTMLElement {
         contentHtml += `<div>scheduleConfig<pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
  //       contentHtml += `<div>subscheds<pre>${JSON.stringify( subscheds, null, "  " )}</pre></div>`;
  //       contentHtml += `<div>subsched_names<pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
-        contentHtml = '';
+        contentHtml = `rw = ${rw}`;
     }
     } else if (this._schedulesOverview.length > 0) {
       contentHtml = 'please select a dynamic schedule';
