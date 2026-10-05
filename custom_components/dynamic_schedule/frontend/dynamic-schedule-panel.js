@@ -962,15 +962,15 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
           <div class="attr-name">Unit of  measurement</div>
           <div class="attr-value">
-           <input placeholder="optional" ${rw ? "" : "readonly "}id="schedule-uom" type="text" class="ch" value="${scheduleConfig ? scheduleConfig.unit_of_measurement : ''}">
+           <input placeholder="optional" ${rw ? "" : "readonly "}id="schedule-uom" type="text" class="ch" value="${(scheduleConfig && scheduleConfig.unit_of_measurement) ? scheduleConfig.unit_of_measurement : ''}">
           </div>
           <div class="attr-name">Device class</div>
           <div class="attr-value">
-           <input placeholder="optional" ${rw ? "" : "readonly "}id="schedule-dc" type="text" class="ch" value="${scheduleConfig ? scheduleConfig.device_class : ''}">
+           <input placeholder="optional" ${rw ? "" : "readonly "}id="schedule-dc" type="text" class="ch" value="${(scheduleConfig && scheduleConfig.device_class) ? scheduleConfig.device_class : ''}">
           </div>
           <div class="attr-name">Delay startup</div>
           <div class="attr-value">
-           <input ${rw ? "" : "readonly "}id="schedule-delay" type="number" class="ch" value="${scheduleConfig ? scheduleConfig.delay_startup : 0}">
+           <input ${rw ? "" : "readonly "}id="schedule-delay" type="number" class="ch" value="${(scheduleConfig && scheduleConfig.delay_startup) ? scheduleConfig.delay_startup : 0}">
           </div>
           <div class="attr-name">Attributes</div>
           <div class="attr-value">
