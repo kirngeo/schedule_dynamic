@@ -682,7 +682,7 @@ class DynamicSchedulePanel extends HTMLElement {
       conf.icon = this.shadowRoot.querySelector("#schedule-icon").value || null;
       conf.unit_of_measurement = this.shadowRoot.querySelector("#schedule-uom").value || null;
       conf.delay_startup = Number( this.shadowRoot.querySelector("#schedule-delay").value || 0 );
-      let val = this.shadowRoot.querySelector("#schedule-dc").value || null;
+      val = this.shadowRoot.querySelector("#schedule-dc").value || null;
       if (val) conf.device_class = val;
 
       let subs = {};
