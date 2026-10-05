@@ -943,7 +943,7 @@ class DynamicSchedulePanel extends HTMLElement {
         <ha-card>
          <div class="attrs-ctr">
           <div class="attr-name">
-           <label for="schedule-name-input">Name</label>
+           <label style="width: 100%" for="schedule-name-input">Name</label>
           </div>
           <div class="attr-value">
            <input ${rw ? "" : "readonly "}id="schedule-name-input" type="text" class="ch" value="${scheduleConfig ? scheduleConfig.name : ''}">
