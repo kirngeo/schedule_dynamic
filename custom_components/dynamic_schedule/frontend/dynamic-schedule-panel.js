@@ -679,6 +679,9 @@ class DynamicSchedulePanel extends HTMLElement {
       conf["boolean"] = this.shadowRoot.querySelector("#schedule-is-boolean").checked;
       conf.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
       conf.icon = this.shadowRoot.querySelector("#schedule-icon").value || null;
+      conf.unit_of_measurement = this.shadowRoot.querySelector("#schedule-uom").value || null;
+      conf.delay_startup = this.shadowRoot.querySelector("#schedule-delay_startup").value || 0;
+      conf.device_class = this.shadowRoot.querySelector("#schedule-dc").value || null;
 
       let subs = {};
       subnames.map((sub, inx) => {
@@ -957,6 +960,18 @@ class DynamicSchedulePanel extends HTMLElement {
             value="${ (scheduleConfig && scheduleConfig.icon) ? scheduleConfig.icon:'mdi:table-clock'}"
            ></ha-icon-picker>
           </div>
+          <div class="attr-name">Unit of  measurement</div>
+          <div class="attr-value">
+           <input placeholder="optional" ${rw ? "" : "readonly "}id="schedule-uom" type="text" class="ch" value="${scheduleConfig ? scheduleConfig.unit_of_measurement : ''}">
+          </div>
+          <div class="attr-name">Device class</div>
+          <div class="attr-value">
+           <input placeholder="optional" ${rw ? "" : "readonly "}id="schedule-dc" type="text" class="ch" value="${scheduleConfig ? scheduleConfig.device_class : ''}">
+          </div>
+          <div class="attr-name">Delay startup</div>
+          <div class="attr-value">
+           <input ${rw ? "" : "readonly "}id="schedule-delay" type="number" class="ch" value="${scheduleConfig ? scheduleConfig.delay_startup : 0}">
+          </div>
           <div class="attr-name">Attributes</div>
           <div class="attr-value">
            ${attrHtml}
@@ -1145,14 +1160,14 @@ div {
 
         .attr-name {
             display: flex;
-            justify-content: center;
+       /*     justify-content: center; */
             align-items: center;
             white-space: nowrap;
       /*      padding: 6px; */
         }
 
         .attr-value {
-            padding: 4px;
+            padding: 2px;
         }
 
         .subs-ed-ctr {
