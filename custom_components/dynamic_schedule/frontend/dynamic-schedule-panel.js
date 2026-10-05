@@ -680,7 +680,7 @@ class DynamicSchedulePanel extends HTMLElement {
       conf.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
       conf.icon = this.shadowRoot.querySelector("#schedule-icon").value || null;
       conf.unit_of_measurement = this.shadowRoot.querySelector("#schedule-uom").value || null;
-      conf.delay_startup = this.shadowRoot.querySelector("#schedule-delay_startup").value || 0;
+      conf.delay_startup = this.shadowRoot.querySelector("#schedule-delay").value || 0;
       conf.device_class = this.shadowRoot.querySelector("#schedule-dc").value || null;
 
       let subs = {};
