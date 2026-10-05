@@ -676,11 +676,12 @@ class DynamicSchedulePanel extends HTMLElement {
 
       let val;
       let conf = {};
-      conf.name = this.shadowRoot.querySelector("#schedule-name-input").value;
+      conf.name = this.shadowRoot.querySelector("#schedule-name-input").value.trim();
       conf["boolean"] = this.shadowRoot.querySelector("#schedule-is-boolean").checked;
       conf.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
       conf.icon = this.shadowRoot.querySelector("#schedule-icon").value || null;
-      conf.unit_of_measurement = this.shadowRoot.querySelector("#schedule-uom").value || null;
+      val = this.shadowRoot.querySelector("#schedule-uom").value || null;
+      if (val) conf.unit_of_measurement = val;
       conf.delay_startup = Number( this.shadowRoot.querySelector("#schedule-delay").value || 0 );
       val = this.shadowRoot.querySelector("#schedule-dc").value || null;
       if (val) conf.device_class = val;
@@ -1262,6 +1263,7 @@ div {
             background-color: red;
             font-weight: bold;
             color: white;
+            display: block;
         }
 
         /* Modal Overlay */
