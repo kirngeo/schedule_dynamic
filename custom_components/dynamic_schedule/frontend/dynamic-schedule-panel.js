@@ -674,14 +674,16 @@ class DynamicSchedulePanel extends HTMLElement {
           subnames.push( sh.dataset.sub );
       });
 
+      let val;
       let conf = {};
       conf.name = this.shadowRoot.querySelector("#schedule-name-input").value;
       conf["boolean"] = this.shadowRoot.querySelector("#schedule-is-boolean").checked;
       conf.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
       conf.icon = this.shadowRoot.querySelector("#schedule-icon").value || null;
       conf.unit_of_measurement = this.shadowRoot.querySelector("#schedule-uom").value || null;
-      conf.delay_startup = this.shadowRoot.querySelector("#schedule-delay").value || 0;
-      conf.device_class = this.shadowRoot.querySelector("#schedule-dc").value || null;
+      conf.delay_startup = Number( this.shadowRoot.querySelector("#schedule-delay").value || 0 );
+      let val = this.shadowRoot.querySelector("#schedule-dc").value || null;
+      if (val) conf.device_class = val;
 
       let subs = {};
       subnames.map((sub, inx) => {
