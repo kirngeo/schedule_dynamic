@@ -853,7 +853,7 @@ class DynamicSchedulePanel extends HTMLElement {
     // 1) add a subschedule
     if (rw) {
         timeGutterHeaderHtml += `
-          <button style="font-size: 0.75em;" id="add-subschedule" class="icon-btn-small" title="add a subschedule">+
+          <button style="font-size: 0.75em;" id="add-subschedule" class="icon-btn" title="add a subschedule">+
           </button>
         `;
     }
@@ -975,7 +975,10 @@ class DynamicSchedulePanel extends HTMLElement {
           <div class="attr-value">
            <input ${rw ? "" : "readonly "}id="schedule-delay" type="number" class="ch" value="${(scheduleConfig && scheduleConfig.delay_startup) ? scheduleConfig.delay_startup : 0}">
           </div>
-          <div class="attr-name">Attributes</div>
+          <div class="attr-name subh">
+          Attributes
+          <button id="add-attribute" class="icon-btn" title="add an attribute">+</button>
+          </div>
           <div class="attr-value">
            ${attrHtml}
           </div>
@@ -1029,7 +1032,8 @@ class DynamicSchedulePanel extends HTMLElement {
           padding: 24px;
           background-color: var(--primary-background-color);
           color: var(--primary-text-color);
-          font-family: var(--paper-font-body1_-_font-family, Roboto, sans-serif);
+       /*   font-family: var(--paper-font-body1_-_font-family, Roboto, sans-serif); */
+          font-family: var(--paper-font-body1_-_font-family), Roboto, sans-serif;
           min-height: 100vh;
           box-sizing: border-box;
         }
