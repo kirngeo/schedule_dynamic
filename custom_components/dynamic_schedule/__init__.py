@@ -519,9 +519,10 @@ class ScheduleStorageCollection(DictStorageCollection):
     async def _async_load_data(self) -> SerializedStorageCollection | None:
         """Load the data."""
         if data := await super()._async_load_data():
+            LOGGER.debug( "_async_load_data data A=%s", data )
           #  data["items"] = [STORAGE_SCHEMA(item) for item in data["items"]]
             data["items"] = [STORAGE_SCHEMA_V2(item) for item in data["items"] if item.get('id') != 'giraffes' ]
-        LOGGER.debug( "_async_load_data data=%s", data )
+        LOGGER.debug( "_async_load_data data B=%s", data )
         return data
 
 class Transition:

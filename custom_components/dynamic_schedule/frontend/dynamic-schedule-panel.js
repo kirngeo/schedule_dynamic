@@ -14,7 +14,6 @@ class DynamicSchedulePanel extends HTMLElement {
     this._dragState = null;
     this._wasDragging = false;
     this._activeScheduleOverview = null;
-    this._editingConfig = null;
     this._eligibleScriptConfigs = [];
     this._isEditing = false;
     this._editingConfig = null;
@@ -151,6 +150,16 @@ class DynamicSchedulePanel extends HTMLElement {
           console.log( 'main-test-btn', this._gatherConfig() );
           return;
       }
+
+      clicked = e.target.closest('.add-attribute');
+      if (clicked) {
+          console.log('add-attribute', clicked);
+          this._editing( true );
+          e.preventDefault();
+
+          this._editingConfig.attributes || {} );
+
+
 
       clicked = e.target.closest('.add-transition');
       if (clicked) {
