@@ -946,7 +946,7 @@ class DynamicSchedulePanel extends HTMLElement {
       </div>
       `;
 
-    let attrHtml = attribs_names.map((attrname, inx) => `
+    attrHtml = attribs_names.map((attrname, inx) => `
        <div class=bord>
          ${attrname}
        </div>
