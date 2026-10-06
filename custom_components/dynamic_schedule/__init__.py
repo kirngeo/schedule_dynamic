@@ -87,6 +87,7 @@ from .const import (
     ATTR_VARIATION,
     CONF_ALL_DAYS,
     CONF_AT,
+    CONF_ATTR,
     CONF_ATTRIBUTES,
     CONF_ATTR_TRANSITIONS,
     CONF_BOOLEAN,
@@ -243,6 +244,7 @@ SCHEDULE_SCHEMA_V2: VolDictType = {
     vol.Optional( CONF_DEVICE_CLASS): DEVICE_CLASSES_SCHEMA,
     vol.Optional( CONF_UNIT_OF_MEASUREMENT): cv.string,
     vol.Required( CONF_ATTRIBUTES, default={}): CUSTOM_ATTR_SCHEMA_LIST,
+    vol.Required( CONF_ATTR, default={}): CUSTOM_ATTR_SCHEMA_LIST,
     vol.Required( CONF_ATTR_TRANSITIONS, default=0) : vol.All( int, vol.Range(min=0, max=20)),
 }
 
@@ -616,8 +618,6 @@ class Schedule(CollectionEntity):
     _config: ConfigType
     _next: datetime
     _unsub_update: Callable[[], None] | None = None
-  #  _v2: bool = False
-    _v2: bool = True
     _is_boolean: bool
     _transitions: [Transition] = []
     _state_is_numeric: bool = False
@@ -625,10 +625,8 @@ class Schedule(CollectionEntity):
 
     def __init__(self, config: ConfigType, editable: bool) -> None:
         """Initialize a schedule."""
-        self._v2 = CONF_SUB_SCHEDULES in config
-        self._v2 = True
-        self._is_boolean = config.get(CONF_BOOLEAN, False) or not self._v2
-        self._config = ENTITY_SCHEMA_V2(config) if self._v2 else ENTITY_SCHEMA(config)
+        self._is_boolean = config.get(CONF_BOOLEAN, False)
+        self._config = ENTITY_SCHEMA_V2(config)
         self._attr_capability_attributes = {ATTR_EDITABLE: editable}
         self._attr_icon = self._config.get(CONF_ICON)
         self._attr_name = self._config[CONF_NAME]
@@ -636,29 +634,24 @@ class Schedule(CollectionEntity):
         self._attr_state = STATE_UNKNOWN
         self._attr_offset = timedelta()
 
-        if self._v2:
-         #   LOGGER.warning( "almacp Schedule.__init__ _config=%s", self._config )
-            self._attr_extra_state_attributes = self._config.get(CONF_ATTRIBUTES)
-            self._attr_last_offset_refresh = None
-            self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
-            self._attr_unit_of_measurement = self._config.get(CONF_UNIT_OF_MEASUREMENT)
-            self._unrecorded_attributes |= frozenset( {ATTR_TRANSITIONS, ATTR_LAST_OFFSET_REFRESH, CONF_OFFSET} )
-            self._attr_extra_state_attributes[ CONF_OFFSET ] = 0
-            if CONF_DEVICE_CLASS in self._config:
-                self._attr_device_class = self._config[CONF_DEVICE_CLASS]
-                self._state_is_numeric = self._attr_device_class not in NON_NUMERIC_DEVICE_CLASSES
-            else:
-                self._state_is_numeric = False
+        self._attr_extra_state_attributes = self._config.get(CONF_ATTR) + self._config.get(CONF_ATTRIBUTES)
+        self._attr_last_offset_refresh = None
+        self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
+        self._attr_unit_of_measurement = self._config.get(CONF_UNIT_OF_MEASUREMENT)
+        self._unrecorded_attributes |= frozenset( {ATTR_TRANSITIONS, ATTR_LAST_OFFSET_REFRESH, CONF_OFFSET} )
+        self._attr_extra_state_attributes[ CONF_OFFSET ] = 0
+        if CONF_DEVICE_CLASS in self._config:
+            self._attr_device_class = self._config[CONF_DEVICE_CLASS]
+            self._state_is_numeric = self._attr_device_class not in NON_NUMERIC_DEVICE_CLASSES
         else:
-            self._unrecorded_attributes = self.all_custom_data_keys()
+            self._state_is_numeric = False
 
         # Exclude any custom attributes that may be present on time ranges from recording.
         self._entity__combined_unrecorded_attributes = (
             self._entity_component_unrecorded_attributes | self._unrecorded_attributes
         )
 
-        if self._v2:
-            self._transitions : [Transition] = []
+        self._transitions : [Transition] = []
 
 
     @classmethod
@@ -675,17 +668,14 @@ class Schedule(CollectionEntity):
 
     async def async_update_config(self, config: ConfigType) -> None:
         """Handle when the config is updated."""
-        self._v2 = CONF_SUB_SCHEDULES in config
-        self._v2 = True
-        self._is_boolean = (not self._v2) or config.get(CONF_BOOLEAN, False)
-        self._config = ENTITY_SCHEMA_V2(config) if self._v2 else ENTITY_SCHEMA(config)
+        self._is_boolean = config.get(CONF_BOOLEAN, False)
+        self._config = ENTITY_SCHEMA_V2(config)
         self._attr_icon = config.get(CONF_ICON)
         self._attr_name = config[CONF_NAME]
 
-        if self._v2:
-            # fill with transitions up until end of tomorrow...
-            self._transitions : [Transition] = []
-            await self._async_replenish_transitions()
+        # fill with transitions up until end of tomorrow...
+        self._transitions : [Transition] = []
+        await self._async_replenish_transitions()
 
         self._clean_update()
 
@@ -782,9 +772,6 @@ class Schedule(CollectionEntity):
                                            offset: timedelta = None ) -> None:
         """Replenish the list of Transitions, filling it until the specified date ."""
 
-        if not self._v2:
-            return
-
         now = dt_util.now()
         if not until:
             until = now.date() + timedelta( days=1 )
@@ -848,15 +835,13 @@ class Schedule(CollectionEntity):
         """Run when entity about to be added to hass."""
         self.async_on_remove(self._clean_up_listener)
 
-        if self._v2:
+        if CONF_DELAY_STARTUP in self._config and self.hass.state != CoreState.running:
+            self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED,
+                                            self.async_hass_started)
+            return
 
-            if CONF_DELAY_STARTUP in self._config and self.hass.state != CoreState.running:
-                self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED,
-                                                self.async_hass_started)
-                return
-
-            # fill with transitions up until end of tomorrow...
-            await self._async_replenish_transitions()
+        # fill with transitions up until end of tomorrow...
+        await self._async_replenish_transitions()
 
         self._is_ready = True
         self._update()
@@ -889,8 +874,6 @@ class Schedule(CollectionEntity):
 
     def get_schedule(self) -> ConfigType:
         """Return the schedule."""
-        if not self._v2:
-            return {d: self._config[d] for d in WEEKDAY_TO_CONF.values()}
         return self._config
 
     async def debug_schedule(self, msg: str | None = None) -> None:
@@ -1101,120 +1084,46 @@ class Schedule(CollectionEntity):
         now = dt_util.now()
         next_event = None
 
-        if self._v2:
+        if LOGGER.isEnabledFor(DBG):
+            self.dump_schedule()
+
+        next_transition = None
+        for transition in self._transitions:
+            if transition.datetime >= now:
+                next_transition = transition
+                break
+            want = transition
+
+        required_state = want.state
+        if required_state is not None:
+            if self._state_is_numeric:
+                required_state = str( required_state )
+                try:
+                    required_state = int( required_state )
+                except ValueError:
+                    try:
+                        required_state = float( required_state )
+                    except ValueError:
+                        required_state = STATE_UNKNOWN
+
+            self._attr_state = required_state if not self._is_boolean \
+                               else STATE_ON if cv.boolean( required_state ) \
+                               else STATE_OFF
 
             if LOGGER.isEnabledFor(DBG):
-                self.dump_schedule()
+                LOGGER.debug( "%s _attr_state has been set to %s (%s)",
+                           self.name, self._attr_state, type(self._attr_state)
+                           )
 
-            next_transition = None
-            for transition in self._transitions:
-                if transition.datetime >= now:
-                    next_transition = transition
-                    break
-                want = transition
+        self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = next_event = next_transition.datetime
+        self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = next_transition.state
+        self._attr_extra_state_attributes[ CONF_OFFSET ]  = want.offset.total_seconds()
+       # self._attr_extra_state_attributes[ CONF_OFFSET ]  = want.offset
+        self._attr_extra_state_attributes[ ATTR_LAST_OFFSET_REFRESH ]  = self._attr_last_offset_refresh
 
-            required_state = want.state
-            if required_state is not None:
-                if self._state_is_numeric:
-                    required_state = str( required_state )
-                    try:
-                        required_state = int( required_state )
-                    except ValueError:
-                        try:
-                            required_state = float( required_state )
-                        except ValueError:
-                            required_state = STATE_UNKNOWN
-
-                self._attr_state = required_state if not self._is_boolean \
-                                   else STATE_ON if cv.boolean( required_state ) \
-                                   else STATE_OFF
-
-                if LOGGER.isEnabledFor(DBG):
-                    LOGGER.debug( "%s _attr_state has been set to %s (%s)",
-                               self.name, self._attr_state, type(self._attr_state)
-                               )
-
-            self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = next_event = next_transition.datetime
-            self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = next_transition.state
-            self._attr_extra_state_attributes[ CONF_OFFSET ]  = want.offset.total_seconds()
-           # self._attr_extra_state_attributes[ CONF_OFFSET ]  = want.offset
-            self._attr_extra_state_attributes[ ATTR_LAST_OFFSET_REFRESH ]  = self._attr_last_offset_refresh
-
-            # Arrange to replenish transitions, and update the entity state, sometime...
-            self.hass.async_create_task( self._async_replenish_transitions( update=True ) )
-      #      self.hass.async_create_task( self._async_replenish_transitions_and_update() )
-
- #           LOGGER.warning( f'waiting until {next_event}' )
- #        #   self._unsub_update = async_track_point_in_time(
- #           self._unsub_update = async_track_point_in_utc_time(
- #               self.hass,
- #               self._update,
- #               next_event,
- #           )
-
-        else:
-            todays_schedule = self._config.get(WEEKDAY_TO_CONF[now.weekday()], [])
-
-            # Determine current schedule state
-            for time_range in todays_schedule:
-                # The current time should be greater or equal to CONF_FROM.
-                if now.time() < time_range[CONF_FROM]:
-                    continue
-                # The current time should be smaller (and not equal) to CONF_TO.
-                # Note that any time in the day is treated as smaller than time.max.
-                if now.time() < time_range[CONF_TO] or time_range[CONF_TO] == time.max:
-                    self._attr_state = STATE_ON
-                    current_data = time_range.get(CONF_DATA)
-                    break
-            else:
-                self._attr_state = STATE_OFF
-                current_data = None
-
-            # Find next event in the schedule, loop over each day (starting with
-            # the current day) until the next event has been found.
-            for day in range(8):  # 8 because we need to search today's weekday next week
-                day_schedule = self._config.get(
-                    WEEKDAY_TO_CONF[(now.weekday() + day) % 7], []
-                )
-                times = sorted(
-                    itertools.chain(
-                        *[
-                            [time_range[CONF_FROM], time_range[CONF_TO]]
-                            for time_range in day_schedule
-                        ]
-                    )
-                )
-
-                if next_event := next(
-                    (
-                        possible_next_event
-                        for timestamp in times
-                        if (
-                            possible_next_event := (
-                                datetime.combine(now.date(), timestamp, tzinfo=now.tzinfo)
-                                + timedelta(days=day)
-                                if timestamp != time.max
-                                # Special case for midnight of the following day.
-                                else datetime.combine(now.date(), time(), tzinfo=now.tzinfo)
-                                + timedelta(days=day + 1)
-                            )
-                        )
-                        > now
-                    ),
-                    None,
-                ):
-                    # We have found the next event in this day, stop searching.
-                    break
-
-            self._attr_extra_state_attributes = {
-                ATTR_NEXT_EVENT: next_event,
-            }
-
-            if current_data:
-                # Add each key/value pair in the data to the entity's state attributes
-                self._attr_extra_state_attributes.update(current_data)
-
-            self.async_write_ha_state()
+        # Arrange to replenish transitions, and update the entity state, sometime...
+        self.hass.async_create_task( self._async_replenish_transitions( update=True ) )
+  #      self.hass.async_create_task( self._async_replenish_transitions_and_update() )
 
         if next_event:
             self._unsub_update = async_track_point_in_utc_time(
