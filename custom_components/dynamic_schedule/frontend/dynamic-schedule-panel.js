@@ -740,6 +740,8 @@ class DynamicSchedulePanel extends HTMLElement {
     let scheduleConfig = null;
     let rw = false;
     let selected = false;
+    let attribs = {};
+    let attribs_names = [];
 
     if (this._schedulesOverview.length > 0) {
 
