@@ -636,7 +636,7 @@ class Schedule(CollectionEntity):
 
         LOGGER.debug( 'CONF_ATTRIBUTES %s %s', type(self._config.get(CONF_ATTRIBUTES)), self._config.get(CONF_ATTRIBUTES) )
         LOGGER.debug( 'CONF_ATTR %s %s', type(self._config.get(CONF_ATTR)), self._config.get(CONF_ATTR) )
-        self._attr_extra_state_attributes = self._config.get(CONF_ATTR) + self._config.get(CONF_ATTRIBUTES)
+        self._attr_extra_state_attributes = self._config.get(CONF_ATTR) | dict( self._config.get(CONF_ATTRIBUTES) )
         self._attr_last_offset_refresh = None
         self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
         self._attr_unit_of_measurement = self._config.get(CONF_UNIT_OF_MEASUREMENT)
