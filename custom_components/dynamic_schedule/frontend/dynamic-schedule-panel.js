@@ -740,6 +740,7 @@ class DynamicSchedulePanel extends HTMLElement {
     let scheduleConfig = null;
     let rw = false;
     let selected = false;
+    let attrHtml = '';
 
     if (this._schedulesOverview.length > 0) {
 
@@ -840,6 +841,9 @@ class DynamicSchedulePanel extends HTMLElement {
    //   console.log( 'scheduleConfig', this._domaindot + this._activeScheduleOverview.entid, scheduleConfig);
         subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
         subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
+        attribs = (scheduleConfig && scheduleConfig.attrs) ? scheduleConfig.attrs : {}; 
+        attribs_names = Object.keys(attribs).sort((a,b) => a.localeCompare(b));
+
         contentHtml += `<div>${JSON.stringify( this._activeScheduleOverview, null, "  " )}</div>`;
         contentHtml += `<div>scheduleConfigs<pre>${JSON.stringify( this._scheduleConfigs, null, "  " )}</pre></div>`;
         contentHtml += `<div>editingConfig<pre>${JSON.stringify( this._editingConfig, null, "  " )}</pre></div>`;
@@ -942,6 +946,14 @@ class DynamicSchedulePanel extends HTMLElement {
        ${subschedTransitionsHtml}
       </div>
       `;
+
+    let attrHtml = attribs_names.map((attrname, inx) => `
+       <div class=bord>
+         ${attrname}
+       </div>
+       <div class=bord>
+         ${JSON.stringify(attribs[attrname])}
+    `).join('');
 
     let allContentHtml = '';
     let zoomHtml = '';
