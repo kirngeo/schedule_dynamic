@@ -958,7 +958,7 @@ class DynamicSchedulePanel extends HTMLElement {
        </div>
        <div class=bord>
          <textarea ${rw ? "" : "disabled "}id="attr-value-${inx}"
-          >${attribs[attrname].join("&#10;&#13;")}</textarea>
+          >${attribs[attrname].join("&#10;")}</textarea>
        </div>
     `).join('');
     if (attrHtml) {
