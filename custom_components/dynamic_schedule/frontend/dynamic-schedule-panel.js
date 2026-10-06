@@ -1003,7 +1003,7 @@ class DynamicSchedulePanel extends HTMLElement {
           <div class="attr-value">
            <div class="attrs-ctr">
            ${attrHtml}
-           /div>
+           </div>
           </div>
          </div>
         </ha-card>
