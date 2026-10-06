@@ -434,6 +434,15 @@ class DynamicSchedulePanel extends HTMLElement {
     return {hh: xx/60, mm: mm, ss: ss};
   }
 
+  _isDummyAttr( name ) {
+      if (!name) return false;
+      return name.slice( 0, 4) === "___" && name.slice( -3 ) === "___" && ( ! Number.isNaN( name.slice(3,-3) ) );
+  }
+
+  _getDummyAttr() {
+      return "___" + new Date().valueOf() + "___";
+  }
+
   async _onCreateScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('schedule-name');
   //    const iconInput = this.shadowRoot.getElementById('schedule-icon');
@@ -944,11 +953,13 @@ class DynamicSchedulePanel extends HTMLElement {
       `;
 
     attrHtml = attribs_names.map((attrname, inx) => `
-       <div class=bord>
-         ${attrname}
+       <div>
+         <input ${rw ? "" : "readonly "}id="attr-name-${inx}" type="text" class="ch" value="${attrname}">
        </div>
        <div class=bord>
-         ${JSON.stringify(attribs[attrname])}
+         <textarea ${rw ? "" : "disabled "}id="attr-value-${inx}>
+          ${attribs[attrname].join("XX")}
+         </textarea>
        </div>
     `).join('');
     if (attrHtml) {
