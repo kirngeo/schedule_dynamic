@@ -158,6 +158,7 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
 
         //  this._editingConfig.attributes || {} );
+      }
 
 
 
