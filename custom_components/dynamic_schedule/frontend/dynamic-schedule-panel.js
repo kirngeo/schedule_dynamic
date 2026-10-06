@@ -842,7 +842,7 @@ class DynamicSchedulePanel extends HTMLElement {
    //   console.log( 'scheduleConfig', this._domaindot + this._activeScheduleOverview.entid, scheduleConfig);
         subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
         subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
-        attribs = (scheduleConfig && scheduleConfig.attrs) ? scheduleConfig.attrs : {}; 
+        attribs = (scheduleConfig && scheduleConfig.attr) ? scheduleConfig.attr : {}; 
         attribs_names = Object.keys(attribs).sort((a,b) => a.localeCompare(b));
 
         contentHtml += `<div>${JSON.stringify( this._activeScheduleOverview, null, "  " )}</div>`;
