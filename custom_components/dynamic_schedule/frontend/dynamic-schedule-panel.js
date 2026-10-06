@@ -951,6 +951,9 @@ class DynamicSchedulePanel extends HTMLElement {
          ${JSON.stringify(attribs[attrname])}
        </div>
     `).join('');
+    if (attrHtml) {
+        attrHtml = '<div>Name</div><div>Value</div>' + attrHtml;
+    }
 
     let allContentHtml = '';
     let zoomHtml = '';
