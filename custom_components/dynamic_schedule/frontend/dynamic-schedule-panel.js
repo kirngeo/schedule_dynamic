@@ -814,11 +814,6 @@ class DynamicSchedulePanel extends HTMLElement {
 
       boolHtml = `<ha-switch ${rw ? "" : "disabled "}${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean" class="ch"></ha-switch>`;
 
-      //
- 
- //     const yaml = {a : 'aa', b : 'bb', c : {d : 'dd'}};
- //     attrHtml += `<ha-yaml-editor id="attr-yaml" label="yaml label" .defaultValue=${yaml}>`;
- //     attrHtml += '</ha-yaml-editor>';
     }
 
     console.log('activeScheduleOverview', this._activeScheduleOverview);
@@ -954,6 +949,7 @@ class DynamicSchedulePanel extends HTMLElement {
        </div>
        <div class=bord>
          ${JSON.stringify(attribs[attrname])}
+       </div>
     `).join('');
 
     let allContentHtml = '';
@@ -1005,7 +1001,9 @@ class DynamicSchedulePanel extends HTMLElement {
           <button id="add-attribute" class="icon-btn" title="add an attribute">+</button>
           </div>
           <div class="attr-value">
+           <div class="attrs-ctr">
            ${attrHtml}
+           /div>
           </div>
          </div>
         </ha-card>
