@@ -1011,7 +1011,7 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
           <div class="attr-name subh">
           Attributes
-          <button id="add-attribute" class="icon-btn" title="add an attribute">+</button>
+          ${rw ? '<button id="add-attribute" class="icon-btn" title="add an attribute">+</button>' : ""}
           </div>
           <div class="attr-value">
            <div class="attrs-ctr">
