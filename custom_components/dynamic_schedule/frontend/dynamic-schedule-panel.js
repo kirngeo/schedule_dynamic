@@ -719,9 +719,11 @@ class DynamicSchedulePanel extends HTMLElement {
                      .filter( vv => vv.length > 0 );
       });
 
+      console.log('inxs values', Object.values(inxs) );
       Object.values( inxs )
           .sort( (a,b) => a.k.localeCompare(b.k) )
-          .forEach( kv => attrs[kv.k] = attrs[kv.v] );
+          .forEach( kv => {console.log('kv',kv);attrs[kv.k] = attrs[kv.v]} );
+      console.log('attrs', attrs);
       if (Object.keys(attrs).length) {
           conf.attributes = attrs;
       }
