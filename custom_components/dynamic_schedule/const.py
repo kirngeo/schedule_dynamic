@@ -7,6 +7,7 @@ DOMAIN: Final = "dynamic_schedule"
 LOGGER = logging.getLogger(__package__)
 DBG = logging.DEBUG
 
+comment = """
 CONF_DATA: Final = "data"
 CONF_FRIDAY: Final = "friday"
 CONF_FROM: Final = "from"
@@ -25,11 +26,10 @@ CONF_ALL_DAYS: Final = {
     CONF_FRIDAY,
     CONF_SATURDAY,
     CONF_SUNDAY,
-}
+}"""
 
 CONF_AT: Final = "at"
-CONF_ATTRIBUTES: Final = "attributes"
-CONF_ATTR: Final = "attr"
+CONF_ATTRS: Final = "attr"
 CONF_ATTR_TRANSITIONS = "n_attr_transitions"
 CONF_BOOLEAN: Final = "boolean"
 CONF_DELAY_STARTUP: Final = "delay_startup"
@@ -52,6 +52,7 @@ ATTR_NORMAL: Final = "normal"
 ATTR_TRANSITIONS: Final = "transitions"
 ATTR_VARIATION: Final = "variation"
 
+commemt = """
 WEEKDAY_TO_CONF: Final = {
     0: CONF_MONDAY,
     1: CONF_TUESDAY,
@@ -60,7 +61,7 @@ WEEKDAY_TO_CONF: Final = {
     4: CONF_FRIDAY,
     5: CONF_SATURDAY,
     6: CONF_SUNDAY,
-}
+}"""
 
 SERVICE_ADVANCE: Final = "advance_schedule"
 SERVICE_ALTER: Final = "alter_schedule"
