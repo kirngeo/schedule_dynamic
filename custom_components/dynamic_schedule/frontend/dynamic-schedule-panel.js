@@ -1019,8 +1019,8 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
 
           ${xyz}
-          <div>attrHtml.length=${attrHtml.length}</div><div></div>'
-          ${attrHtml.length ? `
+          <div>attrHtml.length=${attrHtml.length}</div><div></div>
+          ${(attrHtml.length || rw) ? `
           <div class="attr-name subh">
           Attributes
           ${rw ? '<button id="add-attribute" class="icon-btn" title="add an attribute">+</button>' : ""}
