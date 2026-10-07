@@ -90,7 +90,7 @@ from .const import (
     CONF_ATTR,
     CONF_ATTR_TRANSITIONS,
     CONF_BOOLEAN,
-    CONF_DATA,
+ #   CONF_DATA,
     CONF_DELAY_STARTUP,
     CONF_FROM,
     CONF_HH,
@@ -1138,7 +1138,7 @@ class Schedule(CollectionEntity):
     def all_custom_data_keys(self) -> frozenset[str]:
         """Return the set of all currently used custom data attribute keys."""
         data_keys = set()
-
+        commrnt = """
         for weekday in WEEKDAY_TO_CONF.values():
             if not (weekday_config := self._config.get(weekday)):
                 continue  # this weekday is not configured
@@ -1152,6 +1152,7 @@ class Schedule(CollectionEntity):
                     continue  # this time range has no custom data, or it is not a dict
 
                 data_keys.update(time_range_custom_data.keys())
+                """
 
         return frozenset(data_keys)
 
