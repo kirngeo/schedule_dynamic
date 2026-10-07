@@ -710,12 +710,16 @@ class DynamicSchedulePanel extends HTMLElement {
       let inxs = {}; // key=index; value = {'k' : attrname, 'v' : attrvalue}
 
       this.querySelectorAll( ".attrname" ).forEach( attrn => {
+          console.log( 'attrn', attrn );
           inxs[  attrn.dataset.inx ] = {k : attrn.value.trim()}
       });
+      console.log('inxs A', inxs);
+
       this.querySelectorAll( ".attrvalue" ).forEach( attrv => {
           inxs[ attrv.dataset.inx ].v = attrv.value.split("\n")
                      .filter( vv => vv.length > 0 );
       });
+      console.log('inxs B', inxs);
 
       Object.values( inxs )
           .sort( (a,b) => a.k.localCompare(b.k) )
