@@ -221,7 +221,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
           console.log('save _gatherConfig', this._gatherConfig() );
 
-          if (false) {
+          if (true) {
           const returned = await this._hass.connection.sendMessagePromise( this._gatherConfig() );
           console.log('save returned', returned );
           this.setShowingEntid( returned.id );
