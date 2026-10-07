@@ -713,17 +713,14 @@ class DynamicSchedulePanel extends HTMLElement {
           console.log( 'attrn', attrn );
           inxs[  attrn.dataset.inx ] = {k : attrn.value.trim()}
       });
-      console.log('inxs A', inxs);
 
       this.shadowRoot.querySelectorAll( ".attrvalue" ).forEach( attrv => {
           inxs[ attrv.dataset.inx ].v = attrv.value.split("\n")
                      .filter( vv => vv.length > 0 );
       });
-      console.log('inxs B', inxs);
-      console.log('values', Object.values(inxs) );
 
       Object.values( inxs )
-          .sort( (a,b) => a.k.localCompare(b.k) )
+          .sort( (a,b) => a.k.localeCompare(b.k) )
           .forEach( kv => attrs[kv.k] = attrs[kv.v] );
       if (Object.keys(attrs).length) {
           conf.attributes = attrs;
