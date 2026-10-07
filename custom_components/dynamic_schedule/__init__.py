@@ -125,7 +125,7 @@ def ppr(msg, data ):
     for line in pprint.pformat( data ).splitlines():
         LOGGER.debug(line)
 
-comment = """
+comment = '''
 def valid_schedule(schedule: list[dict[str, str]]) -> list[dict[str, str]]:
     """Validate the schedule of time ranges.
 
@@ -182,7 +182,7 @@ def serialize_to_time(value: Any) -> Any:
 
 # Extra data that the user can set on each time range
 CUSTOM_DATA_SCHEMA = vol.Schema({str: vol.Any(bool, str, int, float)})
-"""
+'''
 CUSTOM_ATTR_SCHEMA_LIST = vol.Schema({str: vol.All( cv.ensure_list, [vol.Any(bool, str, int, float)] )})
 
 BASE_SCHEMA: VolDictType = {
