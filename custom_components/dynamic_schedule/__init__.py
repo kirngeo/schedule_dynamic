@@ -92,13 +92,13 @@ from .const import (
     CONF_BOOLEAN,
  #   CONF_DATA,
     CONF_DELAY_STARTUP,
-    CONF_FROM,
+ #   CONF_FROM,
     CONF_HH,
     CONF_MM,
     CONF_SELECT_SCRIPT,
     CONF_SS,
     CONF_SUB_SCHEDULES,
-    CONF_TO,
+ #   CONF_TO,
     CONF_TRANSITIONS,
     DBG,
     DOMAIN,
@@ -110,7 +110,7 @@ from .const import (
     SERVICE_GET,
     SERVICE_MODIFY,
     SERVICE_REFRESH,
-    WEEKDAY_TO_CONF,
+ #   WEEKDAY_TO_CONF,
 )
 
 #from .services import (
@@ -125,6 +125,7 @@ def ppr(msg, data ):
     for line in pprint.pformat( data ).splitlines():
         LOGGER.debug(line)
 
+comment = """
 def valid_schedule(schedule: list[dict[str, str]]) -> list[dict[str, str]]:
     """Validate the schedule of time ranges.
 
@@ -181,6 +182,7 @@ def serialize_to_time(value: Any) -> Any:
 
 # Extra data that the user can set on each time range
 CUSTOM_DATA_SCHEMA = vol.Schema({str: vol.Any(bool, str, int, float)})
+"""
 CUSTOM_ATTR_SCHEMA_LIST = vol.Schema({str: vol.All( cv.ensure_list, [vol.Any(bool, str, int, float)] )})
 
 BASE_SCHEMA: VolDictType = {
@@ -1138,7 +1140,7 @@ class Schedule(CollectionEntity):
     def all_custom_data_keys(self) -> frozenset[str]:
         """Return the set of all currently used custom data attribute keys."""
         data_keys = set()
-        commrnt = """
+        comment = """
         for weekday in WEEKDAY_TO_CONF.values():
             if not (weekday_config := self._config.get(weekday)):
                 continue  # this weekday is not configured
