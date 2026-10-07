@@ -1019,6 +1019,7 @@ class DynamicSchedulePanel extends HTMLElement {
           </div>
 
           ${xyz}
+          <div>attrHtml.length=${attrHtml.length}</div><div></div>'
           ${attrHtml.length ? `
           <div class="attr-name subh">
           Attributes
