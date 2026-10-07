@@ -85,7 +85,7 @@ from .const import (
     ATTR_NORMAL,
     ATTR_TRANSITIONS,
     ATTR_VARIATION,
-    CONF_ALL_DAYS,
+ #   CONF_ALL_DAYS,
     CONF_AT,
     CONF_ATTR,
     CONF_ATTR_TRANSITIONS,
@@ -188,6 +188,7 @@ BASE_SCHEMA: VolDictType = {
     vol.Optional(CONF_ICON): cv.icon,
 }
 
+comment = """
 TIME_RANGE_SCHEMA: VolDictType = {
     vol.Required(CONF_FROM): cv.time,
     vol.Required(CONF_TO): deserialize_to_time,
@@ -208,7 +209,7 @@ SCHEDULE_SCHEMA: VolDictType = {
         cv.ensure_list, [TIME_RANGE_SCHEMA], valid_schedule
     )
     for day in CONF_ALL_DAYS
-}
+}"""
 
 AT_SCHEMA: VolDictType = {
     vol.Required( CONF_HH ) :vol.All(vol.Coerce(int), vol.Range(min=0, max=23)),
@@ -246,35 +247,38 @@ SCHEDULE_SCHEMA_V2: VolDictType = {
     vol.Required( CONF_ATTR_TRANSITIONS, default=0) : vol.All( int, vol.Range(min=0, max=20)),
 }
 
+comment = """
 STORAGE_SCHEDULE_SCHEMA: VolDictType = {
     vol.Optional(day, default=[]): vol.All(
         cv.ensure_list, [TIME_RANGE_SCHEMA], valid_schedule, [STORAGE_TIME_RANGE_SCHEMA]
     )
     for day in CONF_ALL_DAYS
 }
+"""
 
 # Validate YAML config
 CONFIG_SCHEMA = vol.Schema(
    {DOMAIN: cv.schema_with_slug_keys(
-       vol.Any(
+    #   vol.Any(
            vol.All(BASE_SCHEMA | SCHEDULE_SCHEMA_V2),
-           vol.All(BASE_SCHEMA | SCHEDULE_SCHEMA),
-           )
+    #       vol.All(BASE_SCHEMA | SCHEDULE_SCHEMA),
+    #       )
        )},
     extra=vol.ALLOW_EXTRA,
 )
 
 # Validate storage config
 STORAGE_SCHEMA = vol.Schema(
-    {vol.Required(CONF_ID): cv.string} | BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA
+  #  {vol.Required(CONF_ID): cv.string} | BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA
+    {vol.Required(CONF_ID): cv.string} | BASE_SCHEMA
 )
 STORAGE_SCHEMA_V2 = vol.Schema(
     {vol.Required(CONF_ID): cv.string} | BASE_SCHEMA | SCHEDULE_SCHEMA_V2
 )
 # Validate + transform entity config
-ENTITY_SCHEMA = vol.Schema(
-    {vol.Required(CONF_ID): cv.string} | BASE_SCHEMA | SCHEDULE_SCHEMA
-)
+#ENTITY_SCHEMA = vol.Schema(
+#    {vol.Required(CONF_ID): cv.string} | BASE_SCHEMA | SCHEDULE_SCHEMA
+#)
 ENTITY_SCHEMA_V2 = vol.Schema(
     {vol.Required(CONF_ID): cv.string} | BASE_SCHEMA | SCHEDULE_SCHEMA_V2
 )
