@@ -953,7 +953,6 @@ class DynamicSchedulePanel extends HTMLElement {
       `;
 
  //             >${attribs[attrname].join("&#10;")}</textarea>
-    let xyz = `<div>len=${attribs_names.length}</div><div>rw=${rw}</div>`
 
     if (attribs_names.length || rw) {
         attrHtml = attribs_names.map((attrname, inx) => `
@@ -961,7 +960,6 @@ class DynamicSchedulePanel extends HTMLElement {
              <input ${rw ? "" : "readonly "}id="attr-name-${inx}" type="text" class="ch" value="${attrname}">
            </div>
            <div>
-             len= ${attribs_names.length} rw= ${rw}
              <textarea ${rw ? "" : "disabled "}id="attr-value-${inx}"
               >${attribs[attrname].join("\n")}</textarea>
            </div>
@@ -1018,8 +1016,6 @@ class DynamicSchedulePanel extends HTMLElement {
            <input ${rw ? "" : "readonly "}id="schedule-delay" type="number" class="ch" value="${(scheduleConfig && scheduleConfig.delay_startup) ? scheduleConfig.delay_startup : 0}">
           </div>
 
-          ${xyz}
-          <div>attrHtml.length=${attrHtml.length}</div><div></div>
           ${(attrHtml.length || rw) ? `
           <div class="attr-name subh">
           Attributes
