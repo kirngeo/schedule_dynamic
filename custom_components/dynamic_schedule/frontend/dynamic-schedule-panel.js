@@ -725,7 +725,7 @@ class DynamicSchedulePanel extends HTMLElement {
           .sort( (a,b) => a.k.localCompare(b.k) )
           .forEach( kv => attrs[kv.k] = attrs[kv.v] );
       if (Object.keys(attrs).length) {
-          conf.attrs = attrs;
+          conf.attr = attrs;
       }
 
       conf[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
