@@ -107,25 +107,5 @@
       }
     }
   },
-  "title": "Dynamic Schedule",
-  "triggers": {
-    "turned_off": {
-      "description": "Triggers when a schedule block ends.",
-      "fields": {
-        "behavior": {
-          "name": "[%key:component::dynamic_schedule::common::trigger_behavior_name%]"
-        }
-      },
-      "name": "Schedule block ended"
-    },
-    "turned_on": {
-      "description": "Triggers when a schedule block starts.",
-      "fields": {
-        "behavior": {
-          "name": "[%key:component::dynamic_schedule::common::trigger_behavior_name%]"
-        }
-      },
-      "name": "Schedule block started"
-    }
-  }
+  "title": "Dynamic Schedule"
 }
