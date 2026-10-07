@@ -952,17 +952,20 @@ class DynamicSchedulePanel extends HTMLElement {
       </div>
       `;
 
-    attrHtml = attribs_names.map((attrname, inx) => `
-       <div>
-         <input ${rw ? "" : "readonly "}id="attr-name-${inx}" type="text" class="ch" value="${attrname}">
-       </div>
-       <div class=bord>
-         <textarea ${rw ? "" : "disabled "}id="attr-value-${inx}"
-          >${attribs[attrname].join("&#10;")}</textarea>
-       </div>
-    `).join('');
-    if (attrHtml) {
-        attrHtml = '<div>Name</div><div>Value</div>' + attrHtml;
+ //             >${attribs[attrname].join("&#10;")}</textarea>
+    if (attribs_names.length || rw) {
+        attrHtml = attribs_names.map((attrname, inx) => `
+           <div>
+             <input ${rw ? "" : "readonly "}id="attr-name-${inx}" type="text" class="ch" value="${attrname}">
+           </div>
+           <div class=bord>
+             <textarea ${rw ? "" : "disabled "}id="attr-value-${inx}"
+              >${attribs[attrname].join("\n")}</textarea>
+           </div>
+        `).join('');
+        if (attrHtml) {
+            attrHtml = '<div>Name</div><div>Value</div>' + attrHtml;
+        }
     }
 
     let allContentHtml = '';
@@ -1009,6 +1012,7 @@ class DynamicSchedulePanel extends HTMLElement {
           <div class="attr-value">
            <input ${rw ? "" : "readonly "}id="schedule-delay" type="number" class="ch" value="${(scheduleConfig && scheduleConfig.delay_startup) ? scheduleConfig.delay_startup : 0}">
           </div>
+          ${attrHtml?`
           <div class="attr-name subh">
           Attributes
           ${rw ? '<button id="add-attribute" class="icon-btn" title="add an attribute">+</button>' : ""}
@@ -1017,7 +1021,7 @@ class DynamicSchedulePanel extends HTMLElement {
            <div class="attrs-ctr">
            ${attrHtml}
            </div>
-          </div>
+          </div>` : ''}
          </div>
         </ha-card>
         <!--
