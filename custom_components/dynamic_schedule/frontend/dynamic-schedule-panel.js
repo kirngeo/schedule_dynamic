@@ -958,7 +958,8 @@ class DynamicSchedulePanel extends HTMLElement {
            <div>
              <input ${rw ? "" : "readonly "}id="attr-name-${inx}" type="text" class="ch" value="${attrname}">
            </div>
-           <div class=bord>
+           <div>
+             len= ${attribs_names.length} rw= ${rw}
              <textarea ${rw ? "" : "disabled "}id="attr-value-${inx}"
               >${attribs[attrname].join("\n")}</textarea>
            </div>
@@ -1207,6 +1208,7 @@ div {
         .attrs-ctr {
             display: grid;
             grid-template-columns: min-content auto;
+            padding: 4px;
         }
 
         .attr-name {
@@ -1214,7 +1216,7 @@ div {
        /*     justify-content: center; */
             align-items: center;
             white-space: nowrap;
-      /*      padding: 6px; */
+            padding: 4px;   
         }
 
         .attr-value {
