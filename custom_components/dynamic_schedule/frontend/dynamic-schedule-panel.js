@@ -725,7 +725,7 @@ class DynamicSchedulePanel extends HTMLElement {
           .sort( (a,b) => a.k.localCompare(b.k) )
           .forEach( kv => attrs[kv.k] = attrs[kv.v] );
       if (Object.keys(attrs).length) {
-          conf.attr = attrs;
+          conf.attributes = attrs;
       }
 
       conf[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
@@ -845,7 +845,7 @@ class DynamicSchedulePanel extends HTMLElement {
    //   console.log( 'scheduleConfig', this._domaindot + this._activeScheduleOverview.entid, scheduleConfig);
         subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
         subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
-        attribs = (scheduleConfig && scheduleConfig.attr) ? scheduleConfig.attr : {}; 
+        attribs = (scheduleConfig && scheduleConfig.attributes) ? scheduleConfig.attributes : {}; 
         attribs_names = Object.keys(attribs).sort((a,b) => a.localeCompare(b));
 
         contentHtml += `<div>${JSON.stringify( this._activeScheduleOverview, null, "  " )}</div>`;
