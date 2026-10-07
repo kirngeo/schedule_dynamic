@@ -83,7 +83,6 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
           this._editing( true );
           this._editingConfig = this._gatherConfig();
-      //    this.render();
           return;
       }
 
@@ -164,14 +163,10 @@ class DynamicSchedulePanel extends HTMLElement {
 
       clicked = e.target.closest('.add-transition');
       if (clicked) {
-          console.log('add-transition', clicked);
           const ctr = clicked.closest('.sh-name');
           this._editing( true );
           e.preventDefault();
 
-
-       //   if (this._activeScheduleOverview) {
-         //   let transs = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
           let transs = this._editingConfig
             .sub_schedules[ ctr.dataset.sub ]
             .transitions;
@@ -187,10 +182,7 @@ class DynamicSchedulePanel extends HTMLElement {
                   prevsecs = tsecs;
               })
               gaps.push( [(24*60*60) - prevsecs, -1] );
-              console.log('gaps', gaps);
-
               gaps = gaps.filter( (gap, inx) => gap[0] > 45*60 ).sort( (a, b) => a[0] > b[0] );
-              console.log( 'gaps SF', gaps );
 
               let trans;
               if (gaps[0][1] < 0) {
@@ -206,15 +198,6 @@ class DynamicSchedulePanel extends HTMLElement {
           }
 
           transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) );
-       //   }
-     //     let transs = conf.sub_schedules[ clicked.closest( '.sh-name' ).dataset.sub ].transitions;
-/*
-          const returned = await this._hass.connection.sendMessagePromise( conf );
-          console.log('returned', returned );
-          
-          this.fetchScheduleConfigs();
-          this.setShowingEntid( returned.id );
-*/
           this.render();
 
           return;
@@ -225,16 +208,7 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
           this._editing( true );
           const data = clicked.closest( '.sh-name' ).dataset
-      //    let conf = this._gatherConfig();
-      //    delete conf.sub_schedules[ data.sub ];
           delete this._editingConfig.sub_schedules[ data.sub ];
-/*
-          const returned = await this._hass.connection.sendMessagePromise( conf );
-          console.log('returned', returned );
-          
-          this.fetchScheduleConfigs();
-          this.setShowingEntid( returned.id );
-*/
           this.render();
 
           return;
@@ -243,12 +217,14 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('#save-button');
       clicked2 = e.target.closest('#save-btn');
       if (clicked || clicked2) {
-          console.log('save-button');
           e.preventDefault();
 
           console.log('save _gatherConfig', this._gatherConfig() );
+
+          if (false) {
           const returned = await this._hass.connection.sendMessagePromise( this._gatherConfig() );
           console.log('save returned', returned );
+          }
             
           this.fetchScheduleConfigs();
           this.setShowingEntid( returned.id );
@@ -260,8 +236,6 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('#new-schedule-btn');
       if (clicked) {
           e.preventDefault();
-      //    const iconBool = this.shadowRoot.getElementById('schedule-bool');
-      //    if (iconBool) iconBool.checked = false;
           this._openNewScheduleModal();
           return;
       }
@@ -688,10 +662,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   _gatherConfig() {
-      const subnames = [];
-      this.shadowRoot.querySelectorAll('.sh-name').forEach( sh => {
-          subnames.push( sh.dataset.sub );
-      });
+      // generate a proposed config, from the contents of theh screen:
 
       let val;
       let conf = {};
@@ -704,6 +675,12 @@ class DynamicSchedulePanel extends HTMLElement {
       conf.delay_startup = Number( this.shadowRoot.querySelector("#schedule-delay").value || 0 );
       val = this.shadowRoot.querySelector("#schedule-dc").value || null;
       if (val) conf.device_class = val;
+
+      // subschedules:
+      let subnames = [];
+      this.shadowRoot.querySelectorAll('.sh-name').forEach( sh => {
+          subnames.push( sh.dataset.sub );
+      });
 
       let subs = {};
       subnames.map((sub, inx) => {
@@ -728,10 +705,28 @@ class DynamicSchedulePanel extends HTMLElement {
       });
       conf.sub_schedules = subs;
 
+      // attributes:
+      let attrs = {}
+      let inxs = {}; // key=index; value = {'k' : attrname, 'v' : attrvalue}
+
+      this.querySelectorAll( ".attrname" ).forEach( attrn => {
+          inxs[  attrn.dataset.inx ] = {k : attrn.value.trim()}
+      } );
+      this.querySelectorAll( ".attrvalue" ).forEach( attrv => 
+          inxs[ attrv.dataset.inx ].v = attrv.value.split("\n")
+                     .filter( vv => vv.length > 0 );
+      {} );
+
+      Object.values( inxs )
+          .sort( (a,b) => a.k.localCompare(b.k) )
+          .forEach( kv => attrs[kv.k] = attrs[kv.v] );
+      if (Object.keys(attrs).length) {
+          conf.attrs = attrs;
+      }
+
       conf[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
       conf.type = this._domain + '/update';
 
-   //   console.log( '_gatherConfig', conf );
       return conf;
   }
 
@@ -957,10 +952,10 @@ class DynamicSchedulePanel extends HTMLElement {
     if (attribs_names.length || rw) {
         attrHtml = attribs_names.map((attrname, inx) => `
            <div>
-             <input ${rw ? "" : "readonly "}id="attr-name-${inx}" type="text" class="ch" value="${attrname}">
+             <input ${rw ? "" : "readonly "}id="attr-name-${inx}" data-inx=${inx} type="text" class="ch attrname" value="${attrname}">
            </div>
            <div>
-             <textarea ${rw ? "" : "disabled "}id="attr-value-${inx}"
+             <textarea class="ch attrvalue" data-inx=${inx} ${rw ? "" : "disabled "}id="attr-value-${inx}"
               >${attribs[attrname].join("\n")}</textarea>
            </div>
         `).join('');
