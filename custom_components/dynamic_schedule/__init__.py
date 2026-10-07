@@ -125,64 +125,64 @@ def ppr(msg, data ):
     for line in pprint.pformat( data ).splitlines():
         LOGGER.debug(line)
 
-comment = '''
-def valid_schedule(schedule: list[dict[str, str]]) -> list[dict[str, str]]:
-    """Validate the schedule of time ranges.
-
-    Ensure they have no overlap and the end time is greater than the start time.
-    """
-    # Empty schedule is valid
-    if not schedule:
-        return schedule
-
-    # Sort the schedule by start times
-    schedule = sorted(schedule, key=lambda time_range: time_range[CONF_FROM])
-
-    # Check if the start time of the next event is before the end time of the previous event
-    previous_to = None
-    for time_range in schedule:
-        if time_range[CONF_FROM] >= time_range[CONF_TO]:
-            raise vol.Invalid(
-                f"Invalid time range, from {time_range[CONF_FROM]} is after"
-                f" {time_range[CONF_TO]}"
-            )
-
-        # Check if the from time of the event is after the to time of the previous event
-        if previous_to is not None and previous_to > time_range[CONF_FROM]:
-            raise vol.Invalid("Overlapping times found in schedule")
-
-        previous_to = time_range[CONF_TO]
-
-    return schedule
-
-
-def deserialize_to_time(value: Any) -> Any:
-    """Convert 24:00 and 24:00:00 to time.max."""
-    if not isinstance(value, str):
-        return cv.time(value)
-
-    parts = value.split(":")
-    if len(parts) < 2:
-        return cv.time(value)
-    hour = int(parts[0])
-    minute = int(parts[1])
-
-    if hour == 24 and minute == 0:
-        return time.max
-
-    return cv.time(value)
-
-
-def serialize_to_time(value: Any) -> Any:
-    """Convert time.max to 24:00:00."""
-    if value == time.max:
-        return "24:00:00"
-    return vol.Coerce(str)(value)
-
-
-# Extra data that the user can set on each time range
-CUSTOM_DATA_SCHEMA = vol.Schema({str: vol.Any(bool, str, int, float)})
-'''
+#comment = '''
+#def valid_schedule(schedule: list[dict[str, str]]) -> list[dict[str, str]]:
+#    """Validate the schedule of time ranges.
+#
+#    Ensure they have no overlap and the end time is greater than the start time.
+#    """
+#    # Empty schedule is valid
+#    if not schedule:
+#        return schedule
+#
+#    # Sort the schedule by start times
+#    schedule = sorted(schedule, key=lambda time_range: time_range[CONF_FROM])
+#
+#    # Check if the start time of the next event is before the end time of the previous event
+#    previous_to = None
+#    for time_range in schedule:
+#        if time_range[CONF_FROM] >= time_range[CONF_TO]:
+#            raise vol.Invalid(
+#                f"Invalid time range, from {time_range[CONF_FROM]} is after"
+#                f" {time_range[CONF_TO]}"
+#            )
+#
+#        # Check if the from time of the event is after the to time of the previous event
+#        if previous_to is not None and previous_to > time_range[CONF_FROM]:
+#            raise vol.Invalid("Overlapping times found in schedule")
+#
+#        previous_to = time_range[CONF_TO]
+#
+#    return schedule
+#
+#
+#def deserialize_to_time(value: Any) -> Any:
+#    """Convert 24:00 and 24:00:00 to time.max."""
+#    if not isinstance(value, str):
+#        return cv.time(value)
+#
+#    parts = value.split(":")
+#    if len(parts) < 2:
+#        return cv.time(value)
+#    hour = int(parts[0])
+#    minute = int(parts[1])
+#
+#    if hour == 24 and minute == 0:
+#        return time.max
+#
+#    return cv.time(value)
+#
+#
+#def serialize_to_time(value: Any) -> Any:
+#    """Convert time.max to 24:00:00."""
+#    if value == time.max:
+#        return "24:00:00"
+#    return vol.Coerce(str)(value)
+#
+#
+## Extra data that the user can set on each time range
+#CUSTOM_DATA_SCHEMA = vol.Schema({str: vol.Any(bool, str, int, float)})
+#'''
 CUSTOM_ATTR_SCHEMA_LIST = vol.Schema({str: vol.All( cv.ensure_list, [vol.Any(bool, str, int, float)] )})
 
 BASE_SCHEMA: VolDictType = {
@@ -527,7 +527,7 @@ class ScheduleStorageCollection(DictStorageCollection):
         if data := await super()._async_load_data():
             LOGGER.debug( "_async_load_data data A=%s", data )
           #  data["items"] = [STORAGE_SCHEMA(item) for item in data["items"]]
-            data["items"] = [STORAGE_SCHEMA_V2(item) for item in data["items"] if item.get('id') != 'giraffes' ]
+            data["items"] = [STORAGE_SCHEMA_V2(item) for item in data["items"]]
         LOGGER.debug( "_async_load_data data B=%s", data )
         return data
 
