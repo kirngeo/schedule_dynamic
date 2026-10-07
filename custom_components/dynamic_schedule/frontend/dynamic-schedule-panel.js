@@ -709,13 +709,13 @@ class DynamicSchedulePanel extends HTMLElement {
       let attrs = {}
       let inxs = {}; // key=index; value = {'k' : attrname, 'v' : attrvalue}
 
-      this.querySelectorAll( ".attrname" ).forEach( attrn => {
+      this.shadowRoot.querySelectorAll( ".attrname" ).forEach( attrn => {
           console.log( 'attrn', attrn );
           inxs[  attrn.dataset.inx ] = {k : attrn.value.trim()}
       });
       console.log('inxs A', inxs);
 
-      this.querySelectorAll( ".attrvalue" ).forEach( attrv => {
+      this.shadowRoot.querySelectorAll( ".attrvalue" ).forEach( attrv => {
           inxs[ attrv.dataset.inx ].v = attrv.value.split("\n")
                      .filter( vv => vv.length > 0 );
       });
