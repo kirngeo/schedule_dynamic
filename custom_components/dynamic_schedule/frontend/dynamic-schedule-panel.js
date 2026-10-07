@@ -954,7 +954,9 @@ class DynamicSchedulePanel extends HTMLElement {
  //             >${attribs[attrname].join("&#10;")}</textarea>
 
     if (attribs_names.length || rw) {
-        attrHtml = attribs_names.map((attrname, inx) => `
+        attrHtml = attribs_names.map((attrname, inx) => {
+          console.log('attrname=%s, attribs=%s', attrname, JSON.stringify(attribs))
+          return `
            <div>
              <input ${rw ? "" : "readonly "}id="attr-name-${inx}" data-inx=${inx} type="text" class="ch attrname" value="${attrname}">
            </div>
@@ -962,7 +964,8 @@ class DynamicSchedulePanel extends HTMLElement {
              <textarea class="ch attrvalue" data-inx=${inx} ${rw ? "" : "disabled "}id="attr-value-${inx}"
               >${attribs[attrname].join("\n")}</textarea>
            </div>
-        `).join('');
+        `}).join('');
+
         if (attrHtml) {
             attrHtml = '<div>Name</div><div>Value</div>' + attrHtml;
         }
