@@ -708,7 +708,7 @@ class DynamicSchedulePanel extends HTMLElement {
       Object.values( inxs )
           .sort( (a,b) => a.k.localeCompare(b.k) )
           .forEach( kv => {
-              if (k.length) {
+              if (kv.k.length) {
                 attrs[kv.k] = kv.v.map(v => v.trim()).filter( v => v.length)
               }
           });
