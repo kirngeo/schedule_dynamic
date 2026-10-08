@@ -113,7 +113,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   async _onClick(e) {
-      console.log('_onClick', e );
+    //  console.log('_onClick', e );
     //  console.log( e.target );
 
       let clicked = null;
@@ -150,13 +150,15 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      clicked = e.target.closest('.add-attribute');
+      clicked = e.target.closest('#add-attribute');
       if (clicked) {
           console.log('add-attribute', clicked);
           this._editing( true );
           e.preventDefault();
 
           this._editingConfig.attributes[ this._getDummyAttr() ] = [];
+          this.render();
+          return;
       }
 
 
