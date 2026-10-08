@@ -113,7 +113,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   async _onClick(e) {
-    //  console.log('_onClick', e );
+      console.log('_onClick', e );
     //  console.log( e.target );
 
       let clicked = null;
