@@ -37,7 +37,6 @@ class DynamicSchedulePanel extends HTMLElement {
   connectedCallback() {
       this.shadowRoot.addEventListener('click', this._onClick.bind(this));
       this.shadowRoot.addEventListener('change', this._onChange.bind(this));
-      this.shadowRoot.addEventListener('select', this._onSelect.bind(this));
       this.shadowRoot.addEventListener('value-changed', this._onValueChanged.bind(this));
   }
 
@@ -53,11 +52,6 @@ class DynamicSchedulePanel extends HTMLElement {
       console.log('####### _onValueChanged', e );
   }
 
-  _onSelect(e) {
-      console.log('_onSelect', e );
-      console.log( e.target );
-  }
-
   _onChange(e) {
       console.log('_onChange', e );
 
@@ -70,6 +64,7 @@ class DynamicSchedulePanel extends HTMLElement {
     //      this._onSchedSelClick();
           this._activeScheduleId = clicked.value;
           console.log('activeScheduleId A', this._activeScheduleId );
+          this._editing(false);
  //         this.setShowingEntid( clicked.value );
  //         if (this._activeScheduleOverview) {
  //             this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
@@ -161,8 +156,6 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-
-
       clicked = e.target.closest('.add-transition');
       if (clicked) {
           const ctr = clicked.closest('.sh-name');
@@ -223,11 +216,9 @@ class DynamicSchedulePanel extends HTMLElement {
 
           console.log('save _gatherConfig', this._gatherConfig() );
 
-          if (true) {
           const returned = await this._hass.connection.sendMessagePromise( this._gatherConfig() );
           console.log('save returned', returned );
           this.setShowingEntid( returned.id );
-          }
             
           this.fetchScheduleConfigs();
           this._editing( false );
@@ -405,8 +396,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   _isDummyAttr( name ) {
       if (!name) return false;
-      console.log('isDummyAttr', name, name.slice(0,4), name.slice(-3), name.slice(3, -3));
-      return name.slice( 0, 4) === "___" && name.slice( -3 ) === "___" && ( ! Number.isNaN( name.slice(3,-3) ) );
+      return name.slice( 0, 3) === "___" && name.slice( -3 ) === "___" && ( ! Number.isNaN( name.slice(3,-3) ) );
   }
 
   _getDummyAttr() {
