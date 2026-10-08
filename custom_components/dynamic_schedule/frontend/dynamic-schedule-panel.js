@@ -82,7 +82,7 @@ class DynamicSchedulePanel extends HTMLElement {
           console.log('changed', e.target);
           e.preventDefault();
           this._editing( true );
-          this._editingConfig = this._gatherConfig();
+     //     this._editingConfig = this._gatherConfig();
           return;
       }
 
@@ -156,7 +156,7 @@ class DynamicSchedulePanel extends HTMLElement {
           this._editing( true );
           e.preventDefault();
 
-        //  this._editingConfig.attributes || {} );
+          this._editingConfig.attributes[ this._getDummyAttr() ] = [];
       }
 
 
@@ -317,13 +317,6 @@ class DynamicSchedulePanel extends HTMLElement {
        //   this.shadowRoot.getElementById('schedule-icon').value = 'mdi:table-clock';
           
           modal.classList.add('open');
-      }
-  }
-
-  _closeModal() {
-      const modal = this.shadowRoot.getElementById('subschedule-modal');
-      if (modal) {
-          modal.classList.remove('open');
       }
   }
 
@@ -721,10 +714,12 @@ class DynamicSchedulePanel extends HTMLElement {
 
       Object.values( inxs )
           .sort( (a,b) => a.k.localeCompare(b.k) )
-          .forEach( kv => {attrs[kv.k] = kv.v} );
-      if (Object.keys(attrs).length) {
-          conf.attributes = attrs;
-      }
+          .forEach( kv => {
+              if (k.length) {
+                attrs[kv.k] = kv.v.map(v => v.trim()).filter( v => v.length)
+              }
+          });
+      conf.attributes = attrs;
 
       conf[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
       conf.type = this._domain + '/update';
@@ -953,10 +948,11 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (attribs_names.length || rw) {
         attrHtml = attribs_names.map((attrname, inx) => {
-          console.log('attrname=%s, attribs=%s', attrname, JSON.stringify(attribs))
+          let atname = this._isDummyAttr(attrname) ? '' : attrname;
+          console.log('attrname=%s, atname=%s attribs=%s', attrname, atname, JSON.stringify(attribs))
           return `
            <div>
-             <input ${rw ? "" : "readonly "}id="attr-name-${inx}" data-inx=${inx} type="text" class="ch attrname" value="${attrname}">
+             <input ${rw ? "" : "readonly "}id="attr-name-${inx}" data-inx=${inx} type="text" class="ch attrname" value="${atname}">
            </div>
            <div>
              <textarea class="ch attrvalue" data-inx=${inx} ${rw ? "" : "disabled "}id="attr-value-${inx}"
