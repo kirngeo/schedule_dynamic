@@ -405,6 +405,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   _isDummyAttr( name ) {
       if (!name) return false;
+      console.log('isDummyAttr', name, name.slice(0,4), name.slice(-3), name.slice(3, -3));
       return name.slice( 0, 4) === "___" && name.slice( -3 ) === "___" && ( ! Number.isNaN( name.slice(3,-3) ) );
   }
 
