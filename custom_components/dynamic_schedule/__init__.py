@@ -627,34 +627,13 @@ class Schedule(CollectionEntity):
 
     def __init__(self, config: ConfigType, editable: bool) -> None:
         """Initialize a schedule."""
-        self._is_boolean = config.get(CONF_BOOLEAN, False)
-        self._config = ENTITY_SCHEMA_V2(config)
+        self._update_details( config )
         self._attr_capability_attributes = {ATTR_EDITABLE: editable}
-        self._attr_icon = self._config.get(CONF_ICON)
-        self._attr_name = self._config[CONF_NAME]
         self._attr_unique_id = self._config[CONF_ID]
         self._attr_state = STATE_UNKNOWN
         self._attr_offset = timedelta()
 
-        LOGGER.debug( 'CONF_ATTR %s %s', type(self._config.get(CONF_ATTR)), self._config.get(CONF_ATTR) )
-        self._attr_extra_state_attributes = self._config.get(CONF_ATTR).copy()
         self._attr_last_offset_refresh = None
-        self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
-        self._attr_unit_of_measurement = self._config.get(CONF_UNIT_OF_MEASUREMENT)
-        self._unrecorded_attributes |= frozenset( {ATTR_TRANSITIONS, ATTR_LAST_OFFSET_REFRESH, CONF_OFFSET} )
-        self._attr_extra_state_attributes[ CONF_OFFSET ] = 0
-        if CONF_DEVICE_CLASS in self._config:
-            self._attr_device_class = self._config[CONF_DEVICE_CLASS]
-            self._state_is_numeric = self._attr_device_class not in NON_NUMERIC_DEVICE_CLASSES
-        else:
-            self._state_is_numeric = False
-
-        # Exclude any custom attributes that may be present on time ranges from recording.
-        self._entity__combined_unrecorded_attributes = (
-            self._entity_component_unrecorded_attributes | self._unrecorded_attributes
-        )
-
-        self._transitions : [Transition] = []
 
 
     @classmethod
@@ -669,15 +648,34 @@ class Schedule(CollectionEntity):
         schedule.entity_id = f"{DOMAIN}.{config[CONF_ID]}"
         return schedule
 
+    def _update_details( self, config: ConfigType) -> None:
+        self._config = ENTITY_SCHEMA_V2(config)
+        LOGGER.debug( 'CONF_ATTR %s %s', type(self._config.get(CONF_ATTR)), self._config.get(CONF_ATTR) )
+        self._is_boolean = self._config.get(CONF_BOOLEAN, False)
+        self._attr_icon = self._config.get(CONF_ICON)
+        self._attr_name = self._config[CONF_NAME]
+        self._attr_extra_state_attributes = self._config.get(CONF_ATTR).copy()
+        self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
+        self._unrecorded_attributes |= frozenset( {ATTR_TRANSITIONS, ATTR_LAST_OFFSET_REFRESH, ATTR_EDITABLE, ATTR_NEXT_EVENT, CONF_OFFSET} )
+        self._attr_extra_state_attributes[ CONF_OFFSET ] = 0
+        self._attr_unit_of_measurement = self._config.get(CONF_UNIT_OF_MEASUREMENT)
+        if CONF_DEVICE_CLASS in self._config:
+            self._attr_device_class = self._config[CONF_DEVICE_CLASS]
+            self._state_is_numeric = self._attr_device_class not in NON_NUMERIC_DEVICE_CLASSES
+        else:
+            self._state_is_numeric = False
+
+        # Exclude any custom attributes that may be present on time ranges from recording.
+        self._entity__combined_unrecorded_attributes = (
+            self._entity_component_unrecorded_attributes | self._unrecorded_attributes
+        )
+        self._transitions : [Transition] = []
+
     async def async_update_config(self, config: ConfigType) -> None:
         """Handle when the config is updated."""
-        self._is_boolean = config.get(CONF_BOOLEAN, False)
-        self._config = ENTITY_SCHEMA_V2(config)
-        self._attr_icon = config.get(CONF_ICON)
-        self._attr_name = config[CONF_NAME]
+        self._update_details( config )
 
         # fill with transitions up until end of tomorrow...
-        self._transitions : [Transition] = []
         await self._async_replenish_transitions()
 
         self._clean_update()

@@ -19,6 +19,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._editingConfig = null;
     this._activeScheduleId = null;
     this._rws = {};
+    this._updateGUI = true;
   }
 
   zoomIn() {
@@ -334,19 +335,12 @@ class DynamicSchedulePanel extends HTMLElement {
       let conf = this._editingConfig;
       conf.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
 
-      if (false) {
-
-      const returned = await this._hass.connection.sendMessagePromise( conf );
-      console.log('returned', returned );
-      
-      this.showToast(`sub-schedule "${name}" added successfully`);
-      this.fetchScheduleConfigs();
-      this._activeScheduleId = returned.id;
-      console.log('activeScheduleId B', this._activeScheduleId );
-  //    this.setShowingEntid( returned.id );
-      } // if false
       this._closeModal();
-      this.render();
+
+      if (this._updateGUI) {
+      } else {
+          this.render();
+      }
 
       return;
       
