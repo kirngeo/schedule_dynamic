@@ -712,7 +712,7 @@ class DynamicSchedulePanel extends HTMLElement {
           .sort( (a,b) => a.k.localeCompare(b.k) )
           .forEach( kv => {
               console.log( 'kv', kv );
-              attrs[ kv.k ] = attrs[ kv.v ];
+              attrs[ kv.k ] = kv.v;
          //     const k = kv.k.trim();
          //     attrs[ k.length === 0 ? this._getDummyAttr() : k ] = kv.v.map(v => v.trim()).filter( v => v.length);
           });
