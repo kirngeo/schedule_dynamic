@@ -20,6 +20,9 @@ class DynamicSchedulePanel extends HTMLElement {
     this._activeScheduleId = null;
     this._rws = {};
     this._updateGUI = true;
+    this._dummyBase = '____' + new Date().valueOf();
+    this._dummyExt = 0;
+
   }
 
   zoomIn() {
@@ -152,6 +155,7 @@ class DynamicSchedulePanel extends HTMLElement {
           this._editing( true );
           e.preventDefault();
 
+          this._gatherConfig();
           this._editingConfig.attributes[ this._getDummyAttr() ] = [];
           this.render();
           return;
@@ -215,9 +219,14 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked || clicked2) {
           e.preventDefault();
 
-          console.log('save _gatherConfig', this._gatherConfig() );
+          let newConfig = this._gatherConfig();
 
-          const returned = await this._hass.connection.sendMessagePromise( this._gatherConfig() );
+          Object.keys( newConfig.attributes || {})
+              .forEach( k => {if (this._isDummyAttr(k)) delete newConfig.attributes.k;});
+
+          console.log('save newConfig', newConfig );
+
+          const returned = await this._hass.connection.sendMessagePromise( newConfig );
           console.log('save returned', returned );
           this.setShowingEntid( returned.id );
             
@@ -390,11 +399,11 @@ class DynamicSchedulePanel extends HTMLElement {
 
   _isDummyAttr( name ) {
       if (!name) return false;
-      return name.slice( 0, 3) === "___" && name.slice( -3 ) === "___" && ( ! Number.isNaN( name.slice(3,-3) ) );
+      return name.slice( 0, 4) === "____" && ( ! Number.isNaN( name.slice(4) ) );
   }
 
   _getDummyAttr() {
-      return "___" + new Date().valueOf() + "___";
+      return this._dummyBase + this._dummyExt++;
   }
 
   async _onCreateScheduleSubmit() {
@@ -702,9 +711,8 @@ class DynamicSchedulePanel extends HTMLElement {
       Object.values( inxs )
           .sort( (a,b) => a.k.localeCompare(b.k) )
           .forEach( kv => {
-              if (kv.k.length) {
-                attrs[kv.k] = kv.v.map(v => v.trim()).filter( v => v.length)
-              }
+              const k = kv.k.trim();
+              attrs[ k.length === 0 ? this._getDummyAttr() : k ] = kv.v.map(v => v.trim()).filter( v => v.length);
           });
       conf.attributes = attrs;
 
