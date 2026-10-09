@@ -707,6 +707,7 @@ class DynamicSchedulePanel extends HTMLElement {
                      .filter( vv => vv.length > 0 );
       });
 
+      console.log('inxs', inxs);
       Object.values( inxs )
           .sort( (a,b) => a.k.localeCompare(b.k) )
           .forEach( kv => {
