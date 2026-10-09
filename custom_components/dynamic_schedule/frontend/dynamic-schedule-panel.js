@@ -699,8 +699,7 @@ class DynamicSchedulePanel extends HTMLElement {
       let inxs = {}; // key=index; value = {'k' : attrname, 'v' : attrvalue}
 
       this.shadowRoot.querySelectorAll( ".attrname" ).forEach( attrn => {
-          console.log( 'attrn', attrn );
-          inxs[  attrn.dataset.inx ] = {k : attrn.value.trim()}
+          inxs[  attrn.dataset.inx ] = {k : attrn.value.trim() || this._getDummyAttr() }
       });
 
       this.shadowRoot.querySelectorAll( ".attrvalue" ).forEach( attrv => {
@@ -711,8 +710,9 @@ class DynamicSchedulePanel extends HTMLElement {
       Object.values( inxs )
           .sort( (a,b) => a.k.localeCompare(b.k) )
           .forEach( kv => {
-              const k = kv.k.trim();
-              attrs[ k.length === 0 ? this._getDummyAttr() : k ] = kv.v.map(v => v.trim()).filter( v => v.length);
+              attrs[ kv.k ] = attrs[ kv.v ];
+         //     const k = kv.k.trim();
+         //     attrs[ k.length === 0 ? this._getDummyAttr() : k ] = kv.v.map(v => v.trim()).filter( v => v.length);
           });
       console.log('attrs', attrs);
       conf.attributes = attrs;
