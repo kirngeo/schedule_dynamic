@@ -714,6 +714,7 @@ class DynamicSchedulePanel extends HTMLElement {
               const k = kv.k.trim();
               attrs[ k.length === 0 ? this._getDummyAttr() : k ] = kv.v.map(v => v.trim()).filter( v => v.length);
           });
+      console.log('attrs', attrs);
       conf.attributes = attrs;
 
       conf[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
