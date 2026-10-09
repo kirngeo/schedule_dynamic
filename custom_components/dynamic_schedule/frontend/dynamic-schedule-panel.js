@@ -156,7 +156,7 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
 
           this._editingConfig = this._gatherConfig();
-          this._editingConfig.attributes[ this._getDummyAttr() ] = [];
+          this._editingConfig.attributes[ this._getDummyName() ] = [];
           this.render();
           return;
       }
@@ -224,7 +224,7 @@ class DynamicSchedulePanel extends HTMLElement {
           Object.keys( newConfig.attributes || {})
               .forEach( k => {
                   console.log('checking k', k);
-                  if (this._isDummyAttr(k)) {
+                  if (this._isDummyName(k)) {
                       console.log('deleting', k, newConfig.attributes);
                       delete newConfig.attributes[k];
                   }
@@ -331,8 +331,9 @@ class DynamicSchedulePanel extends HTMLElement {
 
   async _onCreateSubScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('subschedule-name');
-      const name = nameInput ? nameInput.value.trim() : '';
-      const scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+      const name = nameInput ? this._validName( nameInput.value.trim() ) : '';
+
+      let scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
       let sub_schedules = scheduleConfig.sub_schedules;
 
       if (name.length === 0) {
@@ -346,16 +347,13 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       this._editing(true);
-   //   let conf = this._gatherConfig();
-      let conf = this._editingConfig;
+      let conf = this._gatherConfig();
+    //  let conf = this._editingConfig;
       conf.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
 
       this._closeModal();
 
-      if (this._updateGUI) {
-      } else {
-          this.render();
-      }
+      this.render();
 
       return;
       
@@ -384,6 +382,10 @@ class DynamicSchedulePanel extends HTMLElement {
 
   }
 
+  _validName( proposed ) {
+      return proposed.replaceAll(/[^a-zA-Z0-9_]/g,'_');
+  }
+
   _transToPc (trans, pc=100) {
       return (this._transToSecs(trans) / (24*60*60)) * pc;
   }
@@ -403,12 +405,12 @@ class DynamicSchedulePanel extends HTMLElement {
     return {hh: xx/60, mm: mm, ss: ss};
   }
 
-  _isDummyAttr( name ) {
+  _isDummyName( name ) {
       if (!name) return false;
       return name.slice( 0, 4) === "____" && ( ! Number.isNaN( name.slice(4) ) );
   }
 
-  _getDummyAttr() {
+  _getDummyName() {
       return this._dummyBase + this._dummyExt++;
   }
 
@@ -705,7 +707,7 @@ class DynamicSchedulePanel extends HTMLElement {
       let inxs = {}; // key=index; value = {'k' : attrname, 'v' : attrvalue}
 
       this.shadowRoot.querySelectorAll( ".attrname" ).forEach( attrn => {
-          inxs[  attrn.dataset.inx ] = {k : attrn.value.trim() || this._getDummyAttr() }
+          inxs[  attrn.dataset.inx ] = {k : attrn.value.trim() || this._getDummyName() }
       });
 
       this.shadowRoot.querySelectorAll( ".attrvalue" ).forEach( attrv => {
@@ -945,8 +947,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (attribs_names.length || rw) {
         attrHtml = attribs_names.map((attrname, inx) => {
-          let atname = this._isDummyAttr(attrname) ? '' : attrname;
-          console.log('attrname=%s, atname=%s attribs=%s', attrname, atname, JSON.stringify(attribs))
+          let atname = this._isDummyName(attrname) ? '' : attrname;
           return `
            <div>
              <input ${rw ? "" : "readonly "}id="attr-name-${inx}" data-inx=${inx} type="text" class="ch attrname" value="${atname}">
