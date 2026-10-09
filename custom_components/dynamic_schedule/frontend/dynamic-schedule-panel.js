@@ -155,7 +155,7 @@ class DynamicSchedulePanel extends HTMLElement {
           this._editing( true );
           e.preventDefault();
 
-          this._gatherConfig();
+          this._editingConfig = this._gatherConfig();
           this._editingConfig.attributes[ this._getDummyAttr() ] = [];
           this.render();
           return;
@@ -711,6 +711,7 @@ class DynamicSchedulePanel extends HTMLElement {
       Object.values( inxs )
           .sort( (a,b) => a.k.localeCompare(b.k) )
           .forEach( kv => {
+              console.log( 'kv', kv );
               attrs[ kv.k ] = attrs[ kv.v ];
          //     const k = kv.k.trim();
          //     attrs[ k.length === 0 ? this._getDummyAttr() : k ] = kv.v.map(v => v.trim()).filter( v => v.length);
