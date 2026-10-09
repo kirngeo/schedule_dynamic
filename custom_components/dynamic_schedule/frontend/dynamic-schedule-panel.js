@@ -222,7 +222,13 @@ class DynamicSchedulePanel extends HTMLElement {
           let newConfig = this._gatherConfig();
 
           Object.keys( newConfig.attributes || {})
-              .forEach( k => {if (this._isDummyAttr(k)) delete newConfig.attributes.k;});
+              .forEach( k => {
+                  console.log('checking k', k);
+                  if (this._isDummyAttr(k)) {
+                      console.log('deleting', k, newConfig.attributes);
+                      delete newConfig.attributes.k;
+                  }
+              });
 
           console.log('save newConfig', newConfig );
 
@@ -707,16 +713,9 @@ class DynamicSchedulePanel extends HTMLElement {
                      .filter( vv => vv.length > 0 );
       });
 
-      console.log('inxs', inxs);
       Object.values( inxs )
           .sort( (a,b) => a.k.localeCompare(b.k) )
-          .forEach( kv => {
-              console.log( 'kv', kv );
-              attrs[ kv.k ] = kv.v;
-         //     const k = kv.k.trim();
-         //     attrs[ k.length === 0 ? this._getDummyAttr() : k ] = kv.v.map(v => v.trim()).filter( v => v.length);
-          });
-      console.log('attrs', attrs);
+          .forEach( kv => attrs[ kv.k ] = kv.v);
       conf.attributes = attrs;
 
       conf[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
