@@ -90,16 +90,11 @@ class DynamicSchedulePanel extends HTMLElement {
   _editing( onoff ) {
       if (this._isEditing === onoff) return;
       if (onoff) {
-      //    this.shadowRoot.querySelector('#save-container').classList.add("open");
           this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
           console.log('starting to edit, _editingConfig:', this._editingConfig);
-     //     this.shadowRoot.querySelector('#save-button').classList.add('dirty');
-       //   this.shadowRoot.querySelector('#save-btn').style.display = 'block';
           this.shadowRoot.querySelector('#save-btn').classList.add('dirty');
           this.shadowRoot.querySelector('#save-btn').classList.remove('clean');
       } else {
-    //      this.shadowRoot.querySelector('#saver').style.visibility = 'hidden';
-     //     this.shadowRoot.querySelector('#save-btn').style.display = 'hide';
           this.shadowRoot.querySelector('#save-btn').classList.remove('dirty');
           this.shadowRoot.querySelector('#save-btn').classList.add('clean');
           console.log('stopping editing');
@@ -346,7 +341,7 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       this._editing(true);
-      let this._editingConfig = this._gatherConfig();
+      this._editingConfig = this._gatherConfig();
     //  let conf = this._editingConfig;
       this._editingConfig.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
 
