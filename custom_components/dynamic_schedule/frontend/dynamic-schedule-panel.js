@@ -226,7 +226,7 @@ class DynamicSchedulePanel extends HTMLElement {
                   console.log('checking k', k);
                   if (this._isDummyAttr(k)) {
                       console.log('deleting', k, newConfig.attributes);
-                      delete newConfig.attributes.k;
+                      delete newConfig.attributes[k];
                   }
               });
 
