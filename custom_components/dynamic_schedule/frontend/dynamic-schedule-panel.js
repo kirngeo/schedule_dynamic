@@ -308,14 +308,13 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   _closeModal() {
-      let modal = this.shadowRoot.getElementById('schedule-modal');
-      if (modal) {
+      let modal;
+      ['schedule-modal', 'subschedule-modal'].forEach( el => {
+        modal = this.shadowRoot.getElementById( el );
+        if (modal) {
           modal.classList.remove('open');
-      }
-      modal = this.shadowRoot.getElementById('subschedule-modal');
-      if (modal) {
-          modal.classList.remove('open');
-      }
+        }
+      });
   }
 
   _openNewSubScheduleModal() {
@@ -347,9 +346,9 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       this._editing(true);
-      let conf = this._gatherConfig();
+      let this._editingConfig = this._gatherConfig();
     //  let conf = this._editingConfig;
-      conf.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
+      this._editingConfig.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
 
       this._closeModal();
 
