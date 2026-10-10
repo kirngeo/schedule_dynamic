@@ -336,7 +336,7 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       if ( Object.keys( sub_schedules ).indexOf(name) >= 0 ) {
-          this.showToast('subschedule name must be unique within the schedule');
+          this.showToast('subschedule name must be unique within this schedule');
           return;
       }
 
@@ -400,8 +400,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   _isDummyName( name ) {
-      if (!name) return false;
-      return name.slice( 0, 4) === "____" && ( ! Number.isNaN( name.slice(4) ) );
+      return name ? name.startsWith( this._dummyBase ) : false;
   }
 
   _getDummyName() {
@@ -668,13 +667,14 @@ class DynamicSchedulePanel extends HTMLElement {
       if (val) conf.device_class = val;
 
       // subschedules:
-      let subnames = [];
-      this.shadowRoot.querySelectorAll('.sh-name').forEach( sh => {
-          subnames.push( sh.dataset.sub );
-      });
+ ///     let subnames = [];
+ ///     this.shadowRoot.querySelectorAll('.sh-name').forEach( sh => {
+ ///         subnames.push( sh.dataset.sub );
+ ///     });
+ //     let subnames = shadowRoot.querySelectorAll('.sh-name').map( sh => sh.dataset.sub );
 
       let subs = {};
-      subnames.map((sub, inx) => {
+      this.shadowRoot.querySelectorAll('.sh-name').map( sh => sh.dataset.sub ).map((sub, inx) => {
           this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
               let transs = [];
               schctr.querySelectorAll(".trans").forEach( trans => {
@@ -701,7 +701,7 @@ class DynamicSchedulePanel extends HTMLElement {
       let inxs = {}; // key=index; value = {'k' : attrname, 'v' : attrvalue}
 
       this.shadowRoot.querySelectorAll( ".attrname" ).forEach( attrn => {
-          inxs[  attrn.dataset.inx ] = {k : attrn.value.trim() || this._getDummyName() }
+          inxs[  attrn.dataset.inx ] = {k : this._validName( attrn.value.trim() ) || this._getDummyName() }
       });
 
       this.shadowRoot.querySelectorAll( ".attrvalue" ).forEach( attrv => {
@@ -1546,7 +1546,7 @@ div {
                           <span slot="heading">Sub-schedule name</span>
                           <span slot="description"the name of the sub-schedule</span>
                           <ha-input
-                            placeholder="alphanumerics or underlines only"
+                            placeholder="alphanumerics or underlines"
                             id="subschedule-name"
                           >
                           </ha-input>
