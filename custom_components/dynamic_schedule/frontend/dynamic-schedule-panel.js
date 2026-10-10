@@ -674,7 +674,7 @@ class DynamicSchedulePanel extends HTMLElement {
  //     let subnames = shadowRoot.querySelectorAll('.sh-name').map( sh => sh.dataset.sub );
 
       let subs = {};
-      this.shadowRoot.querySelectorAll('.sh-name').map( sh => sh.dataset.sub ).map((sub, inx) => {
+      [...this.shadowRoot.querySelectorAll('.sh-name')].map( sh => sh.dataset.sub ).map((sub, inx) => {
           this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
               let transs = [];
               schctr.querySelectorAll(".trans").forEach( trans => {
