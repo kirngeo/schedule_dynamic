@@ -125,12 +125,10 @@ class DynamicSchedulePanel extends HTMLElement {
           const sub = trans.dataset.sub;
           trans.remove();  // remove from display
 
-          if (this._activeScheduleOverview) {
-            this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]
+          this._editingConfig
               .sub_schedules[ sub ]
               .transitions
-              .splice( tinx, 1 ); // remove from current config
-          }
+              .splice( tinx, 1 ); // remove from editing config
           this.render();
           return;
       }
@@ -697,7 +695,6 @@ class DynamicSchedulePanel extends HTMLElement {
       conf.sub_schedules = subs;
 
       // attributes:
-      let attrs = {}
       let inxs = {}; // key=index; value = {'k' : attrname, 'v' : attrvalue}
 
       this.shadowRoot.querySelectorAll( ".attrname" ).forEach( attrn => {
@@ -709,6 +706,7 @@ class DynamicSchedulePanel extends HTMLElement {
                      .filter( vv => vv.length > 0 );
       });
 
+      let attrs = {}
       Object.values( inxs )
           .sort( (a,b) => a.k.localeCompare(b.k) )
           .forEach( kv => attrs[ kv.k ] = kv.v);
