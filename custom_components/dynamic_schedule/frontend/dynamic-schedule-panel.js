@@ -1541,14 +1541,14 @@ div {
               </div>
               <form id="schedule-form" onsubmit="return false;">
                   <div class="form-group">
-                      <ha-settings-row>
+                      <div>
                           <span slot="heading">Source</span>
                           <div>
-                           <div><input type="radio" name="source">grape</input></div>
-                           <div><input type="radio" name="source">banana</input></div>
-                           <div><input type="radio" name="source">lime</input></div>
+                           <div><input type="radio" name="ssource">normal</input></div>
+                           <div><input type="radio" name="ssource">copy from another dynamic schedule</input></div>
+                           <div><input type="radio" name="ssource">share from another dynamic schedule</input></div>
                           </div>
-                      </ha-settings-row>
+                      </div>
                       <ha-settings-row>
                           <span slot="heading">Sub-schedule name</span>
                           <span slot="description"the name of the sub-schedule</span>
