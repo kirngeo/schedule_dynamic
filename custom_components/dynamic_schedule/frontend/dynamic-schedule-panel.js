@@ -313,6 +313,13 @@ class DynamicSchedulePanel extends HTMLElement {
   _openNewSubScheduleModal() {
       const modal = this.shadowRoot.getElementById('subschedule-modal');
       if (modal) {
+          // compute other schedules' subschedules, in case they need to be cloned
+          let others = {};
+          const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+          console.log('this entid', scheduleConfig.id);
+          Object.keys( this._scheduleConfigs ).forEach( k => {
+              console.log('k', k );
+          } );
           // Reset form fields
        //   this.shadowRoot.getElementById('schedule-name').value = '';
        //   this.shadowRoot.getElementById('schedule-icon').value = 'mdi:table-clock';
@@ -832,11 +839,10 @@ class DynamicSchedulePanel extends HTMLElement {
     // 1) add a subschedule
     if (rw) {
         timeGutterHeaderHtml += `
-          <button style="font-size: 0.75em;" id="add-subschedule" class="icon-btn" title="add a subschedule">+
+          <button id="add-subschedule" class="icon-btn" title="add a subschedule">+
           </button>
         `;
     }
-    //          <ha-icon icon="mdi:plus"></ha-icon>
 
 
     // Time Gutter (Y-Axis)
