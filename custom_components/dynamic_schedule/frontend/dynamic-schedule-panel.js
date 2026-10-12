@@ -812,7 +812,7 @@ class DynamicSchedulePanel extends HTMLElement {
         contentHtml += `<div>scheduleConfig<pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
  //       contentHtml += `<div>subscheds<pre>${JSON.stringify( subscheds, null, "  " )}</pre></div>`;
  //       contentHtml += `<div>subsched_names<pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
-        contentHtml = `<div>${this._abbrev()}</div>`;
+        contentHtml = `<div><pre>${this._abbrev()}</pre></div>`;
     }
     } else if (this._schedulesOverview.length > 0) {
       contentHtml = 'please select a dynamic schedule';
