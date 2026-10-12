@@ -970,7 +970,7 @@ class DynamicSchedulePanel extends HTMLElement {
           <div class="attr-value">
            <input ${rw ? "" : "readonly "}id="schedule-name-input" type="text" class="ch" value="${scheduleConfig ? scheduleConfig.name : ''}">
           </div>
-          <div class="attr-name">Boolean</div>
+          <div class="attr-name">Binary</div>
           <div class="attr-value">
            ${boolHtml}
           </div>
@@ -1506,12 +1506,16 @@ div {
 
       <div id="schedule-modal" class="modal-overlay">
           <div class="modal-content">
+          <demo-components-ha-dialog></demo-components-ha-dialog>
               <div class="modal-header">
                   <h2>Create New Dynamic Schedule</h2>
                   <button class="close-btn" id="modal-close-btn">&times;</button>
               </div>
               <form id="schedule-form" onsubmit="return false;">
                   <div class="form-group">
+                      <ha-settings-row>
+                          <span slot="heading">Source</span>
+                      </ha-settings-row>
                       <ha-settings-row>
                           <span slot="heading">Name</span>
                           <span slot="description"the name of the dynamic schedule</span>
