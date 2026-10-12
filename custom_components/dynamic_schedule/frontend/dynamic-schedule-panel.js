@@ -314,7 +314,7 @@ class DynamicSchedulePanel extends HTMLElement {
       const modal = this.shadowRoot.getElementById('subschedule-modal');
       if (modal) {
           // compute other schedules' subschedules, in case they need to be cloned
-          let this._others = {};
+          this._others = {};
           const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
           Object.keys( this._scheduleConfigs ).forEach( k => {
               const entid = k.replace( this._domaindot, '');
