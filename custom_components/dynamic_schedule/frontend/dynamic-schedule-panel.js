@@ -1514,9 +1514,6 @@ div {
               <form id="schedule-form" onsubmit="return false;">
                   <div class="form-group">
                       <ha-settings-row>
-                          <span slot="heading">Source</span>
-                      </ha-settings-row>
-                      <ha-settings-row>
                           <span slot="heading">Name</span>
                           <span slot="description"the name of the dynamic schedule</span>
                           <ha-input
@@ -1544,6 +1541,10 @@ div {
               </div>
               <form id="schedule-form" onsubmit="return false;">
                   <div class="form-group">
+                      <ha-settings-row>
+                          <span slot="heading">Source</span>
+                          <ha-icon-button label=banana>grape</ha-icon-button>
+                      </ha-settings-row>
                       <ha-settings-row>
                           <span slot="heading">Sub-schedule name</span>
                           <span slot="description"the name of the sub-schedule</span>
