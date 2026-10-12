@@ -1543,9 +1543,11 @@ div {
                   <div class="form-group">
                       <ha-settings-row>
                           <span slot="heading">Source</span>
-                          <input type="radio" name="source">grape</input>
-                          <input type="radio" name="source">banana</input>
-                          <input type="radio" name="source">lime</input>
+                          <div>
+                           <div><input type="radio" name="source">grape</input></div>
+                           <div><input type="radio" name="source">banana</input></div>
+                           <div><input type="radio" name="source">lime</input></div>
+                          </div>
                       </ha-settings-row>
                       <ha-settings-row>
                           <span slot="heading">Sub-schedule name</span>
