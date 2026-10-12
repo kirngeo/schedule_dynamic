@@ -326,10 +326,12 @@ class DynamicSchedulePanel extends HTMLElement {
               }
           } );
 
-          if (Object.keys( this._others ).length !== 0) {
+          const srqs = this.shadowRoot.querySelector;
+          if (Object.keys( this._others ).length === 0) {
               this.shadowRoot.querySelector('#ssource-0').checked = true;
               this.shadowRoot.querySelector('#ssource').style.display = 'none';
           } else {
+              srqs('#ssname').style.display = 'none';
               this.shadowRoot.querySelector('#ssource-0').checked = false;
               this.shadowRoot.querySelector('#ssource-1').checked = false;
               this.shadowRoot.querySelector('#ssource-2').checked = false;
@@ -1548,7 +1550,7 @@ div {
                            <div><input autocomplete="off" id="ssource-2" class="ssource" type="radio" value="2" name="ssource">share from another dynamic schedule</input></div>
                           </div>
                       </div>
-                      <div>
+                      <div id="ssname">
                           <div>Sub-schedule name</div>
                           <ha-input
                             placeholder="alphanumerics or underlines"
