@@ -689,7 +689,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   _abbrev() {
       let conf = structuredClone( this._scheduleConfigs );
-      return JSON.stringify(conf);
+      return JSON.stringify(conf, null, "  " );
   }
 
   render() {
@@ -812,7 +812,7 @@ class DynamicSchedulePanel extends HTMLElement {
         contentHtml += `<div>scheduleConfig<pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
  //       contentHtml += `<div>subscheds<pre>${JSON.stringify( subscheds, null, "  " )}</pre></div>`;
  //       contentHtml += `<div>subsched_names<pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
-        contentHtml = `${this._abbrev()}`;
+        contentHtml = `<div>${this._abbrev()}</div>`;
     }
     } else if (this._schedulesOverview.length > 0) {
       contentHtml = 'please select a dynamic schedule';
