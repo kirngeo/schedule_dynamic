@@ -317,7 +317,7 @@ class DynamicSchedulePanel extends HTMLElement {
           let others = {};
           const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
           Object.keys( this._scheduleConfigs ).forEach( k => {
-              const entid = k.replace( this._domaindot. '');
+              const entid = k.replace( this._domaindot, '');
               if (entid == scheduleConfig.id) {continue;}
 
               const subs = Object.keys( this._scheduleConfigs[k].sub_schedules || {} );
