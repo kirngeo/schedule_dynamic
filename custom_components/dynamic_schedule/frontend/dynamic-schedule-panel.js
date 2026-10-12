@@ -328,12 +328,12 @@ class DynamicSchedulePanel extends HTMLElement {
 
           if (Object.keys( this._others ).length !== 0) {
               this.shadowRoot.querySelector('#ssource-0').checked = true;
-              this.shadowRoot.querySelector('#ssource').style.visibility = 'hidden';
+              this.shadowRoot.querySelector('#ssource').style.display = 'hide';
           } else {
               this.shadowRoot.querySelector('#ssource-0').checked = false;
               this.shadowRoot.querySelector('#ssource-1').checked = false;
               this.shadowRoot.querySelector('#ssource-2').checked = false;
-              this.shadowRoot.querySelector('#ssource').style.visibility = 'visible';
+              this.shadowRoot.querySelector('#ssource').style.display = 'block';
           }
 
           // Reset form fields
