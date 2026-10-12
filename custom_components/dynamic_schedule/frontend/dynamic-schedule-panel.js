@@ -314,18 +314,24 @@ class DynamicSchedulePanel extends HTMLElement {
       const modal = this.shadowRoot.getElementById('subschedule-modal');
       if (modal) {
           // compute other schedules' subschedules, in case they need to be cloned
-          let others = {};
+          let this._others = {};
           const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
           Object.keys( this._scheduleConfigs ).forEach( k => {
               const entid = k.replace( this._domaindot, '');
               if (entid != scheduleConfig.id) {
                   const subs = Object.keys( this._scheduleConfigs[k].sub_schedules || {} );
                   if (subs.length !== 0) {
-                      others[ entid ] = subs;
+                      this._others[ entid ] = subs;
                   }
               }
           } );
-          console.log('others', others);
+
+          if (Object.keys( this._others ).length === 0) {
+              this.shadowRoot.querySelector('#ssource-0').checked = true;
+          } else {
+              this.shadowRoot.querySelector('#ssource-1').checked = true;
+          }
+
           // Reset form fields
        //   this.shadowRoot.getElementById('schedule-name').value = '';
        //   this.shadowRoot.getElementById('schedule-icon').value = 'mdi:table-clock';
@@ -1530,12 +1536,12 @@ div {
               </div>
               <form id="schedule-form" onsubmit="return false;">
                   <div class="form-group">
-                      <div>
+                      <div id="ssource">
                           <div>Source</div>
                           <div>
-                           <div><input type="radio" name="ssource">normal</input></div>
-                           <div><input type="radio" name="ssource">copy from another dynamic schedule</input></div>
-                           <div><input type="radio" name="ssource">share from another dynamic schedule</input></div>
+                           <div><input autocomplete="off" id="ssource-0" class="ssource" type="radio" value="0" name="ssource">normal</input></div>
+                           <div><input autocomplete="off" id="ssource-1" class="ssource" type="radio" value="1" name="ssource">copy from another dynamic schedule</input></div>
+                           <div><input autocomplete="off" id="ssource-2" class="ssource" type="radio" value="2" name="ssource">share from another dynamic schedule</input></div>
                           </div>
                       </div>
                       <div>
