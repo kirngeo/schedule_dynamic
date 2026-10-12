@@ -328,7 +328,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
           if (Object.keys( this._others ).length !== 0) {
               this.shadowRoot.querySelector('#ssource-0').checked = true;
-              this.shadowRoot.querySelector('#ssource').style.display = 'hide';
+              this.shadowRoot.querySelector('#ssource').style.display = 'none';
           } else {
               this.shadowRoot.querySelector('#ssource-0').checked = false;
               this.shadowRoot.querySelector('#ssource-1').checked = false;
