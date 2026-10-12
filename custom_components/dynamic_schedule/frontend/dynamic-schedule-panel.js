@@ -690,7 +690,7 @@ class DynamicSchedulePanel extends HTMLElement {
   _abbrev() {
       let conf = structuredClone( this._scheduleConfigs );
       Object.keys(conf).forEach( entid => {
-          conf[entid].sub_schedules = Array( Object.keys( conf[entid].sub_schedules || {} ) );
+          conf[entid].sub_schedules = Object.keys( conf[entid].sub_schedules || {} ).join();
       } );
       return JSON.stringify(conf, null, "  " );
   }
