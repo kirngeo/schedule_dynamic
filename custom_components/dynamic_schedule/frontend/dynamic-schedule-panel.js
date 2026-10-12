@@ -115,6 +115,13 @@ class DynamicSchedulePanel extends HTMLElement {
       let clicked3 = null;
       let clicked4 = null;
 
+      clicked = e.target.closest('.ssource');
+      if (clicked) {
+          e.preventDefault();
+          console.log('onClick ssource', clicked);
+          return;
+      }
+
       clicked = e.target.closest('.rm-trans');
       if (clicked) {
           e.preventDefault();
@@ -1558,7 +1565,7 @@ div {
                           >
                           </ha-input>
                       </div>
-                      <div>
+                      <div id="ssdetail">
                           <div>Source details</div>
                       </div>
                   </div>
