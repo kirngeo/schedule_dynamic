@@ -347,31 +347,6 @@ class DynamicSchedulePanel extends HTMLElement {
 
       this.render();
 
-      return;
-      
-      try {
-          let parms = {
-              name: this._activeScheduleOverview.entid,
-              type: this._domain + '/update',
-              sub_schedules : sub_schedules
-          };
-          parms[ this._domain + '_id' ] = this._activeScheduleOverview.entid;
-
-          console.log('parms', parms);
-
-          const returned = await this._hass.connection.sendMessagePromise(parms);
-          console.log('returned', returned );
-          
-          this.showToast(`sub-schedule "${name}" added successfully`);
-          this._closeModal();
-          this.fetchScheduleConfigs();
-          this.setShowingEntid( returned.id );
-          this.render();
-      } catch (err) {
-          console.error("Failed to add sub-schedule.", err);
-          this.showToast(`Failed to add sub-schedule: ${err.message || 'Unknown error'}`);
-      }
-
   }
 
   _validName( proposed ) {
@@ -665,12 +640,6 @@ class DynamicSchedulePanel extends HTMLElement {
       if (val) conf.device_class = val;
 
       // subschedules:
- ///     let subnames = [];
- ///     this.shadowRoot.querySelectorAll('.sh-name').forEach( sh => {
- ///         subnames.push( sh.dataset.sub );
- ///     });
- //     let subnames = shadowRoot.querySelectorAll('.sh-name').map( sh => sh.dataset.sub );
-
       let subs = {};
       [...this.shadowRoot.querySelectorAll('.sh-name')].map( sh => sh.dataset.sub ).map((sub, inx) => {
           this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
@@ -716,6 +685,11 @@ class DynamicSchedulePanel extends HTMLElement {
       conf.type = this._domain + '/update';
 
       return conf;
+  }
+
+  _abbrev() {
+      let conf = structuredClone( this._scheduleConfigs );
+      return JSON.stringify(conf);
   }
 
   render() {
@@ -838,7 +812,7 @@ class DynamicSchedulePanel extends HTMLElement {
         contentHtml += `<div>scheduleConfig<pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
  //       contentHtml += `<div>subscheds<pre>${JSON.stringify( subscheds, null, "  " )}</pre></div>`;
  //       contentHtml += `<div>subsched_names<pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
-        contentHtml = `rw = ${rw}`;
+        contentHtml = `${this._abbrev()}`;
     }
     } else if (this._schedulesOverview.length > 0) {
       contentHtml = 'please select a dynamic schedule';
@@ -1542,22 +1516,24 @@ div {
               <form id="schedule-form" onsubmit="return false;">
                   <div class="form-group">
                       <div>
-                          <span slot="heading">Source</span>
+                          <div>Source</div>
                           <div>
                            <div><input type="radio" name="ssource">normal</input></div>
                            <div><input type="radio" name="ssource">copy from another dynamic schedule</input></div>
                            <div><input type="radio" name="ssource">share from another dynamic schedule</input></div>
                           </div>
                       </div>
-                      <ha-settings-row>
-                          <span slot="heading">Sub-schedule name</span>
-                          <span slot="description"the name of the sub-schedule</span>
+                      <div>
+                          <div>Sub-schedule name</div>
                           <ha-input
                             placeholder="alphanumerics or underlines"
                             id="subschedule-name"
                           >
                           </ha-input>
-                      </ha-settings-row>
+                      </div>
+                      <div>
+                          <div>Source details</div>
+                      </div>
                   </div>
                   <div class="modal-footer">
            <!--           <button type="button" class="btn secondary" id="modal-sub-test-btn">Test</button>  -->
