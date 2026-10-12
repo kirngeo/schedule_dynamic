@@ -318,11 +318,12 @@ class DynamicSchedulePanel extends HTMLElement {
           const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
           Object.keys( this._scheduleConfigs ).forEach( k => {
               const entid = k.replace( this._domaindot, '');
-              if (entid == scheduleConfig.id) {continue;}
-
-              const subs = Object.keys( this._scheduleConfigs[k].sub_schedules || {} );
-              if (subs.length !== 0) {
-              others[ entid ] = subs;
+              if (entid != scheduleConfig.id) {
+                  const subs = Object.keys( this._scheduleConfigs[k].sub_schedules || {} );
+                  if (subs.length !== 0) {
+                      others[ entid ] = subs;
+                  }
+              }
           } );
           console.log('others', others);
           // Reset form fields
