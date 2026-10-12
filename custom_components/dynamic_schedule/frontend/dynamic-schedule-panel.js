@@ -1544,6 +1544,8 @@ div {
                       <ha-settings-row>
                           <span slot="heading">Source</span>
                           <ha-icon-button label=banana>grape</ha-icon-button>
+                          <ha-icon-button label=banana>raspberry</ha-icon-button>
+                          <ha-icon-button label=banana>lime</ha-icon-button>
                       </ha-settings-row>
                       <ha-settings-row>
                           <span slot="heading">Sub-schedule name</span>
