@@ -117,8 +117,9 @@ class DynamicSchedulePanel extends HTMLElement {
 
       clicked = e.target.closest('.ssource');
       if (clicked) {
-          e.preventDefault();
+     //     e.preventDefault();
           console.log('onClick ssource', clicked);
+     //     clicked.checked = true;
           return;
       }
 
