@@ -958,7 +958,7 @@ class DynamicSchedulePanel extends HTMLElement {
     //          cont += `<ha-switch class="state ch" ${!!trans.state ? "checked " : ""}></ha-switch>`
     //        } else {
     //          cont += `<input class="state ch" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
-            }
+    //        }
             cont += '</span>';
             cont += `<ha-icon class="rm-trans" icon="mdi:close" title="delete transition"></ha-icon>`;
           } else {
@@ -971,7 +971,7 @@ class DynamicSchedulePanel extends HTMLElement {
       //        cont += `<ha-switch disabled ${!!trans.state ? "checked " : ""}></ha-switch>`
       //      } else {
       //        cont += `${trans.state}`;
-            }
+       //     }
             cont += '</span>'
           }
           cont += `</div>`;
