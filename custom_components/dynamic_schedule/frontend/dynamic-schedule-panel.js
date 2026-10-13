@@ -261,10 +261,8 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      clicked  = e.target.closest('#modal-cancel-btn');
-      clicked2 = e.target.closest('#modal-close-btn');
-      clicked3 = e.target.closest('#modal-sub-cancel-btn');
-      clicked4 = e.target.closest('#modal-sub-close-btn');
+      clicked  = e.target.closest('.modal-cancel-btn');
+      clicked2 = e.target.closest('.modal-close-btn');
       if (clicked || clicked2 || clicked3 || clicked4) {
           e.preventDefault();
           this._closeModal();
@@ -324,7 +322,6 @@ class DynamicSchedulePanel extends HTMLElement {
   _openNewLinkedSubScheduleModal() {
       const modal = this.shadowRoot.getElementById('linked-subschedule-modal');
       if (modal) {
-          modal.classList.add('open');
           // Reset form fields
        //   this.shadowRoot.getElementById('schedule-name').value = '';
        //   this.shadowRoot.getElementById('schedule-icon').value = 'mdi:table-clock';
@@ -1568,7 +1565,7 @@ div {
           <demo-components-ha-dialog></demo-components-ha-dialog>
               <div class="modal-header">
                   <h2>Create New Dynamic Schedule</h2>
-                  <button class="close-btn" id="modal-close-btn">&times;</button>
+                  <button class="close-btn modal-close-btn">&times;</button>
               </div>
               <form id="schedule-form" onsubmit="return false;">
                   <div class="form-group">
@@ -1596,7 +1593,7 @@ div {
           <div class="modal-content">
               <div class="modal-header">
                   <h2>Create New Sub-schedule</h2>
-                  <button class="close-btn" id="modal-sub-close-btn">&times;</button>
+                  <button class="close-btn modal-close-btn">&times;</button>
               </div>
               <form id="schedule-form" onsubmit="return false;">
                   <div class="form-group">
@@ -1611,7 +1608,7 @@ div {
                   </div>
                   <div class="modal-footer">
            <!--           <button type="button" class="btn secondary" id="modal-sub-test-btn">Test</button>  -->
-                      <button type="button" class="btn secondary" id="modal-sub-cancel-btn">Cancel</button>
+                      <button type="button" class="btn secondary modal-cancel-btn">Cancel</button>
                       <button type="submit" class="btn primary" id="modal-sub-submit-btn">Create Sub-schedule</button>
                   </div>
               </form>
@@ -1622,7 +1619,7 @@ div {
           <div class="modal-content">
               <div class="modal-header">
                   <h2>Create New Linked Sub-schedule</h2>
-                  <button class="close-btn" id="modal-sub-close-btn">&times;</button>
+                  <button class="close-btn modal-close-btn">&times;</button>
               </div>
               <form id="schedule-form" onsubmit="return false;">
                   <div class="form-group">
@@ -1642,13 +1639,10 @@ div {
                           >
                           </ha-input>
                       </div>
-                      <div id="ssdetail">
-                          <div>Source details</div>
-                      </div>
                   </div>
                   <div class="modal-footer">
-                      <button type="button" class="btn secondary" id="modal-sub-cancel-btn">Cancel</button>
-                      <button type="submit" class="btn primary" id="modal-sub-submit-btn">Create Sub-schedule</button>
+                      <button type="button" class="btn secondary modal-cancel-btn">Cancel</button>
+                      <button type="submit" class="btn primary" id="modal-sub-submit-btn">Link Sub-schedule</button>
                   </div>
               </form>
           </div>
