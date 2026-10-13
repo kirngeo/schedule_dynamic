@@ -863,7 +863,17 @@ class DynamicSchedulePanel extends HTMLElement {
           <button id="add-subschedule" class="icon-btn" title="add a subschedule">+</button>
         `;
 
-        if (Object.keys( this._others ).length !== 0) {
+        let got_others = false;
+        const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+        Object.keys( this._scheduleConfigs ).forEach( k => {
+            const entid = k.replace( this._domaindot, '');
+            if (entid != scheduleConfig.id) {
+                if (Object.keys( this._scheduleConfigs[k].sub_schedules || {} ).length > 0);
+                    got_others = true;
+                }
+            }
+
+        if (got_others) {
             timeGutterHeaderHtml += `
               <button id="link-subschedule" class="icon-btn" title="link to a subschedule of another schedule">
                   <ha-icon icon="mdi:link"></ha-icon>
