@@ -253,6 +253,14 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      clicked = e.target.closest('#link-subschedule');
+      if (clicked) {
+          e.preventDefault();
+          this._openNewLinkedSubScheduleModal();
+          console.log('add linked subschedule');
+          return;
+      }
+
       clicked  = e.target.closest('#modal-cancel-btn');
       clicked2 = e.target.closest('#modal-close-btn');
       clicked3 = e.target.closest('#modal-sub-cancel-btn');
@@ -313,10 +321,25 @@ class DynamicSchedulePanel extends HTMLElement {
       });
   }
 
+  _openNewLinkedSubScheduleModal() {
+      const modal = this.shadowRoot.getElementById('linked-subschedule-modal');
+      if (modal) {
+          modal.classList.add('open');
+          // Reset form fields
+       //   this.shadowRoot.getElementById('schedule-name').value = '';
+       //   this.shadowRoot.getElementById('schedule-icon').value = 'mdi:table-clock';
+          
+          modal.classList.add('open');
+      }
+  }
+
   _openNewSubScheduleModal() {
       const modal = this.shadowRoot.getElementById('subschedule-modal');
       if (modal) {
           // compute other schedules' subschedules, in case they need to be cloned
+          
+          if (false) {
+          
           this._others = {};
           const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
           Object.keys( this._scheduleConfigs ).forEach( k => {
@@ -340,6 +363,9 @@ class DynamicSchedulePanel extends HTMLElement {
               this.shadowRoot.querySelector('#ssource-2').checked = false;
               this.shadowRoot.querySelector('#ssource').style.display = 'block';
           }
+          
+          }
+
 
           // Reset form fields
        //   this.shadowRoot.getElementById('schedule-name').value = '';
@@ -896,11 +922,11 @@ class DynamicSchedulePanel extends HTMLElement {
     let subschedNamesHtml = subsched_names.map((sub, inx) => `
       <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
         <div class="subh">
-         ${rw ? `<span><button class="icon-btn delete-subschedule" title="remove this entire &quote;${sub}&quote; sub-schedule">
+         ${rw ? `<span><button class="icon-btn delete-subschedule" title="remove this entire &quot;${sub}&quot; sub-schedule">
               <ha-icon icon="mdi:minus"></ha-icon>
          </button></span>` : ''}
          <span>${sub}</span>
-         ${rw ? `<span><button class="icon-btn add-transition" title="add a transition to this &quote;${sub}&quote; sub-schedule">
+         ${rw ? `<span><button class="icon-btn add-transition" title="add a transition to this &quot;${sub}&quot; sub-schedule">
               <ha-icon icon="mdi:plus"></ha-icon>
          </button></span>` : ''}
         </div>
@@ -1574,6 +1600,32 @@ div {
               </div>
               <form id="schedule-form" onsubmit="return false;">
                   <div class="form-group">
+                      <div id="ssname">
+                          <div>Sub-schedule name</div>
+                          <ha-input
+                            placeholder="alphanumerics or underlines"
+                            id="subschedule-name"
+                          >
+                          </ha-input>
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+           <!--           <button type="button" class="btn secondary" id="modal-sub-test-btn">Test</button>  -->
+                      <button type="button" class="btn secondary" id="modal-sub-cancel-btn">Cancel</button>
+                      <button type="submit" class="btn primary" id="modal-sub-submit-btn">Create Sub-schedule</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+
+      <div id="linked-subschedule-modal" class="modal-overlay">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2>Create New Linked Sub-schedule</h2>
+                  <button class="close-btn" id="modal-sub-close-btn">&times;</button>
+              </div>
+              <form id="schedule-form" onsubmit="return false;">
+                  <div class="form-group">
                       <div id="ssource">
                           <div>Source</div>
                           <div>
@@ -1595,7 +1647,6 @@ div {
                       </div>
                   </div>
                   <div class="modal-footer">
-           <!--           <button type="button" class="btn secondary" id="modal-sub-test-btn">Test</button>  -->
                       <button type="button" class="btn secondary" id="modal-sub-cancel-btn">Cancel</button>
                       <button type="submit" class="btn primary" id="modal-sub-submit-btn">Create Sub-schedule</button>
                   </div>
