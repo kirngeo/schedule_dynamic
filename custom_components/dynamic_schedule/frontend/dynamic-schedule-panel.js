@@ -265,7 +265,8 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked2 = e.target.closest('.modal-close-btn');
       if (clicked || clicked2 || clicked3 || clicked4) {
           e.preventDefault();
-          this._closeModal();
+          this.shadowRoot.querySelectorAll('.modal-overlay').forEach( mo => mo.classList.remove('open') );
+      //    this._closeModal();
           return;
       }
 
@@ -276,11 +277,11 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      if (e.target.id === 'schedule-modal') {
-          e.preventDefault();
-          this._closeModal();
-          return;
-      }
+ //     if (e.target.id === 'schedule-modal') {
+ //         e.preventDefault();
+ //         this._closeModal();
+ //         return;
+ //     }
 
       clicked = e.target.closest('#modal-submit-btn');
       if (clicked) {
