@@ -210,9 +210,10 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      clicked = e.target.closest('#save-button');
-      clicked2 = e.target.closest('#save-btn');
-      if (clicked || clicked2) {
+      clicked = e.target.closest('#save-button#save-btn');
+  //    clicked2 = e.target.closest('#save-btn');
+  //    if (clicked || clicked2) {
+      if (clicked) {
           e.preventDefault();
 
           let newConfig = this._gatherConfig();
@@ -261,12 +262,12 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      clicked  = e.target.closest('.modal-cancel-btn');
-      clicked2 = e.target.closest('.modal-close-btn');
-      if (clicked || clicked2 || clicked3 || clicked4) {
+      clicked  = e.target.closest('.modal-cancel-btn.modal-close-btn');
+  //    clicked2 = e.target.closest('.modal-close-btn');
+  //    if (clicked || clicked2 || clicked3 || clicked4) {
+      if (clicked) {
           e.preventDefault();
-          this.shadowRoot.querySelectorAll('.modal-overlay').forEach( mo => mo.classList.remove('open') );
-      //    this._closeModal();
+          this._closeModal();
           return;
       }
 
@@ -311,6 +312,8 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   _closeModal() {
+      this.shadowRoot.querySelectorAll('.modal-overlay').forEach( mo => mo.classList.remove('open') );
+      return;
       let modal;
       ['schedule-modal', 'subschedule-modal'].forEach( el => {
         modal = this.shadowRoot.getElementById( el );
