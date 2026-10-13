@@ -896,11 +896,11 @@ class DynamicSchedulePanel extends HTMLElement {
     let subschedNamesHtml = subsched_names.map((sub, inx) => `
       <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
         <div class="subh">
-         ${rw ? `<span><button class="icon-btn delete-subschedule" title="remove this entire ${sub} sub-schedule">
+         ${rw ? `<span><button class="icon-btn delete-subschedule" title="remove this entire &quote;${sub}&quote; sub-schedule">
               <ha-icon icon="mdi:minus"></ha-icon>
          </button></span>` : ''}
          <span>${sub}</span>
-         ${rw ? `<span><button class="icon-btn add-transition" title="add a transition to this ${sub} sub-schedule">
+         ${rw ? `<span><button class="icon-btn add-transition" title="add a transition to this &quote;${sub}&quote; sub-schedule">
               <ha-icon icon="mdi:plus"></ha-icon>
          </button></span>` : ''}
         </div>
@@ -1085,6 +1085,7 @@ class DynamicSchedulePanel extends HTMLElement {
       <style>
         :host {
           --zoom-level: ${this._zoomLevel};
+          --mdc-icon-size: 12px;
           display: block;
           padding: 24px;
           background-color: var(--primary-background-color);
