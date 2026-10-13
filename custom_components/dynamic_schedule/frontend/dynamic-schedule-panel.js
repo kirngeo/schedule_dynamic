@@ -106,9 +106,6 @@ class DynamicSchedulePanel extends HTMLElement {
     //  console.log( e.target );
 
       let clicked = null;
-      let clicked2 = null;
-      let clicked3 = null;
-      let clicked4 = null;
 
       clicked = e.target.closest('.ssource');
       if (clicked) {
@@ -211,8 +208,6 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       clicked = e.target.closest('#save-button,#save-btn');
-  //    clicked2 = e.target.closest('#save-btn');
-  //    if (clicked || clicked2) {
       if (clicked) {
           e.preventDefault();
 
@@ -263,8 +258,6 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       clicked  = e.target.closest('.modal-cancel-btn,.modal-close-btn');
-  //    clicked2 = e.target.closest('.modal-close-btn');
-  //    if (clicked || clicked2 || clicked3 || clicked4) {
       if (clicked) {
           e.preventDefault();
           this._closeModal();
@@ -965,6 +958,7 @@ class DynamicSchedulePanel extends HTMLElement {
             }
             cont += '</span>';
             cont += `<ha-icon class="rm-trans" icon="mdi:close" title="delete transition"></ha-icon>`;
+            cont += `<span class="rm-trans" title="delete transition">&times;</span>`
           } else {
             cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
             cont += '<span> state ';
@@ -1585,7 +1579,7 @@ div {
                   </div>
                   <div class="modal-footer">
                <!--       <button type="button" class="btn secondary" id="modal-test-btn">Test</button> -->
-                      <button type="button" class="btn secondary" id="modal-cancel-btn">Cancel</button>
+                      <button type="button" class="btn secondary modal-cancel-btn">Cancel</button>
                       <button type="submit" class="btn primary" id="modal-submit-btn">Create Dynamic Schedule</button>
                   </div>
               </form>
