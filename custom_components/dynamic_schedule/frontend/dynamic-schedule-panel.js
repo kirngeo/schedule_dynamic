@@ -871,7 +871,7 @@ class DynamicSchedulePanel extends HTMLElement {
                 if (Object.keys( this._scheduleConfigs[k].sub_schedules || {} ).length > 0);
                     got_others = true;
                 }
-            }
+            });
 
         if (got_others) {
             timeGutterHeaderHtml += `
