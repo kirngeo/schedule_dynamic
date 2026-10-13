@@ -41,7 +41,6 @@ class DynamicSchedulePanel extends HTMLElement {
   connectedCallback() {
       this.shadowRoot.addEventListener('click', this._onClick.bind(this));
       this.shadowRoot.addEventListener('change', this._onChange.bind(this));
-      this.shadowRoot.addEventListener('value-changed', this._onValueChanged.bind(this));
   }
 
   showToast(message) {
@@ -52,12 +51,8 @@ class DynamicSchedulePanel extends HTMLElement {
       }));
   }
 
-  _onValueChanged(e) {
-      console.log('####### _onValueChanged', e );
-  }
-
   _onChange(e) {
-      console.log('_onChange', e );
+  //    console.log('_onChange', e );
 
       let clicked = null;
 
@@ -865,11 +860,17 @@ class DynamicSchedulePanel extends HTMLElement {
     // 1) add a subschedule
     if (rw) {
         timeGutterHeaderHtml += `
-          <button id="add-subschedule" class="icon-btn" title="add a subschedule">+
-          </button>
+          <button id="add-subschedule" class="icon-btn" title="add a subschedule">+</button>
         `;
-    }
 
+        if (Object.keys( this._others ).length !== 0) {
+            timeGutterHeaderHtml += `
+              <button id="link-subschedule" class="icon-btn" title="link to a subschedule of another schedule">
+                  <ha-icon icon="mdi:link"></ha-icon>
+              </button>
+            `;
+        }
+    }
 
     // Time Gutter (Y-Axis)
     const timeGutterHtml = `
