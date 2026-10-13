@@ -210,7 +210,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      clicked = e.target.closest('#save-button#save-btn');
+      clicked = e.target.closest('#save-button,#save-btn');
   //    clicked2 = e.target.closest('#save-btn');
   //    if (clicked || clicked2) {
       if (clicked) {
@@ -262,7 +262,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      clicked  = e.target.closest('.modal-cancel-btn.modal-close-btn');
+      clicked  = e.target.closest('.modal-cancel-btn,.modal-close-btn');
   //    clicked2 = e.target.closest('.modal-close-btn');
   //    if (clicked || clicked2 || clicked3 || clicked4) {
       if (clicked) {
