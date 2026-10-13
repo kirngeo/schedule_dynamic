@@ -1087,7 +1087,8 @@ class DynamicSchedulePanel extends HTMLElement {
           --zoom-level: ${this._zoomLevel};
           --mdc-icon-size: 16px;
           display: block;
-          padding: 24px;
+          XXpadding: 24px;
+          padding: 16px;
           background-color: var(--primary-background-color);
           color: var(--primary-text-color);
        /*   font-family: var(--paper-font-body1_-_font-family, Roboto, sans-serif); */
