@@ -951,21 +951,26 @@ class DynamicSchedulePanel extends HTMLElement {
             cont += `<span>mm:<input class="mm ch" type=number min=0 max=59 value=${trans.at.mm}></input>`;
             cont += `<span>ss:<input class="ss ch" type=number min=0 max=59 value=${trans.at.ss}></input>`;
             cont += '<span> state';
-            if (scheduleConfig["boolean"]) {
-              cont += `<ha-switch class="state ch" ${!!trans.state ? "checked " : ""}></ha-switch>`
-            } else {
-              cont += `<input class="state ch" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
+            cont += scheduleConfig["boolean']
+              ? `<ha-switch class="state ch" ${!!trans.state ? "checked " : ""}></ha-switch>`
+              : `<input class="state ch" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
+    //        if (scheduleConfig["boolean"]) {
+    //          cont += `<ha-switch class="state ch" ${!!trans.state ? "checked " : ""}></ha-switch>`
+    //        } else {
+    //          cont += `<input class="state ch" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
             }
             cont += '</span>';
             cont += `<ha-icon class="rm-trans" icon="mdi:close" title="delete transition"></ha-icon>`;
-            cont += `<span class="rm-trans" title="delete transition">&times;</span>`
           } else {
             cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
             cont += '<span> state ';
-            if (scheduleConfig["boolean"]) {
-              cont += `<ha-switch disabled ${!!trans.state ? "checked " : ""}></ha-switch>`
-            } else {
-              cont += `${trans.state}`;
+            cont += scheduleConfig["boolean"] 
+              ? `<ha-switch disabled ${!!trans.state ? "checked " : ""}></ha-switch>`
+              : `${trans.state}`;
+      //      if (scheduleConfig["boolean"]) {
+      //        cont += `<ha-switch disabled ${!!trans.state ? "checked " : ""}></ha-switch>`
+      //      } else {
+      //        cont += `${trans.state}`;
             }
             cont += '</span>'
           }
