@@ -1115,7 +1115,7 @@ div {
         }
 
         .fll {
-            float: left;
+            flex: 1;
         }
 
         .trans {
@@ -1186,6 +1186,7 @@ div {
         .time-gutter-header {
             justify-content: flex-end;
             align-items: center;
+            display: flex;
         }
 
         .time-slot {
