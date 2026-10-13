@@ -860,7 +860,9 @@ class DynamicSchedulePanel extends HTMLElement {
     // 1) add a subschedule
     if (rw) {
         timeGutterHeaderHtml += `
-          <button id="add-subschedule" class="icon-btn" title="add a subschedule">+</button>
+          <button id="add-subschedule" class="icon-btn" title="add a subschedule">
+                  <ha-icon icon="mdi:plus"></ha-icon>
+          </button>
         `;
 
         let got_others = false;
@@ -894,9 +896,13 @@ class DynamicSchedulePanel extends HTMLElement {
     let subschedNamesHtml = subsched_names.map((sub, inx) => `
       <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
         <div class="subh">
-         ${rw ? `<span><button class="icon-btn delete-subschedule" title="remove this entire ${sub} sub-schedule">-</button></span>` : ''}
+         ${rw ? `<span><button class="icon-btn delete-subschedule" title="remove this entire ${sub} sub-schedule">
+              <ha-icon icon="mdi:minus"></ha-icon>
+         </button></span>` : ''}
          <span>${sub}</span>
-         ${rw ? `<span><button class="icon-btn add-transition" title="add a transition to this ${sub} sub-schedule">+</button></span>` : ''}
+         ${rw ? `<span><button class="icon-btn add-transition" title="add a transition to this ${sub} sub-schedule">
+              <ha-icon icon="mdi:plus"></ha-icon>
+         </button></span>` : ''}
         </div>
       </div>
     `).join('');
