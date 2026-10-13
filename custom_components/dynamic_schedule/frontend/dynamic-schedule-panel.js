@@ -860,9 +860,9 @@ class DynamicSchedulePanel extends HTMLElement {
     // 1) add a subschedule
     if (rw) {
         timeGutterHeaderHtml += `
-          <button id="add-subschedule" class="icon-btn" title="add a subschedule">
+          <span><button id="add-subschedule" class="icon-btn" title="add a subschedule">
                   <ha-icon icon="mdi:plus"></ha-icon>
-          </button>
+          </button></span>
         `;
 
         let got_others = false;
@@ -877,9 +877,9 @@ class DynamicSchedulePanel extends HTMLElement {
 
         if (got_others) {
             timeGutterHeaderHtml += `
-              <button id="link-subschedule" class="icon-btn" title="link to a subschedule of another schedule">
+              <span><button id="link-subschedule" class="icon-btn" title="link to a subschedule of another schedule">
                   <ha-icon icon="mdi:link"></ha-icon>
-              </button>
+              </button></span>
             `;
         }
     }
@@ -1085,7 +1085,7 @@ class DynamicSchedulePanel extends HTMLElement {
       <style>
         :host {
           --zoom-level: ${this._zoomLevel};
-          --mdc-icon-size: 12px;
+          --mdc-icon-size: 16px;
           display: block;
           padding: 24px;
           background-color: var(--primary-background-color);
