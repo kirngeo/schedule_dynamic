@@ -1618,8 +1618,8 @@ div {
               <form id="schedule-form" onsubmit="return false;">
                   <div class="form-group">
                       <div id="ssource">
-                          <div id="source-ctr">Source</div>
-                          <div >
+                          <div>Source</div>
+                          <div id="source-ctr">
                            <div><input autocomplete="off" id="ssource-0" class="ssource" type="radio" value="0" name="ssource">normal</input></div>
                            <div><input autocomplete="off" id="ssource-1" class="ssource" type="radio" value="1" name="ssource">copy from another dynamic schedule</input></div>
                            <div><input autocomplete="off" id="ssource-2" class="ssource" type="radio" value="2" name="ssource">share from another dynamic schedule</input></div>
