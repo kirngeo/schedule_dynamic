@@ -249,7 +249,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      clicked = e.target.closest( '#link-source-sub-sch-select' );
+      clicked = e.target.closest( '#link-source-sch-sub-select' );
       if (clicked) {
           console.log('selected sub schedule', clicked.value);
           return;
