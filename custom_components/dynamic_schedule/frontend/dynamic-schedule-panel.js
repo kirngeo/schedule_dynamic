@@ -322,7 +322,7 @@ class DynamicSchedulePanel extends HTMLElement {
           let els = [];
           els.push( `<div>Hello World</div>` );
 
-          this.shadowRoot.getElementById( '#source-ctr' ).replaceChildren( ...els );
+          this.shadowRoot.getElementById( 'source-ctr' ).replaceChildren( ...els );
     //      this.shadowRoot.querySelector( '#source-ctr' ).removeChild()
           // Reset form fields
        //   this.shadowRoot.getElementById('schedule-name').value = '';
