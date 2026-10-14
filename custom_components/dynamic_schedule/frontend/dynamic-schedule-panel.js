@@ -339,6 +339,7 @@ class DynamicSchedulePanel extends HTMLElement {
           let opt;
           let el = document.createElement( 'select' );
           el.id = 'link-source-sch_select';
+          el.classList.add('ch');
           opt = document.createElement('option');
           opt.appendChild( document.createTextNode( '-- select source schedule --') );
           el.appendChild( opt );
