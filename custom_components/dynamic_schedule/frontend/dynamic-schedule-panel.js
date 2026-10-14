@@ -917,7 +917,7 @@ class DynamicSchedulePanel extends HTMLElement {
       <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
         <div class="subh">
          ${rw ? `<span><button class="icon-btn delete-subschedule" title="remove this entire &quot;${sub}&quot; sub-schedule">
-              <ha-icon icon="mdi:delete"></ha-icon>
+              <ha-icon icon="mdi:delete-forever"></ha-icon>
          </button></span>` : ''}
          <span>${sub}</span>
          ${rw ? `<span><button class="icon-btn add-transition" title="add a transition to this &quot;${sub}&quot; sub-schedule">
@@ -955,7 +955,7 @@ class DynamicSchedulePanel extends HTMLElement {
               ? `<ha-switch class="state ch" ${!!trans.state ? "checked " : ""}></ha-switch>`
               : `<input class="state ch" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
             cont += '</span>';
-            cont += `<ha-icon class="rm-trans" icon="mdi:delete" title="delete transition"></ha-icon>`;
+            cont += `<ha-icon class="rm-trans" icon="mdi:delete-forever" title="delete transition"></ha-icon>`;
           } else {
             cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
             cont += '<span> state ';
