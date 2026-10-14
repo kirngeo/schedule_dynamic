@@ -329,7 +329,7 @@ class DynamicSchedulePanel extends HTMLElement {
                   sch = this._scheduleConfigs[k];
                   const subs = Object.keys( sch.sub_schedules || {} );
                   if (subs.length !== 0) {
-                      this._others.push( {entid: subs: subs, name: sch.name} );
+                      this._others.push( {entid: entid, subs: subs, name: sch.name} );
                   }
               }
           } );
