@@ -320,7 +320,9 @@ class DynamicSchedulePanel extends HTMLElement {
       const modal = this.shadowRoot.getElementById('linked-subschedule-modal');
       if (modal) {
           let els = [];
-          els.push( document.createElement( `<div>Hello World</div>` ) );
+          let el = document.createElement( 'div' );
+          el.appendChild( document.createTextNode( 'hello World' ) );
+          els.push( el );
 
           this.shadowRoot.getElementById( 'source-ctr' ).replaceChildren( ...els );
     //      this.shadowRoot.querySelector( '#source-ctr' ).removeChild()
