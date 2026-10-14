@@ -430,20 +430,13 @@ class DynamicSchedulePanel extends HTMLElement {
 
   async _onCreateScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('schedule-name');
-  //    const iconInput = this.shadowRoot.getElementById('schedule-icon');
-   //   const iconBool = this.shadowRoot.getElementById('schedule-bool');
-
       const name = nameInput ? nameInput.value.trim() : '';
-  //    const icon = iconInput ? iconInput.value.trim() : 'mdi:table-clock';
-  //    const bool = iconBool ? iconBool.checked : false;
       
       if (!name) {
           this.showToast('Please enter a dynamic schedule name');
           return;
       }
 
- //     const updatedConfig = {};
-      
       try {
           const parms = {
               type: this._domain + '/create',
@@ -1101,7 +1094,8 @@ class DynamicSchedulePanel extends HTMLElement {
       <style>
         :host {
           --zoom-level: ${this._zoomLevel};
-          --mdc-icon-size: 16px;
+          --Xmdc-icon-size: 16px;
+          --mdc-icon-size: 20px;
           display: block;
           XXpadding: 24px;
           padding: 16px;
@@ -1172,8 +1166,8 @@ div {
             border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
             color: var(--primary-text-color);
             cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
+            padding: 6px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
