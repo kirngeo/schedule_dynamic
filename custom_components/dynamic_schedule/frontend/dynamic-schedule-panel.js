@@ -251,13 +251,13 @@ class DynamicSchedulePanel extends HTMLElement {
 
       clicked = e.target.closest( '#link-source-sub-sch-select' );
       if (clicked) {
-          console.log('selected sub schedule');
+          console.log('selected sub schedule', clicked.value);
           return;
       }
 
       clicked = e.target.closest( '#link-source-sch-select' );
       if (clicked) {
-          console.log('selected linked schedule');
+          console.log('selected linked schedule', clicked.value);
 
           let els = [];
           let opt;
@@ -269,11 +269,14 @@ class DynamicSchedulePanel extends HTMLElement {
           el.appendChild( opt );
 
           this._others.forEach( oth => {
-              opt = document.createElement('option');
-              opt.appendChild( document.createTextNode( oth.name ));
-              opt.value = oth.entid;
-              el.appendChild(opt);
-          } );
+              if (clicked.value == oth.entid) {
+                  oth.subs.sort( (a,b) => a.localeCompare(b) ).forEach( sub => {
+                  opt = document.createElement('option');
+                  opt.appendChild( document.createTextNode( sub ));
+                  opt.value = sub;
+                  el.appendChild(opt);
+                  })
+              }} );
 
           els.push( el );
 
