@@ -319,6 +319,11 @@ class DynamicSchedulePanel extends HTMLElement {
   _openNewLinkedSubScheduleModal() {
       const modal = this.shadowRoot.getElementById('linked-subschedule-modal');
       if (modal) {
+          let els = [];
+          els.append( `<div>Hello World</div>` );
+
+          this.shadowRoot.getElementById( '#source-ctr' ).replaceChildren( ...els );
+    //      this.shadowRoot.querySelector( '#source-ctr' ).removeChild()
           // Reset form fields
        //   this.shadowRoot.getElementById('schedule-name').value = '';
        //   this.shadowRoot.getElementById('schedule-icon').value = 'mdi:table-clock';
@@ -1611,8 +1616,8 @@ div {
               <form id="schedule-form" onsubmit="return false;">
                   <div class="form-group">
                       <div id="ssource">
-                          <div>Source</div>
-                          <div>
+                          <div id="source-ctr">Source</div>
+                          <div >
                            <div><input autocomplete="off" id="ssource-0" class="ssource" type="radio" value="0" name="ssource">normal</input></div>
                            <div><input autocomplete="off" id="ssource-1" class="ssource" type="radio" value="1" name="ssource">copy from another dynamic schedule</input></div>
                            <div><input autocomplete="off" id="ssource-2" class="ssource" type="radio" value="2" name="ssource">share from another dynamic schedule</input></div>
