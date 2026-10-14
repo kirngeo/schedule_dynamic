@@ -249,6 +249,37 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      clicked = e.target.closest( '#link-source-sub-sch-select' );
+      if (clicked) {
+          console.log('selected linked schedule');
+
+
+      clicked = e.target.closest( '#link-source-sch-select' );
+      if (clicked) {
+          console.log('selected linked schedule');
+
+          let els = [];
+          let opt;
+          let el = document.createElement( 'select' );
+          el.id = 'link-source-sch-sub-select';
+          el.classList.add('ch');
+          opt = document.createElement('option');
+          opt.appendChild( document.createTextNode( '-- select source SUBschedule --') );
+          el.appendChild( opt );
+
+          this._others.forEach( oth => {
+              opt = document.createElement('option');
+              opt.appendChild( document.createTextNode( oth.name ));
+              opt.value = oth.entid;
+              el.appendChild(opt);
+          } );
+
+          els.push( el );
+
+          this.shadowRoot.getElementById( 'source-sub-ctr' ).replaceChildren( ...els );
+          return;
+      }
+
       clicked = e.target.closest('#link-subschedule');
       if (clicked) {
           e.preventDefault();
@@ -338,7 +369,7 @@ class DynamicSchedulePanel extends HTMLElement {
           let els = [];
           let opt;
           let el = document.createElement( 'select' );
-          el.id = 'link-source-sch_select';
+          el.id = 'link-source-sch-select';
           el.classList.add('ch');
           opt = document.createElement('option');
           opt.appendChild( document.createTextNode( '-- select source schedule --') );
@@ -354,10 +385,7 @@ class DynamicSchedulePanel extends HTMLElement {
           els.push( el );
 
           this.shadowRoot.getElementById( 'source-ctr' ).replaceChildren( ...els );
-    //      this.shadowRoot.querySelector( '#source-ctr' ).removeChild()
-          // Reset form fields
-       //   this.shadowRoot.getElementById('schedule-name').value = '';
-       //   this.shadowRoot.getElementById('schedule-icon').value = 'mdi:table-clock';
+          this.shadowRoot.getElementById( 'source-sub-ctr' ).replaceChildren();
           
           modal.classList.add('open');
       }
@@ -1648,11 +1676,8 @@ div {
                   <div class="form-group">
                       <div id="ssource">
                           <div>Source</div>
-                          <div id="source-ctr">
-                           <div><input autocomplete="off" id="ssource-0" class="ssource" type="radio" value="0" name="ssource">normal</input></div>
-                           <div><input autocomplete="off" id="ssource-1" class="ssource" type="radio" value="1" name="ssource">copy from another dynamic schedule</input></div>
-                           <div><input autocomplete="off" id="ssource-2" class="ssource" type="radio" value="2" name="ssource">share from another dynamic schedule</input></div>
-                          </div>
+                          <div id="source-ctr"></div>
+                          <div id="source-sub-ctr"></div>
                       </div>
                       <div id="ssname">
                           <div>Sub-schedule name</div>
