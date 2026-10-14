@@ -319,9 +319,37 @@ class DynamicSchedulePanel extends HTMLElement {
   _openNewLinkedSubScheduleModal() {
       const modal = this.shadowRoot.getElementById('linked-subschedule-modal');
       if (modal) {
+          
+          this._others = [];
+          const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+          Object.keys( this._scheduleConfigs ).forEach( k => {
+              const entid = k.replace( this._domaindot, '');
+              let sch;
+              if (entid != scheduleConfig.id) {
+                  sch = this._scheduleConfigs[k];
+                  const subs = Object.keys( sch.sub_schedules || {} );
+                  if (subs.length !== 0) {
+                      this._others.push[ {entid: subs: subs, name: sch.name} );
+                  }
+              }
+          } );
+          this._others.sort( (a, b) => a.name.localeCompare(b.name) );
+
           let els = [];
-          let el = document.createElement( 'div' );
-          el.appendChild( document.createTextNode( 'hello World' ) );
+          let opt;
+          let el = document.createElement( 'select' );
+          el.id = 'link-source-sch_select';
+          opt = document.createElement('option');
+          opt.appendChild( document.createTextNode( '-- select source schedule --') );
+          el.appendChild( opt );
+
+          this._others.forEach( oth => {
+              opt = document.createElement('option');
+              opt.appendChild( document.createTextNode( oth.name ));
+              opt.value = oth.entid;
+              el.appendChild(opt);
+          } );
+
           els.push( el );
 
           this.shadowRoot.getElementById( 'source-ctr' ).replaceChildren( ...els );
