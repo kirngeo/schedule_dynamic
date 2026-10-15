@@ -903,17 +903,17 @@ class DynamicSchedulePanel extends HTMLElement {
 
     if (this._orderedIds.length > 0) {
 
-        if (this._currentId === null) {
-            this._currentId = this._orderedIds[0];
+        if (this._currentConfigId === null) {
+            this._currentConfigId = this._orderedIds[0];
         }
 
-        console.log('xx', Object.keys(this._allConfigs), this._currentId);
-        scheduleConfig = this._allConfigs[ this._currentId ];
+        console.log('xx', Object.keys(this._allConfigs), this._currentConfigId);
+        scheduleConfig = this._allConfigs[ this._currentConfigId ];
         rw = scheduleConfig._editable;
 
         schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
         this._orderedIds.forEach( eid => {
-            schedselHtml += `<option ${eid === this._currentId ? "selected " : ""}value="${eid}">${this._allConfigs[eid].name}</option>`;
+            schedselHtml += `<option ${eid === this._currentConfigId ? "selected " : ""}value="${eid}">${this._allConfigs[eid].name}</option>`;
         } );
         schedselHtml += `</select>`;
 
