@@ -886,6 +886,7 @@ class DynamicSchedulePanel extends HTMLElement {
   render() {
 
     console.log('render');
+    let zoomHtml = '';
     let contentHtml = '';
     let schedselHtml = '';
     let scriptselHtml = '';
