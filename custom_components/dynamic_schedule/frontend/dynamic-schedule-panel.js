@@ -456,7 +456,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      console.log('linked subschedule', 
+  //    console.log('linked subschedule', 
 
       return; //////////
 
