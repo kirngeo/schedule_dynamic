@@ -727,7 +727,7 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       let orderedIds = Object.keys( this._allConfigs )
-          .sort( a, b => this._allConfigs[a].name.localeCompare( this._allConfigs[b].name ) )
+          .sort( (a, b) => this._allConfigs[a].name.localeCompare( this._allConfigs[b].name ) )
 
       if (orderedIds.toString() !== this._orderedIds.toString()) {
           console.log('orderedIds changed', this._orderedIds, orderedIds );
