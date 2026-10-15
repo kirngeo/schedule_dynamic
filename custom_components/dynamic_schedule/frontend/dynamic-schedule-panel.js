@@ -902,15 +902,21 @@ class DynamicSchedulePanel extends HTMLElement {
     let attribs = {};
     let attribs_names = [];
 
-    if (this._schedulesOverview.length > 0) {
+ //   if (this._schedulesOverview.length > 0) {
+    if (this._orderedIds) {
 
   //    if (this._activeScheduleOverview) {
-      if (this._activeScheduleId) {
-       // scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
-        scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleId ];
-      }
+  //    if (this._activeScheduleId) {
+  //     // scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+  //      scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleId ];
+  //    }
 
       schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
+      this._orderedIds.forEach( eid => {
+        schedselHtml += `<option ${eid === this._currentId ? "selected " : ""}value="${eid}">${this._allConfigs[eid].name}</option>`;
+      } );
+
+        /*
       this._schedulesOverview.forEach( ent => {
         selected = false;
 
@@ -939,7 +945,7 @@ class DynamicSchedulePanel extends HTMLElement {
         scheduleConfig = this._editingConfig;
         console.log('switching to _editingConfig', scheduleConfig);
     }
-
+*/
     if (scheduleConfig) {
       //
       scriptselHtml += `<select ${rw?"" : "disabled "}class="icon-btn ch" id="schedule-script-selector">`;
