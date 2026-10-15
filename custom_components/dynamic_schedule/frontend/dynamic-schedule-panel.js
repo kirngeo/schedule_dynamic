@@ -721,11 +721,11 @@ class DynamicSchedulePanel extends HTMLElement {
 
           console.log('hass.states', this._hass.states );
 
-          this._allConfigs = Object.values( response.response );
-          this._allConfigs.map( conf => {
-              const state = this._hass
-
-          } );
+          this._allConfigs = response.response;
+      //    this._allConfigs.map( conf => {
+      //        const state = this._hass
+//
+    //      } );
       }
       console.log('allConfigs', this._allConfigs );
 
