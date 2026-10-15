@@ -8,6 +8,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._hasFetchedConfigs = false;
     this._hasFetchedScripts= false;
     this._allConfigs = {};  // all configs
+    this._orderedIds = [];  // schedule entity ids,  alphabetic order
     this._currentConfigId = null;  // viewing config
 
     this._scheduleStates = [];
@@ -729,9 +730,18 @@ class DynamicSchedulePanel extends HTMLElement {
       let orderedIds = Object.keys( this._allConfigs )
           .sort( (a, b) => this._allConfigs[a].name.localeCompare( this._allConfigs[b].name ) )
 
+      let do_render = false;
       if (orderedIds.toString() !== this._orderedIds.toString()) {
           console.log('orderedIds changed', this._orderedIds, orderedIds );
           this._orderedIds = orderedIds;
+          do_render = true;
+      }
+
+      if ( !this._currentConfigId    &&    this._orderedIds ) {
+          do_render = true;
+      }
+
+      if (do_render) {
           this.render();
       }
 
