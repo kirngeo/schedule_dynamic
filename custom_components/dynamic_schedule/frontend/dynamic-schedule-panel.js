@@ -908,6 +908,7 @@ class DynamicSchedulePanel extends HTMLElement {
         }
 
         scheduleConfig = this._allConfigs[ this._currentId ];
+        rw = scheduleConfig._editable;
 
         schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
         this._orderedIds.forEach( eid => {
@@ -980,14 +981,14 @@ class DynamicSchedulePanel extends HTMLElement {
 
  //   }
 
-    console.log('activeScheduleOverview', this._activeScheduleOverview);
+ //   console.log('activeScheduleOverview', this._activeScheduleOverview);
 
   //  if (this._activeScheduleOverview) {
-    if (this._activeScheduleId) {
-      if (!scheduleConfig) {
-        scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleId ];
-      }
-      console.log('scheduleConfig', scheduleConfig);
+ //   if (this._activeScheduleId) {
+  //    if (!scheduleConfig) {
+ //       scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleId ];
+ //     }
+ //     console.log('scheduleConfig', scheduleConfig);
     //  rw = this._activeScheduleOverview.edit;
  //     rw = true;
  //     rw = this._rws && this._rws[ this._activeScheduleId ];
