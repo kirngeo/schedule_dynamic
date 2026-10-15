@@ -903,7 +903,7 @@ class DynamicSchedulePanel extends HTMLElement {
     let attribs_names = [];
 
  //   if (this._schedulesOverview.length > 0) {
-    if (this._orderedIds) {
+    if (this._orderedIds.length > 0) {
 
   //    if (this._activeScheduleOverview) {
   //    if (this._activeScheduleId) {
@@ -915,6 +915,7 @@ class DynamicSchedulePanel extends HTMLElement {
       this._orderedIds.forEach( eid => {
         schedselHtml += `<option ${eid === this._currentId ? "selected " : ""}value="${eid}">${this._allConfigs[eid].name}</option>`;
       } );
+      schedselHtml += `</select>`;
 
         /*
       this._schedulesOverview.forEach( ent => {
