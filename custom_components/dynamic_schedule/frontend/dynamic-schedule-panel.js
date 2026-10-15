@@ -721,11 +721,9 @@ class DynamicSchedulePanel extends HTMLElement {
 
       this._allConfigs = (response && response.response) ? response.response : {};
 
-      if (this._allConfigs) {
-          Object.entries( this._allConfigs ).forEach( ([k, v]) => {
-              v["_editable"] = (this._hass.states[ k ].attributes || {})["editable"] || false;
-          });
-      }
+      Object.entries( this._allConfigs ).forEach( ([k, v]) => {
+          v["_editable"] = (this._hass.states[ k ].attributes || {})["editable"] || false;
+      });
 
       let orderedIds = Object.keys( this._allConfigs )
           .sort( (a, b) => this._allConfigs[a].name.localeCompare( this._allConfigs[b].name ) )
@@ -891,6 +889,7 @@ class DynamicSchedulePanel extends HTMLElement {
     let contentHtml = '';
     let schedselHtml = '';
     let scriptselHtml = '';
+    let allContentHtml = '';
     let boolHtml = '';
     let attrHtml = '';
     let subsched_names = [];
@@ -902,27 +901,26 @@ class DynamicSchedulePanel extends HTMLElement {
     let attribs = {};
     let attribs_names = [];
 
- //   if (this._schedulesOverview.length > 0) {
-    if (this._orderedIds) {
+    if (this._orderedIds.length > 0) {
 
-  //    if (this._activeScheduleOverview) {
-  //    if (this._activeScheduleId) {
-  //     // scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
-  //      scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleId ];
-  //    }
+        if (this._currentId === null) {
+            this._currentId = this._orderedIds[0];
+        }
 
-      schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
-      this._orderedIds.forEach( eid => {
-        schedselHtml += `<option ${eid === this._currentId ? "selected " : ""}value="${eid}">${this._allConfigs[eid].name}</option>`;
-      } );
-      schedselHtml += `</select>`;
+        scheduleConfig = this._allConfigs[ this._currentId ];
+
+        schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
+        this._orderedIds.forEach( eid => {
+            schedselHtml += `<option ${eid === this._currentId ? "selected " : ""}value="${eid}">${this._allConfigs[eid].name}</option>`;
+        } );
+        schedselHtml += `</select>`;
 
         /*
-      this._schedulesOverview.forEach( ent => {
-        selected = false;
+        this._schedulesOverview.forEach( ent => {
+            selected = false;
 
-        if ((ent.entid === this._activeScheduleId)  ||  (this._schedulesOverview.length === 1)) {
-            selected = true;
+            if ((ent.entid === this._activeScheduleId)  ||  (this._schedulesOverview.length === 1)) {
+                selected = true;
         }
 
         schedselHtml += `<option ${selected  ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
@@ -946,41 +944,41 @@ class DynamicSchedulePanel extends HTMLElement {
         scheduleConfig = this._editingConfig;
         console.log('switching to _editingConfig', scheduleConfig);
 */
-    }
-    if (scheduleConfig) {
+    
+ //   if (scheduleConfig) {
       //
-      scriptselHtml += `<select ${rw?"" : "disabled "}class="icon-btn ch" id="schedule-script-selector">`;
+        scriptselHtml += `<select ${rw?"" : "disabled "}class="icon-btn ch" id="schedule-script-selector">`;
 
-      selected = false;
-      const long_scriptids = this._eligibleScriptConfigs.map( scr => scr.id);
-      const short_scriptids = long_scriptids.map( scr => scr.replace("script.",""));
-      selected = ((! long_scriptids.includes( scheduleConfig.select_script ))
+        selected = false;
+        const long_scriptids = this._eligibleScriptConfigs.map( scr => scr.id);
+        const short_scriptids = long_scriptids.map( scr => scr.replace("script.",""));
+        selected = ((! long_scriptids.includes( scheduleConfig.select_script ))
                 &&
                  (! short_scriptids.includes( scheduleConfig.select_script )) );
 
-      scriptselHtml += `<option ${selected ? "selected " : ""}value="">-- none --</option>`;
+        scriptselHtml += `<option ${selected ? "selected " : ""}value="">-- none --</option>`;
 
-      this._eligibleScriptConfigs.forEach( cnf => {
-        selected = false;
-        if (this._eligibleScriptConfigs.length === 1) {
-          selected = true;
-        } else if (
-            (scheduleConfig.select_script == cnf.id.replace("script.",""))
-              ||
-            (scheduleConfig.select_script == cnf.id)) {
-          selected = true;
-        }
+        this._eligibleScriptConfigs.forEach( cnf => {
+            selected = false;
+            if (this._eligibleScriptConfigs.length === 1) {
+                selected = true;
+            } else if (
+                (scheduleConfig.select_script == cnf.id.replace("script.",""))
+                    ||
+                (scheduleConfig.select_script == cnf.id)) {
+                selected = true;
+            }
 
-        scriptselHtml += `<option ${selected  ? "selected " : ""}value="${cnf.id.replace('script.','')}">${cnf.alias}</option>`;
+            scriptselHtml += `<option ${selected  ? "selected " : ""}value="${cnf.id.replace('script.','')}">${cnf.alias}</option>`;
         });
 
-      scriptselHtml += '</select>';
+        scriptselHtml += '</select>';
 
       //
 
-      boolHtml = `<ha-switch ${rw ? "" : "disabled "}${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean" class="ch"></ha-switch>`;
+        boolHtml = `<ha-switch ${rw ? "" : "disabled "}${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean" class="ch"></ha-switch>`;
 
-    }
+ //   }
 
     console.log('activeScheduleOverview', this._activeScheduleOverview);
 
@@ -994,7 +992,7 @@ class DynamicSchedulePanel extends HTMLElement {
  //     rw = true;
  //     rw = this._rws && this._rws[ this._activeScheduleId ];
 
-      if (scheduleConfig) {
+//      if (scheduleConfig) {
  //     console.log( 'xx', this._editingConfig, this._activeScheduleOverview);
  //     if ( !this._editingConfig   &&  this._activeScheduleOverview.edit ) {
  //         this._editingConfig = structuredClone( scheduleConfig);
@@ -1013,114 +1011,116 @@ class DynamicSchedulePanel extends HTMLElement {
  //       contentHtml += `<div>subscheds<pre>${JSON.stringify( subscheds, null, "  " )}</pre></div>`;
  //       contentHtml += `<div>subsched_names<pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
         contentHtml = `<div><pre>${this._abbrev()}</pre></div>`;
-    }
-    } else if (this._schedulesOverview.length > 0) {
-      contentHtml = 'please select a dynamic schedule';
-    } else {
-      contentHtml = 'no dynamic schedules exist yet';
-    }
+//    }
+//    } else if (this._schedulesOverview.length > 0) {
+//      contentHtml = 'please select a dynamic schedule';
+//    } else {
+//      contentHtml = 'no dynamic schedules exist yet';
+//    }
 
  //   console.log( 'scheduleConfig', scheduleConfig );
 
     // subschedule columns
-    let subschedHtml = '';
+        let subschedHtml = '';
 
-    // time gutter header 
-    // 1) add a subschedule
-    if (rw) {
-        timeGutterHeaderHtml += `
+        // time gutter header 
+        // 1) add a subschedule
+        if (rw) {
+            timeGutterHeaderHtml += `
           <span class="fll"><button id="add-subschedule" class="icon-btn" title="add a subschedule">
                   <ha-icon icon="mdi:plus"></ha-icon>
           </button></span>
         `;
 
-        let got_others = false;
-        const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
-        Object.keys( this._scheduleConfigs ).forEach( k => {
-            const entid = k.replace( this._domaindot, '');
-            if (entid != scheduleConfig.id) {
-                if (Object.keys( this._scheduleConfigs[k].sub_schedules || {} ).length > 0);
-                    got_others = true;
+            let got_others = false;
+            const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+            Object.keys( this._scheduleConfigs ).forEach( k => {
+                const entid = k.replace( this._domaindot, '');
+                if (entid != scheduleConfig.id) {
+                    if (Object.keys( this._scheduleConfigs[k].sub_schedules || {} ).length > 0) {
+                        got_others = true;
+                    }
                 }
             });
 
-        if (got_others) {
-            timeGutterHeaderHtml += `
+            if (got_others) {
+                timeGutterHeaderHtml += `
               <span class="fll"><button id="link-subschedule" class="icon-btn" title="link to a subschedule of another schedule">
                   <ha-icon icon="mdi:link"></ha-icon>
               </button></span>
             `;
-        }
-    }
+            }
+
+   // }
 
     // Time Gutter (Y-Axis)
-    const timeGutterHtml = `
+        const timeGutterHtml = `
         <div class="time-gutter">
             ${Array.from({length: 24}).map((_, i) => `
                 <div class="time-slot"><span>${i.toString().padStart(2, '0')}:00</span></div>
             `).join('')}
         </div>
-    `;
+        `;
 
-    let subschedNamesHtml = subsched_names.map((sub, inx) => `
-      <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
-        <div class="subh">
+        let subschedNamesHtml = subsched_names.map((sub, inx) => `
+            <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
+                <div class="subh">
          ${rw ? `<span><button class="icon-btn delete-subschedule" title="remove this entire &quot;${sub}&quot; sub-schedule">
               <ha-icon icon="mdi:delete-forever"></ha-icon>
-         </button></span>` : ''}
-         <span>${sub}</span>
+                </button></span>` : ''}
+                <span>${sub}</span>
          ${rw ? `<span><button class="icon-btn add-transition" title="add a transition to this &quot;${sub}&quot; sub-schedule">
               <ha-icon icon="mdi:plus"></ha-icon>
          </button></span>` : ''}
         </div>
       </div>
-    `).join('');
+        `).join('');
 
-    subschedNamesHtml = `
+        subschedNamesHtml = `
       <div class="sub-hrows">
        ${subschedNamesHtml}
       </div>
       `;
 
-    let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
-        let cont = `<div class="sub-header subschedule-${inx}" style="contain: content; overflow: visible; position: relatve;">`;
-        let subsched = scheduleConfig.sub_schedules[ sub ];
-        let lastpc = 0;
-        let desiredpc;
-        subsched.transitions.map( (trans, tinx) => {
-          desiredpc = this._transToPc(trans, 97);
+        let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
+            let cont = `<div class="sub-header subschedule-${inx}" style="contain: content; overflow: visible; position: relatve;">`;
+            let subsched = scheduleConfig.sub_schedules[ sub ];
+            let lastpc = 0;
+            let desiredpc;
+            subsched.transitions.map( (trans, tinx) => {
+                desiredpc = this._transToPc(trans, 97);
 
-          if (tinx) {
-              desiredpc = Math.max( desiredpc, lastpc + 3.5 );  // was 4
-          }
+                if (tinx) {
+                    desiredpc = Math.max( desiredpc, lastpc + 3.5 );  // was 4
+                }
 
-          cont += `<div class="trans" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${desiredpc}%;">`;
-          if (rw) {
-            cont += `<span>hh:<input class="hh ch" type=number min=0 max=23 value=${trans.at.hh}></input>`;
-            cont += `<span>mm:<input class="mm ch" type=number min=0 max=59 value=${trans.at.mm}></input>`;
-            cont += `<span>ss:<input class="ss ch" type=number min=0 max=59 value=${trans.at.ss}></input>`;
-            cont += '<span> state';
-            cont += scheduleConfig["boolean"]
-              ? `<ha-switch class="state ch" ${!!trans.state ? "checked " : ""}></ha-switch>`
-              : `<input class="state ch" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
-            cont += '</span>';
-            cont += `<ha-icon class="rm-trans" icon="mdi:delete-forever" title="delete transition"></ha-icon>`;
-          } else {
-            cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
-            cont += '<span> state ';
-            cont += scheduleConfig["boolean"] 
-              ? `<ha-switch disabled ${!!trans.state ? "checked " : ""}></ha-switch>`
-              : `${trans.state}`;
-            cont += '</span>'
-          }
-          cont += `</div>`;
-          lastpc = desiredpc;
-        });
-        cont += '</div>';
-        return cont;
-    }).join('');
+                cont += `<div class="trans" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${desiredpc}%;">`;
+                if (rw) {
+                    cont += `<span>hh:<input class="hh ch" type=number min=0 max=23 value=${trans.at.hh}></input>`;
+                    cont += `<span>mm:<input class="mm ch" type=number min=0 max=59 value=${trans.at.mm}></input>`;
+                    cont += `<span>ss:<input class="ss ch" type=number min=0 max=59 value=${trans.at.ss}></input>`;
+                    cont += '<span> state';
+                    cont += scheduleConfig["boolean"]
+                    ? `<ha-switch class="state ch" ${!!trans.state ? "checked " : ""}></ha-switch>`
+                    : `<input class="state ch" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
+                    cont += '</span>';
+                    cont += `<ha-icon class="rm-trans" icon="mdi:delete-forever" title="delete transition"></ha-icon>`;
+                } else {
+                    cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
+                    cont += '<span> state ';
+                    cont += scheduleConfig["boolean"] 
+                    ? `<ha-switch disabled ${!!trans.state ? "checked " : ""}></ha-switch>`
+                    : `${trans.state}`;
+                    cont += '</span>'
+                }
+                cont += `</div>`;
+                lastpc = desiredpc;
+            });
+            cont += '</div>';
+            return cont;
+        }).join('');
 
-    subschedTransitionsHtml = `
+        subschedTransitionsHtml = `
       <div class="sub-transitions">
        ${subschedTransitionsHtml}
       </div>
@@ -1128,10 +1128,10 @@ class DynamicSchedulePanel extends HTMLElement {
 
  //             >${attribs[attrname].join("&#10;")}</textarea>
 
-    if (attribs_names.length || rw) {
-        attrHtml = attribs_names.map((attrname, inx) => {
-          let atname = this._isDummyName(attrname) ? '' : attrname;
-          return `
+        if (attribs_names.length || rw) {
+            attrHtml = attribs_names.map((attrname, inx) => {
+            let atname = this._isDummyName(attrname) ? '' : attrname;
+            return `
            <div>
              <input ${rw ? "" : "readonly "}id="attr-name-${inx}" data-inx=${inx} type="text" class="ch attrname" value="${atname}">
            </div>
@@ -1139,19 +1139,18 @@ class DynamicSchedulePanel extends HTMLElement {
              <textarea class="ch attrvalue" data-inx=${inx} ${rw ? "" : "disabled "}id="attr-value-${inx}"
               >${attribs[attrname].join("\n")}</textarea>
            </div>
-        `}).join('');
+            `}).join('');
 
-        if (attrHtml) {
-            attrHtml = '<div>Name</div><div>Value</div>' + attrHtml;
-        }
-    }
+            if (attrHtml) {
+                attrHtml = '<div>Name</div><div>Value</div>' + attrHtml;
+            }
+        } 
 
-    let allContentHtml = '';
-    let zoomHtml = '';
+        let zoomHtml = '';
 
   //  if (this._activeScheduleOverview !== null) {
-    if (this._activeScheduleId !== null) {
-      allContentHtml = `
+  //  if (this._activeScheduleId !== null) {
+        allContentHtml = `
       <div class="content">
         <ha-card>
          <div class="attrs-ctr">
