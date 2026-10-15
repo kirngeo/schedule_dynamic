@@ -7,6 +7,8 @@ class DynamicSchedulePanel extends HTMLElement {
     this._domaindot = this._domain + '.';
     this._scheduleStates = [];
     this._scheduleConfigs = {};
+    this._allConfigs = [];  // all configs
+    this._currentConfig = null;  // viewing config
     this._schedulesOverview = [];
     this._hasFetchedConfigs = false;
     this._hasFetchedScripts= false;
@@ -19,7 +21,6 @@ class DynamicSchedulePanel extends HTMLElement {
     this._editingConfig = null;
     this._activeScheduleId = null;
     this._rws = {};
-    this._updateGUI = true;
     this._dummyBase = '____' + new Date().valueOf();
     this._dummyExt = 0;
 
@@ -267,6 +268,7 @@ class DynamicSchedulePanel extends HTMLElement {
           opt = document.createElement('option');
           opt.appendChild( document.createTextNode( '-- select source SUBschedule --') );
           el.appendChild( opt );
+          opt.selected = true;
 
           this._others.forEach( oth => {
               if (clicked.value == oth.entid) {
@@ -326,6 +328,13 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      clicked = e.target.closest('#modal-sub-link-submit-btn');
+      if (clicked) {
+          e.preventDefault();
+          this._onCreateLinkedSubScheduleSubmit();
+          return;
+      }
+
   }
 
   _openNewScheduleModal() {
@@ -341,14 +350,6 @@ class DynamicSchedulePanel extends HTMLElement {
 
   _closeModal() {
       this.shadowRoot.querySelectorAll('.modal-overlay').forEach( mo => mo.classList.remove('open') );
-      return;
-      let modal;
-      ['schedule-modal', 'subschedule-modal'].forEach( el => {
-        modal = this.shadowRoot.getElementById( el );
-        if (modal) {
-          modal.classList.remove('open');
-        }
-      });
   }
 
   _openNewLinkedSubScheduleModal() {
@@ -378,6 +379,7 @@ class DynamicSchedulePanel extends HTMLElement {
           opt = document.createElement('option');
           opt.appendChild( document.createTextNode( '-- select source schedule --') );
           el.appendChild( opt );
+          opt.selected = true; 
 
           this._others.forEach( oth => {
               opt = document.createElement('option');
@@ -435,6 +437,38 @@ class DynamicSchedulePanel extends HTMLElement {
           
           modal.classList.add('open');
       }
+  }
+
+  async _onCreateLinkedSubScheduleSubmit() {
+      const nameInput = this.shadowRoot.getElementById('subschedule-linked-name');
+      const name = nameInput ? this._validName( nameInput.value.trim() ) : '';
+
+      let scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+      let sub_schedules = scheduleConfig.sub_schedules;
+
+      if (name.length === 0) {
+          this.showToast('subschedule name must be nonblank, with alphanumerics and underlines only');
+          return;
+      }
+
+      if ( Object.keys( sub_schedules ).indexOf(name) >= 0 ) {
+          this.showToast('subschedule name must be unique within this schedule');
+          return;
+      }
+
+      console.log('linked subschedule', 
+
+      return; //////////
+
+      this._editing(true);
+      this._editingConfig = this._gatherConfig();
+    //  let conf = this._editingConfig;
+      this._editingConfig.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
+
+      this._closeModal();
+
+      this.render();
+
   }
 
   async _onCreateSubScheduleSubmit() {
@@ -575,6 +609,7 @@ class DynamicSchedulePanel extends HTMLElement {
     // Initial fetch of detailed blocks if possible
     if (this._hass && !this._hasFetchedConfigs) {
         this._hasFetchedConfigs = true;
+        this._fetchAllConfigs();
         this.fetchScheduleConfigs();
         this.fetchScriptConfigs();
     } else if (this._hass && this._hasFetchedConfigs && oldHass) {
@@ -584,6 +619,7 @@ class DynamicSchedulePanel extends HTMLElement {
         
         // If the state objects differ (like last_updated changed), re-fetch the details
         if (JSON.stringify(oldSchedules) !== JSON.stringify(newSchedules)) {
+            this._fetchAllConfigs();
             this.fetchScheduleConfigs();
         }
 
@@ -667,6 +703,26 @@ class DynamicSchedulePanel extends HTMLElement {
       this.render();
   }
 
+  async _fetchAllConfigs() {
+      let response = null;
+      try {
+          response = await this._hass.connection.sendMessagePromise({
+            type: 'call_service',
+            domain: this._domain,
+            service: 'get_schedule',
+            target: { entity_id: 'all' },
+            return_response: true
+          });
+      } catch(e) {
+          console.log('oops', e);
+      }
+
+      if (response && response.response) {
+          this._allConfigs = Object.values( response.response );
+      }
+      console.log('allConfigs', this._allConfigs );
+
+  }
 
   async fetchScheduleConfigs() {
       console.log('fetchScheduleConfigs');
@@ -1687,14 +1743,14 @@ div {
                           <div>Sub-schedule name</div>
                           <ha-input
                             placeholder="alphanumerics or underlines"
-                            id="subschedule-name"
+                            id="subschedule-limked-name"
                           >
                           </ha-input>
                       </div>
                   </div>
                   <div class="modal-footer">
                       <button type="button" class="btn secondary modal-cancel-btn">Cancel</button>
-                      <button type="submit" class="btn primary" id="modal-sub-submit-btn">Link Sub-schedule</button>
+                      <button type="submit" class="btn primary" id="modal-sub-link-submit-btn">Link Sub-schedule</button>
                   </div>
               </form>
           </div>
