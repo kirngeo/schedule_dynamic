@@ -88,7 +88,7 @@ class DynamicSchedulePanel extends HTMLElement {
   _editing( onoff ) {
       if (this._isEditing === onoff) return;
       if (onoff) {
-          this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
+          this._editingConfig = structuredClone( this._allConfigs[ this._currentId ]);
           console.log('starting to edit, _editingConfig:', this._editingConfig);
           this.shadowRoot.querySelector('#save-btn').classList.add('dirty');
           this.shadowRoot.querySelector('#save-btn').classList.remove('clean');
