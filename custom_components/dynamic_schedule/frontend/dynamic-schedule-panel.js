@@ -718,15 +718,16 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       if (response && response.response) {
-
-          console.log('hass.states', this._hass.states );
-
+       //   console.log('hass.states', this._hass.states );
           this._allConfigs = response.response;
-      //    this._allConfigs.map( conf => {
-      //        const state = this._hass
-//
-    //      } );
       }
+
+      if (this._allConfigs) {
+          Object.entries( this._allConfigs ).forEach( (k, v) => {
+              v["_editable"] = this._hass.states[ k ].editable || false;
+          });
+      }
+
       console.log('allConfigs', this._allConfigs );
 
   }
