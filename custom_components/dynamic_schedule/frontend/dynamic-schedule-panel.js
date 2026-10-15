@@ -725,7 +725,7 @@ class DynamicSchedulePanel extends HTMLElement {
       if (this._allConfigs) {
           Object.entries( this._allConfigs ).forEach( ([k, v]) => {
               console.log('k,v', k, v );
-              v["_editable"] = this._hass.states[ k ].editable || false;
+              v["_editable"] = (this._hass.states[ k ].attributes || {})["editable"] || false;
           });
       }
 
