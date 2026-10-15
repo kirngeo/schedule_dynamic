@@ -907,6 +907,7 @@ class DynamicSchedulePanel extends HTMLElement {
             this._currentId = this._orderedIds[0];
         }
 
+        console.log('xx', Object.keys(this._allConfigs), this._currentId);
         scheduleConfig = this._allConfigs[ this._currentId ];
         rw = scheduleConfig._editable;
 
