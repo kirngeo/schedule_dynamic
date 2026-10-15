@@ -1035,11 +1035,11 @@ class DynamicSchedulePanel extends HTMLElement {
         `;
 
             let got_others = false;
-            const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
-            Object.keys( this._scheduleConfigs ).forEach( k => {
+      //      const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+            Object.keys( this._allConfigs ).forEach( k => {
                 const entid = k.replace( this._domaindot, '');
                 if (entid != scheduleConfig.id) {
-                    if (Object.keys( this._scheduleConfigs[k].sub_schedules || {} ).length > 0) {
+                    if (Object.keys( this._allConfigs[k].sub_schedules || {} ).length > 0) {
                         got_others = true;
                     }
                 }
