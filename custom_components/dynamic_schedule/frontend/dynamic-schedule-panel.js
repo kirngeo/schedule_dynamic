@@ -610,7 +610,7 @@ class DynamicSchedulePanel extends HTMLElement {
     if (this._hass && !this._hasFetchedConfigs) {
         this._hasFetchedConfigs = true;
         this._fetchAllConfigs();
-        this.fetchScheduleConfigs();
+ ////       this.fetchScheduleConfigs();
         this.fetchScriptConfigs();
     } else if (this._hass && this._hasFetchedConfigs && oldHass) {
         // Detect if any schedule states changed (e.g. user edited a schedule in the dialog)
@@ -620,7 +620,7 @@ class DynamicSchedulePanel extends HTMLElement {
         // If the state objects differ (like last_updated changed), re-fetch the details
         if (JSON.stringify(oldSchedules) !== JSON.stringify(newSchedules)) {
             this._fetchAllConfigs();
-            this.fetchScheduleConfigs();
+ ////           this.fetchScheduleConfigs();
         }
 
         // Detect if any script states changed or populated
@@ -633,7 +633,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
     }
 
-    this.updateSchedules();
+ ////   this.updateSchedules();
 
       /*
     // Initial fetch of scripts which are eligible to be selectors
@@ -718,7 +718,14 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       if (response && response.response) {
+
+          console.log('hass.states', this._hass.states );
+
           this._allConfigs = Object.values( response.response );
+          this._allConfigs.map( conf => {
+              const state = this._hass
+
+          } );
       }
       console.log('allConfigs', this._allConfigs );
 
