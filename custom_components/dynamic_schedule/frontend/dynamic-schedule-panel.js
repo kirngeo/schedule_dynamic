@@ -944,8 +944,8 @@ class DynamicSchedulePanel extends HTMLElement {
     if (this._isEditing) {
         scheduleConfig = this._editingConfig;
         console.log('switching to _editingConfig', scheduleConfig);
-    }
 */
+    }
     if (scheduleConfig) {
       //
       scriptselHtml += `<select ${rw?"" : "disabled "}class="icon-btn ch" id="schedule-script-selector">`;
