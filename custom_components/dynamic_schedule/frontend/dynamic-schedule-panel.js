@@ -5,13 +5,14 @@ class DynamicSchedulePanel extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this._domain = 'dynamic_schedule';
     this._domaindot = this._domain + '.';
-    this._scheduleStates = [];
-    this._scheduleConfigs = {};
-    this._allConfigs = [];  // all configs
-    this._currentConfig = null;  // viewing config
-    this._schedulesOverview = [];
     this._hasFetchedConfigs = false;
     this._hasFetchedScripts= false;
+    this._allConfigs = {};  // all configs
+    this._currentConfigId = null;  // viewing config
+
+    this._scheduleStates = [];
+    this._scheduleConfigs = {};
+    this._schedulesOverview = [];
     this._zoomLevel = 0.5;
     this._dragState = null;
     this._wasDragging = false;
@@ -717,16 +718,21 @@ class DynamicSchedulePanel extends HTMLElement {
           console.log('oops', e);
       }
 
-      if (response && response.response) {
-          console.log('hass.states', this._hass.states );
-          this._allConfigs = response.response;
-      }
+      this._allConfigs = (response && response.response) ? response.response : {};
 
       if (this._allConfigs) {
           Object.entries( this._allConfigs ).forEach( ([k, v]) => {
-              console.log('k,v', k, v );
               v["_editable"] = (this._hass.states[ k ].attributes || {})["editable"] || false;
           });
+      }
+
+      let orderedIds = Object.keys( this._allConfigs )
+          .sort( a, b => this._allConfigs[a].name.localeCompare( this._allConfigs[b].name ) )
+
+      if (orderedIds.toString() !== this._orderedIds.toString()) {
+          console.log('orderedIds changed', this._orderedIds, orderedIds );
+          this._orderedIds = orderedIds;
+          this.render();
       }
 
       console.log('allConfigs', this._allConfigs );
