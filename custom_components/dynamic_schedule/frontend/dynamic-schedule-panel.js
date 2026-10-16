@@ -64,9 +64,10 @@ class DynamicSchedulePanel extends HTMLElement {
           console.log( e.target );
           e.preventDefault();
     //      this._onSchedSelClick();
-          this._activeScheduleId = clicked.value;
-          console.log('activeScheduleId A', this._activeScheduleId );
-          this._editing(false);
+          this._currentConfigId = clicked.value;
+  //        this._activeScheduleId = clicked.value;
+  //        console.log('activeScheduleId A', this._activeScheduleId );
+          this._editing = false;
  //         this.setShowingEntid( clicked.value );
  //         if (this._activeScheduleOverview) {
  //             this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
@@ -78,17 +79,21 @@ class DynamicSchedulePanel extends HTMLElement {
       if (e.target.classList.contains('ch')) {
           console.log('changed', e.target);
           e.preventDefault();
-          this._editing( true );
+          this._editing = true;
      //     this._editingConfig = this._gatherConfig();
           return;
       }
 
   }
 
-  _editing( onoff ) {
+  get _editing() {
+      return this._isEditing;
+  }
+
+  set _editing( onoff ) {
       if (this._isEditing === onoff) return;
       if (onoff) {
-          this._editingConfig = structuredClone( this._allConfigs[ this._currentId ]);
+          this._editingConfig = structuredClone( this._allConfigs[ this._currentConfigId ]);
           console.log('starting to edit, _editingConfig:', this._editingConfig);
           this.shadowRoot.querySelector('#save-btn').classList.add('dirty');
           this.shadowRoot.querySelector('#save-btn').classList.remove('clean');
@@ -122,7 +127,7 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           e.preventDefault();
 
-          this._editing( true );
+          this._editing = true;
           const trans = clicked.closest( '.trans' );
           const tinx = trans.dataset.inx;
           const sub = trans.dataset.sub;
@@ -148,7 +153,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('#add-attribute');
       if (clicked) {
           console.log('add-attribute', clicked);
-          this._editing( true );
+          this._editing = true;
           e.preventDefault();
 
           this._editingConfig = this._gatherConfig();
@@ -160,7 +165,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('.add-transition');
       if (clicked) {
           const ctr = clicked.closest('.sh-name');
-          this._editing( true );
+          this._editing = true;
           e.preventDefault();
 
           let transs = this._editingConfig
@@ -202,7 +207,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked = e.target.closest('.delete-subschedule');
       if (clicked) {
           e.preventDefault();
-          this._editing( true );
+          this._editing = true;
           const data = clicked.closest( '.sh-name' ).dataset
           delete this._editingConfig.sub_schedules[ data.sub ];
           this.render();
@@ -232,7 +237,7 @@ class DynamicSchedulePanel extends HTMLElement {
           this.setShowingEntid( returned.id );
             
           this.fetchScheduleConfigs();
-          this._editing( false );
+          this._editing = false;
           this.render();
           return;
       }
@@ -462,7 +467,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
       return; //////////
 
-      this._editing(true);
+      this._editing = true;
       this._editingConfig = this._gatherConfig();
     //  let conf = this._editingConfig;
       this._editingConfig.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
@@ -490,7 +495,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      this._editing(true);
+      this._editing = true;
       this._editingConfig = this._gatherConfig();
     //  let conf = this._editingConfig;
       this._editingConfig.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
@@ -909,7 +914,7 @@ class DynamicSchedulePanel extends HTMLElement {
         }
 
         console.log('xx', Object.keys(this._allConfigs), this._currentConfigId);
-        scheduleConfig = this._allConfigs[ this._currentConfigId ];
+        scheduleConfig = this._editing ? this._editingConfig : this._allConfigs[ this._currentConfigId ];
         rw = scheduleConfig._editable;
 
         schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
