@@ -12,35 +12,18 @@ class DynamicSchedulePanel extends HTMLElement {
     this._currentConfigId = null;  // viewing config
 
     this._scheduleStates = [];
-    this._scheduleConfigs = {};
-    this._schedulesOverview = [];
-    this._zoomLevel = 0.5;
-    this._dragState = null;
-    this._wasDragging = false;
-    this._activeScheduleOverview = null;
+ //   this._scheduleConfigs = {};
+ //   this._zoomLevel = 0.5;
+ //   this._activeScheduleOverview = null;
     this._eligibleScriptConfigs = [];
     this._isEditing = false;
     this._editingConfig = null;
-    this._activeScheduleId = null;
-    this._rws = {};
+ //   this._activeScheduleId = null;
     this._dummyBase = '____' + new Date().valueOf();
     this._dummyExt = 0;
 
   }
 
-  zoomIn() {
-      if (this._zoomLevel < 3.0) {
-          this._zoomLevel += 0.25;
-          this.render();
-      }
-  }
-
-  zoomOut() {
-      if (this._zoomLevel > 0.5) {
-          this._zoomLevel -= 0.25;
-          this.render();
-      }
-  }
   connectedCallback() {
       this.shadowRoot.addEventListener('click', this._onClick.bind(this));
       this.shadowRoot.addEventListener('change', this._onChange.bind(this));
@@ -63,15 +46,8 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           console.log( e.target );
           e.preventDefault();
-    //      this._onSchedSelClick();
           this._currentConfigId = clicked.value;
-  //        this._activeScheduleId = clicked.value;
-          console.log('currentConfigId', this._currentConfigId );
           this._editing = false;
- //         this.setShowingEntid( clicked.value );
- //         if (this._activeScheduleOverview) {
- //             this._editingConfig = structuredClone( this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ]);
- //         }
           this.render();
           return;
       }
@@ -234,11 +210,12 @@ class DynamicSchedulePanel extends HTMLElement {
 
           const returned = await this._hass.connection.sendMessagePromise( newConfig );
           console.log('save returned', returned );
-          this.setShowingEntid( returned.id );
+    ////      this.setShowingEntid( returned.id );
             
-          this.fetchScheduleConfigs();
+     //     this.fetchScheduleConfigs();
           this._editing = false;
-          this.render();
+          this._fetchAllConfigs();
+    //      this.render();
           return;
       }
 
@@ -364,12 +341,12 @@ class DynamicSchedulePanel extends HTMLElement {
       if (modal) {
           
           this._others = [];
-          const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
-          Object.keys( this._scheduleConfigs ).forEach( k => {
+          const scheduleConfig = this._isEditing ? this._gatherConfig() : this._allConfigs[ this._currentConfigId ];
+          Object.keys( this._allConfigs ).forEach( k => {
               const entid = k.replace( this._domaindot, '');
               let sch;
               if (entid != scheduleConfig.id) {
-                  sch = this._scheduleConfigs[k];
+                  sch = this._allConfigs[k];
                   const subs = Object.keys( sch.sub_schedules || {} );
                   if (subs.length !== 0) {
                       this._others.push( {entid: entid, subs: subs, name: sch.name} );
@@ -407,41 +384,6 @@ class DynamicSchedulePanel extends HTMLElement {
   _openNewSubScheduleModal() {
       const modal = this.shadowRoot.getElementById('subschedule-modal');
       if (modal) {
-          // compute other schedules' subschedules, in case they need to be cloned
-          
-          if (false) {
-          
-          this._others = {};
-          const scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
-          Object.keys( this._scheduleConfigs ).forEach( k => {
-              const entid = k.replace( this._domaindot, '');
-              if (entid != scheduleConfig.id) {
-                  const subs = Object.keys( this._scheduleConfigs[k].sub_schedules || {} );
-                  if (subs.length !== 0) {
-                      this._others[ entid ] = subs;
-                  }
-              }
-          } );
-
-          const srqs = this.shadowRoot.querySelector;
-          if (Object.keys( this._others ).length === 0) {
-              this.shadowRoot.querySelector('#ssource-0').checked = true;
-              this.shadowRoot.querySelector('#ssource').style.display = 'none';
-          } else {
-              this.shadowRoot.querySelector('#ssname').style.display = 'none';
-              this.shadowRoot.querySelector('#ssource-0').checked = false;
-              this.shadowRoot.querySelector('#ssource-1').checked = false;
-              this.shadowRoot.querySelector('#ssource-2').checked = false;
-              this.shadowRoot.querySelector('#ssource').style.display = 'block';
-          }
-          
-          }
-
-
-          // Reset form fields
-       //   this.shadowRoot.getElementById('schedule-name').value = '';
-       //   this.shadowRoot.getElementById('schedule-icon').value = 'mdi:table-clock';
-          
           modal.classList.add('open');
       }
   }
@@ -450,7 +392,7 @@ class DynamicSchedulePanel extends HTMLElement {
       const nameInput = this.shadowRoot.getElementById('subschedule-linked-name');
       const name = nameInput ? this._validName( nameInput.value.trim() ) : '';
 
-      let scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+      let scheduleConfig = this._editing ? this._gatherConfig() : this._allConfigs[ this._currentConfigId ];
       let sub_schedules = scheduleConfig.sub_schedules;
 
       if (name.length === 0) {
@@ -482,7 +424,7 @@ class DynamicSchedulePanel extends HTMLElement {
       const nameInput = this.shadowRoot.getElementById('subschedule-name');
       const name = nameInput ? this._validName( nameInput.value.trim() ) : '';
 
-      let scheduleConfig = this._isEditing ? this._gatherConfig() : this._scheduleConfigs[ this._domaindot + this._activeScheduleOverview.entid ];
+      let scheduleConfig = this._editing ? this._gatherConfig() : this._allConfigs[ this._currentConfigId ];
       let sub_schedules = scheduleConfig.sub_schedules;
 
       if (name.length === 0) {
@@ -580,33 +522,18 @@ class DynamicSchedulePanel extends HTMLElement {
   "n_attr_transitions": 0
 }
 */
-          
+          console.log( 'returned', returned );
+
           this.showToast(`Dynamic Schedule "${name}" created successfully`);
           this._closeModal();
-          this.fetchScheduleConfigs();
-          this.setShowingEntid( returned.id );
+          this._fetchAllConfigs();
+   //       this.fetchScheduleConfigs();
+   //       this.setShowingEntid( returned.id );
        //   this.render();
       } catch (err) {
           console.error("Failed to create dynamic schedule.", err);
           this.showToast(`Failed to create dynamic schedule: ${err.message || 'Unknown error'}`);
       }
-  }
-
-  setShowingEntid( entid ) {
-    console.log('setShowingEntid entry', entid);
-    if (this._schedulesOverview.length === 0) {
-        this._activeScheduleOverview = null;
-    } else if (this._schedulesOverview.length === 1) {
-        this._activeScheduleOverview = this._schedulesOverview[0];
-    } else {
-      const ent = this._schedulesOverview.filter( entry => entry.entid === entid );
-      if (ent.length === 1) {
-        this._activeScheduleOverview = ent[0];
-      } else {
-        this._activeScheduleOverview = null;
-      }
-    }
-    console.log('setShowingEntid exit', this._activeScheduleOverview);
   }
 
   set hass(hass) {
@@ -617,8 +544,7 @@ class DynamicSchedulePanel extends HTMLElement {
     if (this._hass && !this._hasFetchedConfigs) {
         this._hasFetchedConfigs = true;
         this._fetchAllConfigs();
- ////       this.fetchScheduleConfigs();
-        this.fetchScriptConfigs();
+        this._fetchScriptConfigs();
     } else if (this._hass && this._hasFetchedConfigs && oldHass) {
         // Detect if any schedule states changed (e.g. user edited a schedule in the dialog)
         const oldSchedules = Object.values(oldHass.states).filter(state => state.entity_id.startsWith( this._domaindot));
@@ -627,7 +553,6 @@ class DynamicSchedulePanel extends HTMLElement {
         // If the state objects differ (like last_updated changed), re-fetch the details
         if (JSON.stringify(oldSchedules) !== JSON.stringify(newSchedules)) {
             this._fetchAllConfigs();
- ////           this.fetchScheduleConfigs();
         }
 
         // Detect if any script states changed or populated
@@ -635,41 +560,12 @@ class DynamicSchedulePanel extends HTMLElement {
         const newScripts = Object.values(this._hass.states).filter(state => state.entity_id.startsWith('script.'));
         
         if (JSON.stringify(oldScripts) !== JSON.stringify(newScripts)) {
-            this.fetchScriptConfigs();
+            this._fetchScriptConfigs();
         }
 
     }
 
- ////   this.updateSchedules();
-
-      /*
-    // Initial fetch of scripts which are eligible to be selectors
-    if (this._hass && !this._hasFetchedScripts) {
-        this._hasFetchedScripts = true;
-        this.fetchScriptDetails();
-    }
-*/
-
-  }
-
-  updateSchedules() {
-    if (!this._hass) return;
-
-    // Filter all schedule entities from states
-    const newScheduleStates = Object.values(this._hass.states).filter(state =>
-      state.entity_id.startsWith( this._domaindot)
-    );
-
-    // Simple diff
-    if (JSON.stringify(newScheduleStates) !== JSON.stringify(this._scheduleStates)) {
-      this._scheduleStates = newScheduleStates;
-      this.render();
-    } else if (!this.shadowRoot.innerHTML) {
-      this.render();
-    }
-  }
-
-  async fetchScriptConfigs() {
+  async _fetchScriptConfigs() {
       try {
           this._eligibleScriptConfigs = [];
           const scriptEntities = Object.keys(this._hass.states).filter(id => id.startsWith('script.'));
@@ -703,7 +599,7 @@ class DynamicSchedulePanel extends HTMLElement {
               .filter(auto => auto !== null)
               .sort((a,b) => a.alias.localeCompare(b.alias));
       } catch (err) {
-          console.error("[Schedule Panel Debug] Global error in fetchScriptConfigss:", err);
+          console.error("[Schedule Panel Debug] Global error in _fetchScriptConfigss:", err);
       }
 
       console.log('_eligibleScriptConfigs', this._eligibleScriptConfigs);
@@ -749,71 +645,6 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       console.log('allConfigs', this._allConfigs );
-
-  }
-
-  async fetchScheduleConfigs() {
-      console.log('fetchScheduleConfigs');
- //     try {
-          let parms2 = {nothing: 0};
-          let response = null;
-          this._schedulesOverview = Object.values(this._hass.states)
-              .filter(state => state.entity_id.startsWith( this._domaindot))
-              .map(state => {
-                  const entid = state.entity_id.replace( this._domaindot, '');
-                  const editable = Boolean( Object.hasOwn(state,'attributes') && state.attributes.editable);
-                  this._rws[ entid ] = editable;
-
-                  return {
-                    'entid'  : entid,
-                    'name'   : Object.hasOwn(state,'attributes') && state.attributes.friendly_name ? state.attributes.friendly_name : state.entity_id,
-                    'edit' : editable
-                  }
-              })
-              .sort((a,b) => a.name.localeCompare(b.name));
-
-          if (this._schedulesOverview.length === 0) return;
-
-          // Fetch the configured time ranges directly using the service
-          parms2 = {
-              type: 'call_service',
-              domain: this._domain,
-              service: 'get_schedule',
-         //     target: { entity_id: this._schedulesOverview.map( a => a.entid ) },
-              target: { entity_id: 'all' },
-              return_response: true
-          };
-          try {
-            response = await this._hass.connection.sendMessagePromise(parms2);
-              /*
-          const response = await this._hass.connection.sendMessagePromise({
-              type: 'call_service',
-              domain: this._domain,
-              service: 'get_schedule',
-              target: { entity_id: this._schedulesOverview.map( a => a.entid ) },
-              return_response: true
-          });
-          */
-          } catch(e) {
-              console.log( 'call_service error', parms2, e);
-              throw new Error( 'urg' );
-          }
-          
-          console.log('response to  get_schedule', this._schedulesOverview.map( a=>a.entid) );
-          console.log( response );
-
-          if (response && response.response) {
-              // The response is keyed by entity_id: { 'schedule.my_schedule': { monday: [...], ... } }
-              this._scheduleConfigs = response.response;
-           //   console.log( 'response', response.response );
-              this.render(); // Re-render with real details
-          }
-
-          console.log('fetchScheduleConfigs success');
- //     } catch (err) {
- //      //   this._hasFetchedConfigs = false;
- //         console.log("Could not fetch detailed schedule configs.", err);
- //     }
 
   }
 
@@ -880,18 +711,9 @@ class DynamicSchedulePanel extends HTMLElement {
       return conf;
   }
 
-  _abbrev() {
-      let conf = structuredClone( this._scheduleConfigs );
-      Object.keys(conf).forEach( entid => {
-          conf[entid].sub_schedules = Object.keys( conf[entid].sub_schedules || {} ).join();
-      } );
-      return JSON.stringify(conf, null, "  " );
-  }
-
   render() {
 
     console.log('render');
-    let zoomHtml = '';
     let contentHtml = '';
     let schedselHtml = '';
     let scriptselHtml = '';
@@ -913,7 +735,6 @@ class DynamicSchedulePanel extends HTMLElement {
             this._currentConfigId = this._orderedIds[0];
         }
 
-        console.log('xx', Object.keys(this._allConfigs), this._currentConfigId);
         scheduleConfig = this._editing ? this._editingConfig : this._allConfigs[ this._currentConfigId ];
         rw = scheduleConfig._editable;
 
@@ -923,39 +744,8 @@ class DynamicSchedulePanel extends HTMLElement {
         } );
         schedselHtml += `</select>`;
 
-        /*
-        this._schedulesOverview.forEach( ent => {
-            selected = false;
+        //
 
-            if ((ent.entid === this._activeScheduleId)  ||  (this._schedulesOverview.length === 1)) {
-                selected = true;
-        }
-
-        schedselHtml += `<option ${selected  ? "selected " : ""}value="${ent.entid}">${ent.name}</option>`;
-        if (selected) {
-           this._activeScheduleOverview = ent;
-           this._activeScheduleId = ent.entid;
-           console.log('activeScheduleId C', this._activeScheduleId );
-           rw = this._rws && this._rws[ this._activeScheduleId ];
-        }
-
-      });
-      schedselHtml += `</select>`;
-
-      if (this._activeScheduleOverview === null) {
-        this._activeScheduleOverview = this._schedulesOverview[0];
-        this._activeScheduleId = this._activeScheduleOverview.entid;
-      }
-    }
-
-    if (this._isEditing) {
-        scheduleConfig = this._editingConfig;
-        console.log('switching to _editingConfig', scheduleConfig);
-*/
-    
- //   if (scheduleConfig) {
-      //
-        console.log('scripselHtml');
         scriptselHtml += `<select ${rw?"" : "disabled "}class="icon-btn ch" id="schedule-script-selector">`;
 
         selected = false;
@@ -987,49 +777,10 @@ class DynamicSchedulePanel extends HTMLElement {
 
         boolHtml = `<ha-switch ${rw ? "" : "disabled "}${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean" class="ch"></ha-switch>`;
 
- //   }
-
- //   console.log('activeScheduleOverview', this._activeScheduleOverview);
-
-  //  if (this._activeScheduleOverview) {
- //   if (this._activeScheduleId) {
-  //    if (!scheduleConfig) {
- //       scheduleConfig = this._scheduleConfigs[ this._domaindot + this._activeScheduleId ];
- //     }
- //     console.log('scheduleConfig', scheduleConfig);
-    //  rw = this._activeScheduleOverview.edit;
- //     rw = true;
- //     rw = this._rws && this._rws[ this._activeScheduleId ];
-
-//      if (scheduleConfig) {
- //     console.log( 'xx', this._editingConfig, this._activeScheduleOverview);
- //     if ( !this._editingConfig   &&  this._activeScheduleOverview.edit ) {
- //         this._editingConfig = structuredClone( scheduleConfig);
- //     }
-
-   //   console.log( 'scheduleConfig', this._domaindot + this._activeScheduleOverview.entid, scheduleConfig);
-        //
-        console.log('subscheds');
         subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
         subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
         attribs = (scheduleConfig && scheduleConfig.attributes) ? scheduleConfig.attributes : {}; 
         attribs_names = Object.keys(attribs).sort((a,b) => a.localeCompare(b));
-
-        contentHtml += `<div>${JSON.stringify( this._activeScheduleOverview, null, "  " )}</div>`;
-        contentHtml += `<div>scheduleConfigs<pre>${JSON.stringify( this._scheduleConfigs, null, "  " )}</pre></div>`;
-        contentHtml += `<div>editingConfig<pre>${JSON.stringify( this._editingConfig, null, "  " )}</pre></div>`;
-        contentHtml += `<div>scheduleConfig<pre>${JSON.stringify( scheduleConfig, null, "  " )}</pre></div>`;
- //       contentHtml += `<div>subscheds<pre>${JSON.stringify( subscheds, null, "  " )}</pre></div>`;
- //       contentHtml += `<div>subsched_names<pre>${JSON.stringify( subsched_names, null, "  " )}</pre></div>`;
-        contentHtml = `<div><pre>${this._abbrev()}</pre></div>`;
-//    }
-//    } else if (this._schedulesOverview.length > 0) {
-//      contentHtml = 'please select a dynamic schedule';
-//    } else {
-//      contentHtml = 'no dynamic schedules exist yet';
-//    }
-
- //   console.log( 'scheduleConfig', scheduleConfig );
 
     // subschedule columns
         let subschedHtml = '';
@@ -1157,10 +908,6 @@ class DynamicSchedulePanel extends HTMLElement {
             }
         } 
 
-        let zoomHtml = '';
-
-  //  if (this._activeScheduleOverview !== null) {
-  //  if (this._activeScheduleId !== null) {
         allContentHtml = `
       <div class="content">
         <ha-card>
@@ -1246,20 +993,11 @@ class DynamicSchedulePanel extends HTMLElement {
       </div>
       `;
 
-      zoomHtml = `
-          <button class="icon-btn" onclick="this.getRootNode().host.zoomOut()" title="Zoom Out">
-              <ha-icon icon="mdi:magnify-minus"></ha-icon>
-          </button>
-          <button class="icon-btn" onclick="this.getRootNode().host.zoomIn()" title="Zoom In">
-              <ha-icon icon="mdi:magnify-plus"></ha-icon>
-          </button>
-      `;
     }
 
     this.shadowRoot.innerHTML = `
       <style>
         :host {
-          --zoom-level: ${this._zoomLevel};
           --Xmdc-icon-size: 16px;
           --mdc-icon-size: 20px;
           display: block;
@@ -1366,12 +1104,12 @@ div {
         }
 
         .time-slot {
-            height: calc(60px * var(--zoom-level)); /* 1 hour */
+            height: 30px;
             position: relative;
         }
 
         .time-slot-half {
-            height: calc(60px * var(--zoom-level) * 0.5); /* 1/2 hour */
+            height: 30px;
             position: relative;
             border: 1px solid green;
         }
@@ -1706,7 +1444,6 @@ div {
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
               </button>
-              ${zoomHtml}
           </div>
       </div>
 
