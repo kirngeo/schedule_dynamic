@@ -66,7 +66,7 @@ class DynamicSchedulePanel extends HTMLElement {
     //      this._onSchedSelClick();
           this._currentConfigId = clicked.value;
   //        this._activeScheduleId = clicked.value;
-  //        console.log('activeScheduleId A', this._activeScheduleId );
+          console.log('currentConfigId', this._currentConfigId );
           this._editing = false;
  //         this.setShowingEntid( clicked.value );
  //         if (this._activeScheduleOverview) {
