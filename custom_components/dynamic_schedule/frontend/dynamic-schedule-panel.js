@@ -405,7 +405,12 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-  //    console.log('linked subschedule', 
+      sub_schedules[ name ] = {link : {
+          schedule     : this.shadowRoot.getElementById('link-source-sch-select').value,
+          sub_schedule : this.shadowRoot.getElementById('link-source-sch-sub-select').value
+        }
+      }
+      console.log('linked subschedule', scheduleConfig);
 
       return; //////////
 
@@ -1519,7 +1524,7 @@ div {
                           <div>Sub-schedule name</div>
                           <ha-input
                             placeholder="alphanumerics or underlines"
-                            id="subschedule-limked-name"
+                            id="subschedule-linked-name"
                           >
                           </ha-input>
                       </div>
