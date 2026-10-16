@@ -955,6 +955,7 @@ class DynamicSchedulePanel extends HTMLElement {
     
  //   if (scheduleConfig) {
       //
+        console.log('scripselHtml');
         scriptselHtml += `<select ${rw?"" : "disabled "}class="icon-btn ch" id="schedule-script-selector">`;
 
         selected = false;
@@ -1007,6 +1008,8 @@ class DynamicSchedulePanel extends HTMLElement {
  //     }
 
    //   console.log( 'scheduleConfig', this._domaindot + this._activeScheduleOverview.entid, scheduleConfig);
+        //
+        console.log('subscheds');
         subscheds = scheduleConfig ? scheduleConfig.sub_schedules : {};
         subsched_names = Object.keys(subscheds).sort((a,b) => a.localeCompare(b));
         attribs = (scheduleConfig && scheduleConfig.attributes) ? scheduleConfig.attributes : {}; 
