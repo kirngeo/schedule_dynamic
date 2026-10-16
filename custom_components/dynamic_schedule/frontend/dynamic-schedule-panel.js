@@ -52,7 +52,6 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       if (e.target.classList.contains('ch')) {
-          console.log('changed', e.target);
           e.preventDefault();
           this._editing = true;
      //     this._editingConfig = this._gatherConfig();
@@ -147,6 +146,7 @@ class DynamicSchedulePanel extends HTMLElement {
             .sub_schedules[ ctr.dataset.sub ]
             .transitions;
 
+          console.log('adding trans to', ctr);
           let tsecs;
           let gaps = [];
 
@@ -176,6 +176,7 @@ class DynamicSchedulePanel extends HTMLElement {
           transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) );
           this.render();
 
+          console.log('added trans, editingConfig is now', this._editingConfig);
           return;
       }
 
