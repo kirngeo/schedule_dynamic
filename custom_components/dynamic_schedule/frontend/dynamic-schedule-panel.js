@@ -44,7 +44,6 @@ class DynamicSchedulePanel extends HTMLElement {
 
       clicked = e.target.closest( '#schedule-sel-entid');
       if (clicked) {
-          console.log( e.target );
           e.preventDefault();
           this._currentConfigId = clicked.value;
           this._editing = false;
@@ -651,10 +650,10 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   _gatherConfig() {
-      // generate a proposed config, from the contents of theh screen:
+      // generate a proposed config, from the contents of the screen:
 
       let val;
-      let conf = {};
+      let conf = {_editable: true};
       conf.name = this.shadowRoot.querySelector("#schedule-name-input").value.trim();
       conf["boolean"] = this.shadowRoot.querySelector("#schedule-is-boolean").checked;
       conf.select_script = this.shadowRoot.querySelector("#schedule-script-selector").value || null;
@@ -715,8 +714,6 @@ class DynamicSchedulePanel extends HTMLElement {
 
   render() {
 
-    console.log('render');
-    let contentHtml = '';
     let schedselHtml = '';
     let scriptselHtml = '';
     let allContentHtml = '';
@@ -988,9 +985,6 @@ class DynamicSchedulePanel extends HTMLElement {
              ${subschedTransitionsHtml}
             </div>
           </div>
-        </ha-card>
-        <ha-card class="schedule-details">
-          ${contentHtml}
         </ha-card>
       </div>
       `;
