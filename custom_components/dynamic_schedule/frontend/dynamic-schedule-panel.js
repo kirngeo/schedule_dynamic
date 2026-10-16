@@ -565,6 +565,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
     }
 
+  }
+
   async _fetchScriptConfigs() {
       try {
           this._eligibleScriptConfigs = [];
