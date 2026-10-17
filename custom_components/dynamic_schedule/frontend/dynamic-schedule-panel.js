@@ -409,8 +409,9 @@ class DynamicSchedulePanel extends HTMLElement {
       }
   }
 
-  async _onDeleteScheduleConfirmt() {
+  async _onDeleteScheduleConfirm() {
       console.log('DELETED', this._currentConfigId);
+  //    const returned = await this._hass.connection.sendMessagePromise(parms);
   }
 
   async _onCreateLinkedSubScheduleSubmit() {
