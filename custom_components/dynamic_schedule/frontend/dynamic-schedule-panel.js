@@ -770,6 +770,11 @@ class DynamicSchedulePanel extends HTMLElement {
         }
 
         scheduleConfig = this._editing ? this._editingConfig : this._allConfigs[ this._currentConfigId ];
+        if ( ! scheduleConfig ) {
+            console.log( 'no scheduleConfig : not rendering' );
+            return;
+        }
+
         rw = scheduleConfig._editable;
 
         schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
