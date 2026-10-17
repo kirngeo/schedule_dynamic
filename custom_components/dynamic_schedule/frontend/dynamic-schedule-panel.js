@@ -516,6 +516,7 @@ class DynamicSchedulePanel extends HTMLElement {
   async _onCreateScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('schedule-name');
       const name = nameInput ? nameInput.value.trim() : '';
+      this._editing = false;
       
       if (!name) {
           this.showToast('Please enter a dynamic schedule name');
@@ -561,9 +562,7 @@ class DynamicSchedulePanel extends HTMLElement {
           this.showToast(`Dynamic Schedule "${name}" created successfully`);
           this._closeModal();
           this._fetchAllConfigs();
-   //       this.fetchScheduleConfigs();
-   //       this.setShowingEntid( returned.id );
-       //   this.render();
+          this._currentConfigId = this._domaindot + returned.id;
       } catch (err) {
           console.error("Failed to create dynamic schedule.", err);
           this.showToast(`Failed to create dynamic schedule: ${err.message || 'Unknown error'}`);
