@@ -419,7 +419,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      sub_schedules[ name ] = {link : this.shadowRoot.getElementById('link-source-sch-select').value \
+      sub_schedules[ name ] = {link : this.shadowRoot.getElementById('link-source-sch-select').value
                               + '.' + this.shadowRoot.getElementById('link-source-sch-sub-select').value}
       }
       console.log('linked subschedule', scheduleConfig);
