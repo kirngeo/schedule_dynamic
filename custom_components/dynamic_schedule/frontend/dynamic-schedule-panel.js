@@ -205,7 +205,9 @@ class DynamicSchedulePanel extends HTMLElement {
                   if (k.startsWith("_")) {
                       delete newConfig[k];
                   } else if (k == 'id') {
+                      const ooo = newConfig[k];
                       newConfig[k] = newConfig[k].replace( this._domaindot, '' );
+                      console.log( 'changed', ooo, newConfig[k] );
                   }
               });
 
