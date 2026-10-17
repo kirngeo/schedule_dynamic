@@ -229,7 +229,6 @@ SUBSCHED_SCHEMA: VolDictType =
     ])},
          {vol.Required( CONF_LINK ) : str}
   )
-}
 
 SUBSCHEDS_SCHEMA: VolDictType = {
    # vol.Required( str ) : SUBSCHED_SCHEMA,
