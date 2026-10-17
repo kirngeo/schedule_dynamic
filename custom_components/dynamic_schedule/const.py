@@ -7,33 +7,13 @@ DOMAIN: Final = "dynamic_schedule"
 LOGGER = logging.getLogger(__package__)
 DBG = logging.DEBUG
 
-comment = """
-CONF_DATA: Final = "data"
-CONF_FRIDAY: Final = "friday"
-CONF_FROM: Final = "from"
-CONF_MONDAY: Final = "monday"
-CONF_SATURDAY: Final = "saturday"
-CONF_SUNDAY: Final = "sunday"
-CONF_THURSDAY: Final = "thursday"
-CONF_TO: Final = "to"
-CONF_TUESDAY: Final = "tuesday"
-CONF_WEDNESDAY: Final = "wednesday"
-CONF_ALL_DAYS: Final = {
-    CONF_MONDAY,
-    CONF_TUESDAY,
-    CONF_WEDNESDAY,
-    CONF_THURSDAY,
-    CONF_FRIDAY,
-    CONF_SATURDAY,
-    CONF_SUNDAY,
-}"""
-
 CONF_AT: Final = "at"
 CONF_ATTR: Final = "attributes"
 CONF_ATTR_TRANSITIONS = "n_attr_transitions"
 CONF_BOOLEAN: Final = "boolean"
 CONF_DELAY_STARTUP: Final = "delay_startup"
 CONF_HH: Final = "hh"
+CONF_LINK: Final = 'link'
 CONF_MM: Final = "mm"
 CONF_SUB_SCHEDULES: Final = "sub_schedules"
 CONF_SELECT_SCRIPT: Final = "select_script"

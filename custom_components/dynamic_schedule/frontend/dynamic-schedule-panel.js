@@ -226,6 +226,13 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      clicked = e.target.closest('#delete-schedule-btn');
+      if (clicked) {
+          e.preventDefault();
+          this._openConfirmDeleteScheduleModal();
+          return;
+      }
+
       clicked = e.target.closest('#add-subschedule');
       if (clicked) {
           e.preventDefault();
@@ -388,6 +395,13 @@ class DynamicSchedulePanel extends HTMLElement {
       }
   }
 
+  _openConfirmDeleteScheduleModal() {
+      const modal = this.shadowRoot.getElementById('delete-schedule-confirm-modal');
+      if (modal) {
+          modal.classList.add('open');
+      }
+  }
+
   async _onCreateLinkedSubScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('subschedule-linked-name');
       const name = nameInput ? this._validName( nameInput.value.trim() ) : '';
@@ -405,10 +419,8 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      sub_schedules[ name ] = {link : {
-          schedule     : this.shadowRoot.getElementById('link-source-sch-select').value,
-          sub_schedule : this.shadowRoot.getElementById('link-source-sch-sub-select').value
-        }
+      sub_schedules[ name ] = {link : this.shadowRoot.getElementById('link-source-sch-select').value \
+                              + '.' + this.shadowRoot.getElementById('link-source-sch-sub-select').value}
       }
       console.log('linked subschedule', scheduleConfig);
 
@@ -1443,6 +1455,9 @@ div {
         <!--      <button class="icon-btn" id="main-test-btn" title="test">test</button> -->
               <button class="icon-btn ${this._isEditing?'dirty':'clean'}" id="save-btn" title="save">save</button>
               ${schedselHtml}
+              <button class="icon-btn" id="delete-schedule-btn" title="Delete Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
+                  <ha-icon icon="mdi:plus"></ha-icon>Delete this Dynamic Schedule
+              </button>
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
               </button>
@@ -1536,6 +1551,16 @@ div {
               </form>
           </div>
       </div>
+
+      <div id="delete-schedule-confirm-modal" class="modal-overlay">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2>Confirm Deletion  of a Dynamic Schedule</h2>
+                  <button class="close-btn modal-close-btn">&times;</button>
+              </div>
+          </div>
+      </div>
+
       `;
     }
 

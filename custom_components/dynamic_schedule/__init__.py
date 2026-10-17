@@ -85,20 +85,17 @@ from .const import (
     ATTR_NORMAL,
     ATTR_TRANSITIONS,
     ATTR_VARIATION,
- #   CONF_ALL_DAYS,
     CONF_AT,
     CONF_ATTR,
     CONF_ATTR_TRANSITIONS,
     CONF_BOOLEAN,
- #   CONF_DATA,
     CONF_DELAY_STARTUP,
- #   CONF_FROM,
     CONF_HH,
+    CONF_LINK,
     CONF_MM,
     CONF_SELECT_SCRIPT,
     CONF_SS,
     CONF_SUB_SCHEDULES,
- #   CONF_TO,
     CONF_TRANSITIONS,
     DBG,
     DOMAIN,
@@ -110,7 +107,6 @@ from .const import (
     SERVICE_GET,
     SERVICE_MODIFY,
     SERVICE_REFRESH,
- #   WEEKDAY_TO_CONF,
 )
 
 #from .services import (
@@ -220,6 +216,7 @@ AT_SCHEMA: VolDictType = {
 }
 
 SUBSCHED_SCHEMA: VolDictType = {
+  vol.Or(
     vol.Required( CONF_TRANSITIONS ) : vol.All( cv.ensure_list, [
         vol.Schema({
             vol.Required( CONF_AT ) : vol.Schema({
@@ -230,6 +227,8 @@ SUBSCHED_SCHEMA: VolDictType = {
             vol.Optional( CONF_STATE, default=STATE_UNKNOWN ) : vol.Any( int, float, bool, str),
         }),
     ]),
+    vol.Required( CONF_LINK ) : str
+  )
 }
 
 SUBSCHEDS_SCHEMA: VolDictType = {
