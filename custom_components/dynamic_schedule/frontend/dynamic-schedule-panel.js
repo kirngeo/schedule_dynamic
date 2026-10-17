@@ -413,6 +413,8 @@ class DynamicSchedulePanel extends HTMLElement {
       let parms = {"type": this._domain + "/delete"};
       parms[ this._domain + "_id" ] = this._allConfigs[ this._currentConfigId ].id;
   //    parms[ "id" ] = this._currentConfigId;
+      this._editing = false;
+      this._currentConfigId = null;
       console.log('DELETED', parms);
       const returned = await this._hass.connection.sendMessagePromise(parms);
   }
