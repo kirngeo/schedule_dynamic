@@ -197,6 +197,13 @@ class DynamicSchedulePanel extends HTMLElement {
 
           let newConfig = this._gatherConfig();
 
+          Object.keys( newConfig || {} )
+              .forEach( k => {
+                  if (k.startsWith("_") {
+                      delete NewConfig[k];
+                  }
+              });
+
           Object.keys( newConfig.attributes || {})
               .forEach( k => {
                   console.log('checking k', k);
