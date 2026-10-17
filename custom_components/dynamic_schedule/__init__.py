@@ -215,8 +215,8 @@ AT_SCHEMA: VolDictType = {
     vol.Optional( CONF_SS, default=0 ) : vol.All(vol.Coerce(int), vol.Range(min=0, max=59)),
 }
 
-SUBSCHED_SCHEMA: VolDictType = {
-  vol.Or(
+SUBSCHED_SCHEMA: VolDictType =
+  vol.Or( {
     vol.Required( CONF_TRANSITIONS ) : vol.All( cv.ensure_list, [
         vol.Schema({
             vol.Required( CONF_AT ) : vol.Schema({
@@ -226,8 +226,8 @@ SUBSCHED_SCHEMA: VolDictType = {
             }),
             vol.Optional( CONF_STATE, default=STATE_UNKNOWN ) : vol.Any( int, float, bool, str),
         }),
-    ]),
-    vol.Required( CONF_LINK ) : str
+    ])},
+         {vol.Required( CONF_LINK ) : str}
   )
 }
 
