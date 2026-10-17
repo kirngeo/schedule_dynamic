@@ -204,6 +204,8 @@ class DynamicSchedulePanel extends HTMLElement {
               .forEach( k => {
                   if (k.startsWith("_")) {
                       delete newConfig[k];
+                  } else if (k == 'id') {
+                      newConfig[k] = newConfig[k].replace( this._domaindot, '' );
                   }
               });
 
@@ -215,6 +217,7 @@ class DynamicSchedulePanel extends HTMLElement {
                       delete newConfig.attributes[k];
                   }
               });
+
 
           console.log('save newConfig', newConfig );
 
@@ -772,6 +775,7 @@ class DynamicSchedulePanel extends HTMLElement {
     let selected = false;
     let attribs = {};
     let attribs_names = [];
+    let schedName = '';
 
     if (this._orderedIds.length > 0) {
 
@@ -786,6 +790,7 @@ class DynamicSchedulePanel extends HTMLElement {
         }
 
         rw = scheduleConfig._editable;
+        schedName = scheduleConfig.name;
 
         schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
         this._orderedIds.forEach( eid => {
@@ -1587,13 +1592,13 @@ div {
       <div id="delete-schedule-confirm-modal" class="modal-overlay">
           <div class="modal-content">
               <div class="modal-header">
-                  <h2>Confirm Deletion of <b>${scheduleConfig.name}</b></h2>
+                  <h2>Confirm Deletion of <b>${schedName}</b></h2>
                   <button class="close-btn modal-close-btn">&times;</button>
               </div>
-              <div>This will delete the <b>${scheduleConfig.name}</b> Dynamic Schedule</div>
+              <div>This will delete the <b>${schedName}</b> Dynamic Schedule</div>
                   <div class="modal-footer">
                       <button type="button" class="btn secondary modal-cancel-btn">Cancel</button>
-                      <button type="submit" class="btn primary" id="modal-delete-schedule-confirmed-btn">Delete ${scheduleConfig.name}</button>
+                      <button type="submit" class="btn primary" id="modal-delete-schedule-confirmed-btn">Delete ${schedName}</button>
                   </div>
           </div>
       </div>
