@@ -142,6 +142,8 @@ class DynamicSchedulePanel extends HTMLElement {
           this._editing = true;
           e.preventDefault();
 
+          this._editingConfig = this._gatherConfig();
+
           let transs = this._editingConfig
             .sub_schedules[ ctr.dataset.sub ]
             .transitions;
@@ -177,7 +179,7 @@ class DynamicSchedulePanel extends HTMLElement {
           transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) );
           this.render();
 
-          console.log('added trans, editingConfig is now', this._editingConfig);
+          console.log('added trans, editingConfig is now', structuredClone( this._editingConfig));
           return;
       }
 
