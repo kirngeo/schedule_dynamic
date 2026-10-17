@@ -199,7 +199,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
           Object.keys( newConfig || {} )
               .forEach( k => {
-                  if (k.startsWith("_") {
+                  if (k.startsWith("_")) {
                       delete NewConfig[k];
                   }
               });
