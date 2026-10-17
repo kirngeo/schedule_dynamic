@@ -411,7 +411,10 @@ class DynamicSchedulePanel extends HTMLElement {
 
   async _onDeleteScheduleConfirm() {
       console.log('DELETED', this._currentConfigId);
-  //    const returned = await this._hass.connection.sendMessagePromise(parms);
+      const returned = await this._hass.connection.sendMessagePromise({
+        "type": "dynamic_schedule/delete",
+        "id" : this._currentConfigId
+      });
   }
 
   async _onCreateLinkedSubScheduleSubmit() {
@@ -1567,12 +1570,13 @@ div {
       <div id="delete-schedule-confirm-modal" class="modal-overlay">
           <div class="modal-content">
               <div class="modal-header">
-                  <h2>Confirm Deletion  of a Dynamic Schedule</h2>
+                  <h2>Confirm Deletion of $(scheduleConfig.name}</h2>
                   <button class="close-btn modal-close-btn">&times;</button>
               </div>
+              <div>This will delete the ${scheduleConfig.name} Dynamic Schedule</div>
                   <div class="modal-footer">
                       <button type="button" class="btn secondary modal-cancel-btn">Cancel</button>
-                      <button type="submit" class="btn primary" id="modal-delete-schedule-confirmed-btn">Delete entire Schedule</button>
+                      <button type="submit" class="btn primary" id="modal-delete-schedule-confirmed-btn">Delete ${scheduleConfig.name}</button>
                   </div>
           </div>
       </div>
