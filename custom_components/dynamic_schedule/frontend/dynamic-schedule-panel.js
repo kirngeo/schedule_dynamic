@@ -413,7 +413,7 @@ class DynamicSchedulePanel extends HTMLElement {
       console.log('DELETED', this._currentConfigId);
       const returned = await this._hass.connection.sendMessagePromise({
         "type": "dynamic_schedule/delete",
-        this._domain + "_id" : this._currentConfigId
+        (this._domain + "_id") : this._currentConfigId
       });
   }
 
