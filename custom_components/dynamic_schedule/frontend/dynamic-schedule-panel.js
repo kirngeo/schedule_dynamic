@@ -146,7 +146,8 @@ class DynamicSchedulePanel extends HTMLElement {
             .sub_schedules[ ctr.dataset.sub ]
             .transitions;
 
-          console.log('adding trans to', ctr);
+          console.log('adding trans to', structuredClone( this._editingConfig ));
+
           let tsecs;
           let gaps = [];
 
@@ -200,7 +201,7 @@ class DynamicSchedulePanel extends HTMLElement {
           Object.keys( newConfig || {} )
               .forEach( k => {
                   if (k.startsWith("_")) {
-                      delete NewConfig[k];
+                      delete newConfig[k];
                   }
               });
 
