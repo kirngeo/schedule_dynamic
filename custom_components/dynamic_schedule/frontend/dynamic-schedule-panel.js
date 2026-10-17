@@ -326,6 +326,13 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
+      clicked = e.target.closest('#modal-delete-schedule-confirmed-btn');
+      if (clicked) {
+          e.preventDefault();
+          this._onDeleteScheduleConfirm();
+          return;
+      }
+
   }
 
   _openNewScheduleModal() {
@@ -400,6 +407,10 @@ class DynamicSchedulePanel extends HTMLElement {
       if (modal) {
           modal.classList.add('open');
       }
+  }
+
+  async _onDeleteScheduleConfirmt() {
+      console.log('DELETED', this._currentConfigId);
   }
 
   async _onCreateLinkedSubScheduleSubmit() {
@@ -1558,6 +1569,10 @@ div {
                   <h2>Confirm Deletion  of a Dynamic Schedule</h2>
                   <button class="close-btn modal-close-btn">&times;</button>
               </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn secondary modal-cancel-btn">Cancel</button>
+                      <button type="submit" class="btn primary" id="modal-delete-schedule-confirmed-btn">Delete entire Schedule</button>
+                  </div>
           </div>
       </div>
 
