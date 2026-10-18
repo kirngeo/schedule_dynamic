@@ -4,7 +4,7 @@ class DynamicSchedulePanel extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this._name = "Dynamic Schedule";
-    this._domain = this._name.toLowerCase().replaceAll(" ","");
+    this._domain = this._name.toLowerCase().replaceAll(" ","_");
     this._domaindot = this._domain + '.';
     this._hasFetchedConfigs = false;
     this._hasFetchedScripts= false;
