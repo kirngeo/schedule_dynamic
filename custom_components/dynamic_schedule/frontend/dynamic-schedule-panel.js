@@ -3,7 +3,8 @@ class DynamicSchedulePanel extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this._domain = 'dynamic_schedule';
+    this._name = "Dynamic Schedule";
+    this._domain = this._name.toLowerCase().replaceAll(" ","");
     this._domaindot = this._domain + '.';
     this._hasFetchedConfigs = false;
     this._hasFetchedScripts= false;
@@ -207,7 +208,8 @@ class DynamicSchedulePanel extends HTMLElement {
                   } else if (k == 'id') {
                       const ooo = newConfig[k];
                       newConfig[k] = newConfig[k].replace( this._domaindot, '' );
-                      console.log( 'changed', ooo, newConfig[k] );
+                      const nnn = newConfig[k];
+                      console.log( 'changed', ooo, nnn );
                   }
               });
 
@@ -432,6 +434,8 @@ class DynamicSchedulePanel extends HTMLElement {
       this._currentConfigId = null;
       console.log('DELETED', parms);
       const returned = await this._hass.connection.sendMessagePromise(parms);
+      this._fetchAllConfigs();
+      this.render();
   }
 
   async _onCreateLinkedSubScheduleSubmit() {
@@ -574,14 +578,14 @@ class DynamicSchedulePanel extends HTMLElement {
 */
           console.log( 'returned', returned );
 
-          this.showToast(`Dynamic Schedule "${name}" created successfully`);
+          this.showToast(`${this._name} "${name}" created successfully`);
           this._closeModal();
           this._fetchAllConfigs();
           this._currentConfigId = this._domaindot + returned.id;
           this.render()
       } catch (err) {
-          console.error("Failed to create dynamic schedule.", err);
-          this.showToast(`Failed to create dynamic schedule: ${err.message || 'Unknown error'}`);
+          console.error(`Failed to create ${this._name}.`, err);
+          this.showToast(`Failed to create ${this._name}: ${err.message || 'Unknown error'}`);
       }
   }
 
@@ -1488,17 +1492,17 @@ div {
       <div class="header">
           <div class="title">
               <ha-icon icon="mdi:table-clock"></ha-icon>
-              Dynamic Schedules
+              ${this._name}s
           </div>
           <div class="zoom-controls">
         <!--      <button class="icon-btn" id="main-test-btn" title="test">test</button> -->
               <button class="icon-btn ${this._isEditing?'dirty':'clean'}" id="save-btn" title="save">save</button>
               ${schedselHtml}
               <button class="icon-btn" id="delete-schedule-btn" title="Delete Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
-                  <ha-icon icon="mdi:plus"></ha-icon>Delete this Dynamic Schedule
+                  <ha-icon icon="mdi:plus"></ha-icon>Delete this ${this._name}
               </button>
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
-                  <ha-icon icon="mdi:plus"></ha-icon> New Dynamic Schedule
+                  <ha-icon icon="mdi:plus"></ha-icon> New ${this._name}
               </button>
           </div>
       </div>
@@ -1510,7 +1514,7 @@ div {
           <div class="modal-content">
           <demo-components-ha-dialog></demo-components-ha-dialog>
               <div class="modal-header">
-                  <h2>Create New Dynamic Schedule</h2>
+                  <h2>Create New ${this._name}</h2>
                   <button class="close-btn modal-close-btn">&times;</button>
               </div>
               <form id="schedule-form" onsubmit="return false;">
@@ -1528,7 +1532,7 @@ div {
                   <div class="modal-footer">
                <!--       <button type="button" class="btn secondary" id="modal-test-btn">Test</button> -->
                       <button type="button" class="btn secondary modal-cancel-btn">Cancel</button>
-                      <button type="submit" class="btn primary" id="modal-submit-btn">Create Dynamic Schedule</button>
+                      <button type="submit" class="btn primary" id="modal-submit-btn">Create ${this._name}</button>
                   </div>
               </form>
           </div>
@@ -1597,7 +1601,7 @@ div {
                   <h2>Confirm Deletion of <b>${schedName}</b></h2>
                   <button class="close-btn modal-close-btn">&times;</button>
               </div>
-              <div>This will delete the <b>${schedName}</b> Dynamic Schedule</div>
+              <div>This will delete the <b>${schedName}</b> ${this._name}</div>
                   <div class="modal-footer">
                       <button type="button" class="btn secondary modal-cancel-btn">Cancel</button>
                       <button type="submit" class="btn primary" id="modal-delete-schedule-confirmed-btn">Delete ${schedName}</button>
