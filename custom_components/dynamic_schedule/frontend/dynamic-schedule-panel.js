@@ -207,7 +207,7 @@ class DynamicSchedulePanel extends HTMLElement {
               .forEach( k => {
                   if (k.startsWith("_")) {
                       delete newConfig[k];
-                  } else if (k == 'id') {
+                  } else if ( (k == 'id')   ||  (k == this._domain + '_id') {
                       const ooo = newConfig[k];
                       newConfig[k] = newConfig[k].replace( this._domaindot, '' );
                       const nnn = newConfig[k];
