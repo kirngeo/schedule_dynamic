@@ -163,6 +163,7 @@ class DynamicSchedulePanel extends HTMLElement {
               })
               gaps.push( [(24*60*60) - prevsecs, -1] );
               gaps = gaps.filter( (gap, inx) => gap[0] > 45*60 ).sort( (a, b) => a[0] > b[0] );
+              console.log('gaps', gaps);
 
               let trans;
               if (gaps[0][1] < 0) {
@@ -208,10 +209,7 @@ class DynamicSchedulePanel extends HTMLElement {
                   if (k.startsWith("_")) {
                       delete newConfig[k];
                   } else if ( (k == 'id')   ||  (k == this._domain + '_id') )  {
-                      const ooo = newConfig[k];
                       newConfig[k] = newConfig[k].replace( this._domaindot, '' );
-                      const nnn = newConfig[k];
-                      console.log( 'changed', ooo, nnn );
                   }
               });
 
@@ -1501,7 +1499,7 @@ div {
               <button class="icon-btn ${this._isEditing?'dirty':'clean'}" id="save-btn" title="save">save</button>
               ${schedselHtml}
               <button class="icon-btn" id="delete-schedule-btn" title="Delete Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
-                  <ha-icon icon="mdi:plus"></ha-icon>Delete this ${this._name}
+                  <ha-icon icon="mdi:delete-forever"></ha-icon>Delete this ${this._name}
               </button>
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New ${this._name}
