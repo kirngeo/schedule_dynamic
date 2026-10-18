@@ -201,6 +201,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
           let newConfig = this._gatherConfig();
 
+          console.log('save/gatheredConfig', structuredClone(newConfig));
+
           Object.keys( newConfig || {} )
               .forEach( k => {
                   if (k.startsWith("_")) {
@@ -223,7 +225,7 @@ class DynamicSchedulePanel extends HTMLElement {
               });
 
 
-          console.log('save newConfig', newConfig );
+          console.log('save newConfig', structuredClone(newConfig) );
 
           const returned = await this._hass.connection.sendMessagePromise( newConfig );
           console.log('save returned', returned );
