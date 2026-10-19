@@ -159,7 +159,7 @@ class DynamicSchedulePanel extends HTMLElement {
               let gaps = [];
 
               // try to find a gap of >= 45 mins...
-              trans.forEach( (trans, inx) => {
+              transs.forEach( (trans, inx) => {
                   tsecs = this._transToSecs(trans);
                   gap_before = tsecs - prevsecs;
                   if ( (insert_inx === null)  &&  (gap_before >= 45*60)) {
