@@ -150,11 +150,11 @@ class DynamicSchedulePanel extends HTMLElement {
             .transitions;
 
           console.log('adding trans to', structuredClone( this._editingConfig ));
+          let tsecs;
 
           if (transs.length) {
               let prevsecs = 0;
               let gap_before;
-              let tsecs;
               let insert_inx = null;
               let gaps = [];
 
@@ -191,6 +191,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
           let ddtsecs;
 
+          if (false) {
           if (transs.length) {
               let prevsecs = 0;
               transs.map( (trans, inx) => {
@@ -214,7 +215,7 @@ class DynamicSchedulePanel extends HTMLElement {
           } else {
               transs.push( {at: {hh: 0, mm:0, ss:0}, state: 0} );
           }
-
+          }
           transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) );
           this.render();
 
