@@ -1153,7 +1153,7 @@ div {
         }
 
         .hilite {
-            border: 2px dashed red;
+            border: 2px solid red;
         }
 
         .header {
