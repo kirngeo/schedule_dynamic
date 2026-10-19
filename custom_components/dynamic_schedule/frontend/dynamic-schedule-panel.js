@@ -151,8 +151,45 @@ class DynamicSchedulePanel extends HTMLElement {
 
           console.log('adding trans to', structuredClone( this._editingConfig ));
 
-          let tsecs;
-          let gaps = [];
+          if (transs.length) {
+              let prevsecs = 0;
+              let gap_before;
+              let tsecs;
+              let insert_inx = null;
+              let gaps = [];
+
+              // try to find a gap of >= 45 mins...
+              trans.forEach( (trans, inx) => {
+                  tsecs = this._transToSecs(trans);
+                  gap_before = tsecs - prevsecs;
+                  if ( (insert_inx === null)  &&  (gap_before >= 45*60)) {
+                      insert_inx = inx;
+                  }
+                  gaps.push( [inx, gap_before] ); 
+                  prefsecs = tsecs;
+              } );
+              gaps.push( [-1, (24*60*60) - prevsecs] )
+              console.log('initial gaps', Array( ...gaps) );
+
+              // arrange to insert before insert_inx
+              if (insert_inx === 0) {
+                  transs.push( {at: {hh: 0, mm:0, ss:0}, state: 0} );
+              } else {
+                  this._transToSecs( transs[ insert_inx-1 ] ) + 0
+              }
+
+              if (true || insert_inx === null) {
+                  // Failed to find a gap of >= 45 mins : just use the largest gap.
+                  gaps.sort( (a,b) => a[1] > b[1] );
+                  console.log( 'sorted gaps', gaps );
+              }
+
+
+          } else {
+              transs.push( {at: {hh: 0, mm:0, ss:0}, state: 0} );
+          }
+
+          let ddtsecs;
 
           if (transs.length) {
               let prevsecs = 0;
@@ -208,8 +245,6 @@ class DynamicSchedulePanel extends HTMLElement {
               .forEach( k => {
                   if (k.startsWith("_")) {
                       delete newConfig[k];
-                  } else if ( (k == 'id')   ||  (k == this._domain + '_id') )  {
-                      newConfig[k] = newConfig[k].replace( this._domaindot, '' );
                   }
               });
 
@@ -760,7 +795,9 @@ class DynamicSchedulePanel extends HTMLElement {
           .forEach( kv => attrs[ kv.k ] = kv.v);
       conf.attributes = attrs;
 
-      conf[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid").value;
+      conf[ this._domain + '_id' ] = this.shadowRoot.querySelector("#schedule-sel-entid")
+          .value
+          .replace(this._domaindot, '');
       conf.type = this._domain + '/update';
 
       return conf;
