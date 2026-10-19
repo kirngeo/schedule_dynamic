@@ -176,11 +176,15 @@ class DynamicSchedulePanel extends HTMLElement {
 
               if (insert_inx === 0) {
                   transs.push( {at: {hh: 0, mm:0, ss:0}, state: null} );
+              } else if (insert_inx === null) {
+                  gaps.sort( (a,b) => a[1] > b[1] );
+                  console.log( 'sorted gaps', gaps );
+                  transs.push( {at: this._secsToAt( this._transToSecs( transs[ 1 ] ) + 1 ), state: null} );
               } else {
-                  transs.push( {at: this._secsToAt( this._transToSecs( transs[ insert_inx-1 ] ) + 1 ), state: 0} );
+                  transs.push( {at: this._secsToAt( this._transToSecs( transs[ insert_inx-1 ] ) + 1 ), state: null} );
               }
 
-              if (true || insert_inx === null) {
+              if (false && insert_inx === null) {
                   // Failed to find a gap of >= 45 mins : just use the largest gap.
                   gaps.sort( (a,b) => a[1] > b[1] );
                   console.log( 'sorted gaps', gaps );
