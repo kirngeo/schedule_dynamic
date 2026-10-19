@@ -153,6 +153,7 @@ class DynamicSchedulePanel extends HTMLElement {
           let tsecs;
 
           if (transs.length) {
+              condole.log('transs.length', transs.length);
               let prevsecs = 0;
               let gap_before;
               let insert_inx = null;
@@ -187,6 +188,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
           } else {
               transs.push( {at: {hh: 0, mm:0, ss:0}, state: 0} );
+              console.log('pushed onto empty transs', transs.at(-1) );
           }
 
           let ddtsecs;
