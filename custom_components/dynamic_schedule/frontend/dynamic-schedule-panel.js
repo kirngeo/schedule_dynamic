@@ -166,7 +166,7 @@ class DynamicSchedulePanel extends HTMLElement {
                       insert_inx = inx;
                   }
                   gaps.push( [inx, gap_before] ); 
-                  prefsecs = tsecs;
+                  prevsecs = tsecs;
               } );
               gaps.push( [-1, (24*60*60) - prevsecs] )
               console.log('initial gaps', Array( ...gaps) );
