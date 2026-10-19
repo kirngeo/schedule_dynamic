@@ -153,7 +153,6 @@ class DynamicSchedulePanel extends HTMLElement {
           let tsecs;
 
           if (transs.length) {
-              condole.log('transs.length', transs.length);
               let prevsecs = 0;
               let gap_before;
               let insert_inx = null;
