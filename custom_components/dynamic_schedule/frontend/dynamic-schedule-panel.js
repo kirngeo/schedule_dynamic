@@ -179,7 +179,7 @@ class DynamicSchedulePanel extends HTMLElement {
               } else if (insert_inx === null) {
                   gaps.sort( (a,b) => a[1] > b[1] );
                   console.log( 'sorted gaps', gaps );
-                  transs.push( {at: this._secsToAt( this._transToSecs( transs[ 1 ] ) + 1 ), state: null} );
+                  transs.push( {at: this._secsToAt( this._transToSecs( transs[ 0 ] ) + 1 ), state: null} );
               } else {
                   transs.push( {at: this._secsToAt( this._transToSecs( transs[ insert_inx-1 ] ) + 1 ), state: null} );
               }
