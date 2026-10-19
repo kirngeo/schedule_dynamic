@@ -144,7 +144,6 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
 
           this._editingConfig = this._gatherConfig();
-          console.log( 'gathered config
 
           let transs = this._editingConfig
             .sub_schedules[ ctr.dataset.sub ]
