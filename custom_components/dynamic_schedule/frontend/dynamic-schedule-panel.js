@@ -144,12 +144,13 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
 
           this._editingConfig = this._gatherConfig();
+          console.log( 'gathered config
 
           let transs = this._editingConfig
             .sub_schedules[ ctr.dataset.sub ]
             .transitions;
 
-          console.log('adding trans to', structuredClone( this._editingConfig ));
+          console.log('adding trans to', ctr.dataset.sub, structuredClone( this._editingConfig ));
           let tsecs;
 
           if (transs.length) {
@@ -219,9 +220,9 @@ class DynamicSchedulePanel extends HTMLElement {
           }
           }
           transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) );
+          console.log('added trans, editingConfig is now', structuredClone( this._editingConfig));
           this.render();
 
-          console.log('added trans, editingConfig is now', structuredClone( this._editingConfig));
           return;
       }
 
@@ -962,6 +963,8 @@ class DynamicSchedulePanel extends HTMLElement {
                 if (st === null) {
                     hl = " hilite";
                     st = 0;
+                } else {
+                    hl = "";
                 }
 
                 cont += `<div class="trans${hl}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${desiredpc}%;">`;
@@ -1140,7 +1143,7 @@ div {
         .trans {
             width: max-content;
         }
-        .hl {
+        hl {
             border: 2px dashed red;
         }
 
