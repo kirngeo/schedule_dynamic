@@ -1147,7 +1147,7 @@ div {
         .trans {
             width: max-content;
         }
-        hl {
+        hilite {
             border: 2px dashed red;
         }
 
