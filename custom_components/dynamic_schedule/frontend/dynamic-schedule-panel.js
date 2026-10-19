@@ -172,7 +172,7 @@ class DynamicSchedulePanel extends HTMLElement {
               console.log('initial gaps', Array( ...gaps) );
 
               // arrange to insert before insert_inx
-              console.log('insert_inx', insert_inx, 'transs', structuredClode( transs ) );
+              console.log('insert_inx', insert_inx, 'transs', structuredClone( transs ) );
 
               if (insert_inx === 0) {
                   transs.push( {at: {hh: 0, mm:0, ss:0}, state: null} );
