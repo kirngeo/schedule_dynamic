@@ -1148,7 +1148,8 @@ div {
             display: flex
             align-items: center;
             width: max-content;
-            border-radius: 3px;
+            border-radius: 4px;
+            padding-left, padding-right: 3px;
         }
 
         .hilite {
