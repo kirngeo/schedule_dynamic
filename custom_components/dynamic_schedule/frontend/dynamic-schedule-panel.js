@@ -1145,7 +1145,10 @@ div {
         }
 
         .trans {
+            display: flex
+            align-items: center;
             width: max-content;
+            border-radius: 3px;
         }
 
         .hilite {
