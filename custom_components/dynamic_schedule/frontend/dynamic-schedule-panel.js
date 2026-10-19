@@ -175,7 +175,7 @@ class DynamicSchedulePanel extends HTMLElement {
               if (insert_inx === 0) {
                   transs.push( {at: {hh: 0, mm:0, ss:0}, state: 0} );
               } else {
-                  this._transToSecs( transs[ insert_inx-1 ] ) + 0
+                  transs.push( {at: this._secsToAt( this._transToSecs( transs[ insert_inx-1 ] ) + 600 ), state: 0} );
               }
 
               if (true || insert_inx === null) {
