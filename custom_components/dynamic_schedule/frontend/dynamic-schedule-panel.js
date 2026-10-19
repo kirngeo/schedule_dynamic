@@ -175,7 +175,7 @@ class DynamicSchedulePanel extends HTMLElement {
               if (insert_inx === 0) {
                   transs.push( {at: {hh: 0, mm:0, ss:0}, state: 0} );
               } else {
-                  transs.push( {at: this._secsToAt( this._transToSecs( transs[ insert_inx-1 ] ) + 600 ), state: 0} );
+                  transs.push( {at: this._secsToAt( this._transToSecs( transs[ insert_inx-1 ] ) + 1 ), state: 0} );
               }
 
               if (true || insert_inx === null) {
@@ -947,30 +947,38 @@ class DynamicSchedulePanel extends HTMLElement {
             let subsched = scheduleConfig.sub_schedules[ sub ];
             let lastpc = 0;
             let desiredpc;
+            let st;
+            let hl;
             subsched.transitions.map( (trans, tinx) => {
                 desiredpc = this._transToPc(trans, 97);
+                st = trans.state;
 
                 if (tinx) {
                     desiredpc = Math.max( desiredpc, lastpc + 3.5 );  // was 4
                 }
 
-                cont += `<div class="trans" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${desiredpc}%;">`;
+                if (st === null) {
+                    hl = " hilite";
+                    st = 0;
+                }
+
+                cont += `<div class="trans${hl}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${desiredpc}%;">`;
                 if (rw) {
                     cont += `<span>hh:<input class="hh ch" type=number min=0 max=23 value=${trans.at.hh}></input>`;
                     cont += `<span>mm:<input class="mm ch" type=number min=0 max=59 value=${trans.at.mm}></input>`;
                     cont += `<span>ss:<input class="ss ch" type=number min=0 max=59 value=${trans.at.ss}></input>`;
                     cont += '<span> state';
                     cont += scheduleConfig["boolean"]
-                    ? `<ha-switch class="state ch" ${!!trans.state ? "checked " : ""}></ha-switch>`
-                    : `<input class="state ch" type="text" value="${trans.state}" size="5" style="field-sizing:content;"></input>`;
+                    ? `<ha-switch class="state ch" ${!!st ? "checked " : ""}></ha-switch>`
+                    : `<input class="state ch" type="text" value="${st}" size="5" style="field-sizing:content;"></input>`;
                     cont += '</span>';
                     cont += `<ha-icon class="rm-trans" icon="mdi:delete-forever" title="delete transition"></ha-icon>`;
                 } else {
                     cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
                     cont += '<span> state ';
                     cont += scheduleConfig["boolean"] 
-                    ? `<ha-switch disabled ${!!trans.state ? "checked " : ""}></ha-switch>`
-                    : `${trans.state}`;
+                    ? `<ha-switch disabled ${!!st ? "checked " : ""}></ha-switch>`
+                    : `${st}`;
                     cont += '</span>'
                 }
                 cont += `</div>`;
@@ -1129,6 +1137,9 @@ div {
 
         .trans {
             width: max-content;
+        }
+        .hl {
+            border: 2px dashed red;
         }
 
         .header {
