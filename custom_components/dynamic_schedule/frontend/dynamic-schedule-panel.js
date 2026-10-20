@@ -733,9 +733,17 @@ class DynamicSchedulePanel extends HTMLElement {
 
       // subschedules:
       let subs = {};
-      [...this.shadowRoot.querySelectorAll('.sh-name')].map( sh => sh.dataset.sub ).map((sub, inx) => {
+      [...this.shadowRoot.querySelectorAll('.sh-name')].forEach( sh => {
+          console.log('forEach sh', sh.dataset.sub, sh); 
+          if (sh.dataset.link) {
+              console.log( 'link', sh.dataset.link);
+          } else {
+              console.log('no link');
+          }
+      } );
+
+      [...this.shadowRoot.querySelectorAll('.sh-name')].map( sh => {console.log(sh);return sh.dataset.sub;} ).map((sub, inx) => {
           console.log( 'sh-name sub=', sub); 
-          console.log( 'sh-name sh=', sh); 
           this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
               let transs = [];
               schctr.querySelectorAll(".trans").forEach( trans => {
