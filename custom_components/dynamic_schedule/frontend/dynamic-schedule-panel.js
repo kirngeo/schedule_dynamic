@@ -733,16 +733,40 @@ class DynamicSchedulePanel extends HTMLElement {
 
       // subschedules:
       let subs = {};
-      [...this.shadowRoot.querySelectorAll('.sh-name')].forEach( sh => {
-          console.log('forEach sh', sh.dataset.sub, sh); 
+      [...this.shadowRoot.querySelectorAll('.sh-name')].forEach( (sh, inx) => {
+          const sub = sh.dataset.sub;
+          console.log('forEach sh', sub, sh); 
           if (sh.dataset.link) {
-              console.log( 'link', sh.dataset.link);
+              subs[ sub ] = {link : sh.dataset.link}
           } else {
               console.log('no link');
+
+
+              this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
+                  let transs = [];
+                  schctr.querySelectorAll(".trans").forEach( trans => {
+                      let at = {};
+                      at.hh = Number( trans.querySelector('.hh').value );
+                      at.mm = Number( trans.querySelector('.mm').value );
+                      at.ss = Number( trans.querySelector('.ss').value );
+                      let t = {at : at};
+                      if (conf.boolean) {
+                          t.state = Boolean( trans.querySelector('.state').checked );
+                      } else {
+                          const state = trans.querySelector('.state').value;
+                          t.state = Number.isNaN(state) ? state : Number(state);
+                      }
+                      transs.push( t );
+                  });
+                  subs[ sub ] = {transitions : transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) )}
+              } );
+
+
           }
       } );
 
-      [...this.shadowRoot.querySelectorAll('.sh-name')].map( sh => {console.log(sh);return sh.dataset.sub;} ).map((sub, inx) => {
+if (false) {
+      [...this.shadowRoot.querySelectorAll('.sh-name')].map( sh => sh.dataset.sub ).map((sub, inx) => {
           console.log( 'sh-name sub=', sub); 
           this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
               let transs = [];
@@ -763,6 +787,8 @@ class DynamicSchedulePanel extends HTMLElement {
               subs[ sub ] = {transitions : transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) )}
           } );
       });
+}
+
       conf.sub_schedules = subs;
 
       // attributes:
