@@ -752,6 +752,11 @@ class Schedule(CollectionEntity):
                     self.name, subsched_id, sname, when.isoformat()  )
                 return self._dummy( when=when )
 
+        if subsched.get( CONF_LINK ):
+            LOGGER.debug( "%s linked subsched %s", self.name, subsched )
+            # should just point "subsched" at the linked thing
+            return self._dummy( when=when )
+
         return sorted(
             [
                 Transition( tdate=when,
