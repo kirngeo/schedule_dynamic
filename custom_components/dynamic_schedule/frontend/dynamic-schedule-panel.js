@@ -930,7 +930,7 @@ class DynamicSchedulePanel extends HTMLElement {
             let desiredpc;
             let st;
             let hl;
-            subsched.transitions.map( (trans, tinx) => {
+            (subsched.transitions || []).map( (trans, tinx) => {
                 desiredpc = this._transToPc(trans, 97);
                 st = trans.state;
 
