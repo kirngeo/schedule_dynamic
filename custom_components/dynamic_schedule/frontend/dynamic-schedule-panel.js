@@ -734,6 +734,7 @@ class DynamicSchedulePanel extends HTMLElement {
       // subschedules:
       let subs = {};
       [...this.shadowRoot.querySelectorAll('.sh-name')].map( sh => sh.dataset.sub ).map((sub, inx) => {
+          console.log( 'sh-name sub=', sub); 
           this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
               let transs = [];
               schctr.querySelectorAll(".trans").forEach( trans => {
@@ -904,7 +905,10 @@ class DynamicSchedulePanel extends HTMLElement {
             let subsched = scheduleConfig.sub_schedules[ sub ];
             console.log('subby', subsched );
             return subsched.link
-              ? `<div>${subsched.link}</div>`
+              ? `<div class="sub-header sh-name" data-sub="${sub}" data-link="${subsched.link}" data-inx=${inx}>
+                  <div>${sub}</div>
+                  <div>${subsched.link}</div>
+                 </div>`
               : `<div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
                 <div class="subh">
          ${rw ? `<span><button class="icon-btn delete-subschedule" title="remove this entire &quot;${sub}&quot; sub-schedule">
