@@ -1156,12 +1156,13 @@ div {
             display: flex
             align-items: center;
             width: max-content;
-            border-radius: 4px;
-            padding-left, padding-right: 3px;
         }
 
         .hilite {
             border: 2px solid red;
+            margin: 4px;
+            padding-left, padding-right: 3px;
+            border-radius: 4px;
         }
 
         .header {
