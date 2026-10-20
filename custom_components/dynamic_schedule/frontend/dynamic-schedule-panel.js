@@ -903,8 +903,9 @@ class DynamicSchedulePanel extends HTMLElement {
         let subschedNamesHtml = subsched_names.map((sub, inx) => {
             let subsched = scheduleConfig.sub_schedules[ sub ];
             console.log('subby', subsched );
-            return `
-            <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
+            return subsched.link
+              ? `<div>${subsched.link}</div>`
+              : `<div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
                 <div class="subh">
          ${rw ? `<span><button class="icon-btn delete-subschedule" title="remove this entire &quot;${sub}&quot; sub-schedule">
               <ha-icon icon="mdi:delete-forever"></ha-icon>
