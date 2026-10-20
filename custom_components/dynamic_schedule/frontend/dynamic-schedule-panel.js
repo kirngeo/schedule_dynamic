@@ -1027,7 +1027,7 @@ class DynamicSchedulePanel extends HTMLElement {
         if (rw) {
             deleteScheduleHtml = `
               <button class="icon-btn" id="delete-schedule-btn" title="Delete ${this._name}" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
-                  <ha-svg-icon icon="mdi:delete-forever" style="color:rgb(220, 49, 70);"></ha-icon>Delete ${this._name}
+                  <ha-svg-icon icon="mdi:delete-forever" style="color:rgb(220, 49, 70);"></ha-svg-icon>Delete ${this._name}
               </button>`
         }
 
