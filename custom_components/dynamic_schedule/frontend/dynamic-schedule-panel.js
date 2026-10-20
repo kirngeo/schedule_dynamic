@@ -481,22 +481,24 @@ class DynamicSchedulePanel extends HTMLElement {
 
   async _onCreateLinkedSubScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('subschedule-linked-name');
-      const name = nameInput ? this._validName( nameInput.value.trim() ) : '';
+      const name = nameInput ? this._validName( (nameInput.value || '').trim() ) : '';
 
       if (name.length === 0) {
           this.showToast('subschedule name must be nonblank, with alphanumerics and underlines only');
           return;
       }
 
+      this._editing = true;
+      this._editingConfig = this._gatherConfig();
+
+      let sub_schedules = this._editingConfig.sub_schedules;
+
       if ( Object.keys( sub_schedules ).indexOf(name) >= 0 ) {
           this.showToast('subschedule name must be unique within this schedule');
           return;
       }
 
-      this._editing = true;
-      this._editingConfig = this._gatherConfig();
-
-      this._editingConfig.sub_schedules[ name ] =
+      sub_schedules[ name ] =
           {link : this.shadowRoot.getElementById('link-source-sch-select').value
                   + '.' + this.shadowRoot.getElementById('link-source-sch-sub-select').value
           };
@@ -545,7 +547,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
   async _onCreateScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('schedule-name');
-      const name = nameInput ? nameInput.value.trim() : '';
+      const name = nameInput ? (nameInput.value || '').trim() : '';
       this._editing = false;
       
       if (!name) {
