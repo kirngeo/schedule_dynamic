@@ -1026,8 +1026,8 @@ class DynamicSchedulePanel extends HTMLElement {
 
         if (rw) {
             deleteScheduleHtml = `
-              <button class="icon-btn" id="delete-schedule-btn" title="Delete Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
-                  <ha-icon icon="mdi:delete-forever"></ha-icon>Delete ${this._name}
+              <button class="icon-btn" id="delete-schedule-btn" title="Delete ${this._name}" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
+                  <ha-svg-icon icon="mdi:delete-forever" style="color:rgb(220, 49, 70);"></ha-icon>Delete ${this._name}
               </button>`
         }
 
@@ -1568,8 +1568,8 @@ div {
           <div class="zoom-controls">
         <!--      <button class="icon-btn" id="main-test-btn" title="test">test</button> -->
               <button class="icon-btn ${this._isEditing?'dirty':'clean'}" id="save-btn" title="save">save</button>
-              ${schedselHtml}
               ${deleteScheduleHtml}
+              ${schedselHtml}
               <button class="icon-btn" id="new-schedule-btn" title="New Schedule" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:plus"></ha-icon> New ${this._name}
               </button>
