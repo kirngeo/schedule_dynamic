@@ -270,12 +270,10 @@ class DynamicSchedulePanel extends HTMLElement {
 
           const returned = await this._hass.connection.sendMessagePromise( newConfig );
           console.log('save returned', returned );
-    ////      this.setShowingEntid( returned.id );
             
-     //     this.fetchScheduleConfigs();
           this._editing = false;
           this._fetchAllConfigs();
-    //      this.render();
+          this.render();
           return;
       }
 
@@ -485,9 +483,6 @@ class DynamicSchedulePanel extends HTMLElement {
       const nameInput = this.shadowRoot.getElementById('subschedule-linked-name');
       const name = nameInput ? this._validName( nameInput.value.trim() ) : '';
 
-      let scheduleConfig = this._editing ? this._gatherConfig() : this._allConfigs[ this._currentConfigId ];
-      let sub_schedules = scheduleConfig.sub_schedules;
-
       if (name.length === 0) {
           this.showToast('subschedule name must be nonblank, with alphanumerics and underlines only');
           return;
@@ -498,50 +493,23 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      sub_schedules[ name ] = {link : this.shadowRoot.getElementById('link-source-sch-select').value
-                              + '.' + this.shadowRoot.getElementById('link-source-sch-sub-select').value}
- 
-      console.log('linked subschedule', scheduleConfig);
-
-      return; //////////
-
       this._editing = true;
       this._editingConfig = this._gatherConfig();
-    //  let conf = this._editingConfig;
-      this._editingConfig.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
+
+      this._editingConfig.sub_schedules[ name ] =
+          {link : this.shadowRoot.getElementById('link-source-sch-select').value
+                  + '.' + this.shadowRoot.getElementById('link-source-sch-sub-select').value
+          };
 
       this._closeModal();
-
       this.render();
+      return;
 
   }
 
   async _onCreateSubScheduleSubmit() {
       const nameInput = this.shadowRoot.getElementById('subschedule-name');
       const name = nameInput ? this._validName( nameInput.value.trim() ) : '';
-
-      let scheduleConfig = this._editing ? this._gatherConfig() : this._allConfigs[ this._currentConfigId ];
-      let sub_schedules = scheduleConfig.sub_schedules;
-
-      if (name.length === 0) {
-          this.showToast('subschedule name must be nonblank, with alphanumerics and underlines only');
-          return;
-      }
-
-      if ( Object.keys( sub_schedules ).indexOf(name) >= 0 ) {
-          this.showToast('subschedule name must be unique within this schedule');
-          return;
-      }
-
-      this._editing = true;
-      this._editingConfig = this._gatherConfig();
-    //  let conf = this._editingConfig;
-      this._editingConfig.sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
-
-      this._closeModal();
-
-      this.render();
-
   }
 
   _validName( proposed ) {
@@ -930,7 +898,10 @@ class DynamicSchedulePanel extends HTMLElement {
         </div>
         `;
 
-        let subschedNamesHtml = subsched_names.map((sub, inx) => `
+        let subschedNamesHtml = subsched_names.map((sub, inx) => {
+            let subsched = scheduleConfig.sub_schedules[ sub ];
+            console.log('subby', subsched );
+            return `
             <div class="sub-header sh-name" data-sub="${sub}" data-inx=${inx}>
                 <div class="subh">
          ${rw ? `<span><button class="icon-btn delete-subschedule" title="remove this entire &quot;${sub}&quot; sub-schedule">
@@ -941,8 +912,8 @@ class DynamicSchedulePanel extends HTMLElement {
               <ha-icon icon="mdi:plus"></ha-icon>
          </button></span>` : ''}
         </div>
-      </div>
-        `).join('');
+      </div>`}
+       ).join('');
 
         subschedNamesHtml = `
       <div class="sub-hrows">
@@ -1004,8 +975,6 @@ class DynamicSchedulePanel extends HTMLElement {
       </div>
       `;
 
- //             >${attribs[attrname].join("&#10;")}</textarea>
-
         if (attribs_names.length || rw) {
             attrHtml = attribs_names.map((attrname, inx) => {
             let atname = this._isDummyName(attrname) ? '' : attrname;
@@ -1014,7 +983,7 @@ class DynamicSchedulePanel extends HTMLElement {
              <input ${rw ? "" : "readonly "}id="attr-name-${inx}" data-inx=${inx} type="text" class="ch attrname" value="${atname}">
            </div>
            <div>
-             <textarea class="ch attrvalue" data-inx=${inx} ${rw ? "" : "disabled "}id="attr-value-${inx}"
+             <textarea class="ch attrvalue" style="width:max-content" data-inx=${inx} ${rw ? "" : "disabled "}id="attr-value-${inx}"
               >${attribs[attrname].join("\n")}</textarea>
            </div>
             `}).join('');
