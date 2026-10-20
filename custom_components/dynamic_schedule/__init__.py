@@ -695,10 +695,10 @@ class Schedule(CollectionEntity):
     async def _async_get_subschedule_for(self, offset: timedelta = None, when: date = None) -> list | None:
         """ Returns a list of Transitions for the specified date. """
 
-        if LOGGER.isEnabledFor(DBG):
-            LOGGER.debug( '%s get_for when=%s offset=%s', self.name, when, offset)
-
         sub_schedules = self._config[ CONF_SUB_SCHEDULES ]
+
+        if LOGGER.isEnabledFor(DBG):
+            LOGGER.debug( '%s get_for when=%s offset=%s subschs=%s', self.name, when, offset, sub_schedules)
 
         if len( sub_schedules ) == 1:
             # If there is exactly one subschedule specified, then use it.
