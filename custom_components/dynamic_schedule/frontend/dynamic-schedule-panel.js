@@ -335,6 +335,7 @@ class DynamicSchedulePanel extends HTMLElement {
       clicked  = e.target.closest('.modal-cancel-btn,.modal-close-btn,.Xmodal-overlay');
       if (clicked) {
           e.preventDefault();
+          console.log('closeModal A');
           this._closeModal();
           return;
       }
@@ -394,6 +395,7 @@ class DynamicSchedulePanel extends HTMLElement {
   }
 
   _closeModal() {
+      console.log('closeModal');
       this.shadowRoot.querySelectorAll('.modal-overlay').forEach( mo => mo.classList.remove('open') );
   }
 
@@ -491,6 +493,7 @@ class DynamicSchedulePanel extends HTMLElement {
                   + '.' + this.shadowRoot.getElementById('link-source-sch-sub-select').value
           };
 
+      console.log('closeModal B');
       this._closeModal();
       this.render();
       return;
@@ -580,6 +583,7 @@ class DynamicSchedulePanel extends HTMLElement {
           console.log( 'returned', returned );
 
           this.showToast(`${this._name} "${name}" created successfully`);
+      console.log('closeModal C');
           this._closeModal();
           await this._fetchAllConfigs();
           this._currentConfigId = this._domaindot + returned.id;
