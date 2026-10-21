@@ -918,8 +918,8 @@ class Schedule(CollectionEntity):
 			"target": {
 				"entity_id": "dynamic_schedule.ch_temp_fguest"
 			},
-			"data": {},
-			"response_variable": "service_result"
+	#		"data": {},
+	#		"response_variable": "service_result"
 		},
 		{
 			"stop": "done",
@@ -944,7 +944,7 @@ class Schedule(CollectionEntity):
         LOGGER.debug( "%s I=%s", eye,
                        script_config[0].get('data'),
                      )
-        LOGGER.debug( "%s result=%s", eye, result ) 
+        LOGGER.debug( "%s result=%s", eye, result.service_response ) 
 
 
     def dump_schedule(self, msg: str | None = None) -> None:
