@@ -1174,7 +1174,7 @@ div {
         }
 
         .maxc{
-            width: max-content;
+            width: min-content;
         }
 
         .hilite {
