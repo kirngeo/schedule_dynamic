@@ -782,13 +782,15 @@ class Schedule(CollectionEntity):
                 ).async_run( context=Context() )
 
                 if subsched := result.service_response.get(entid,{}).get(CONF_SUB_SCHEDULES,{}).get(linkparts[-1]):
-                    LOGGER.error( "%s successfully using linked %s for %s", self.name, linkparts, when)
+                    if LOGGER.isEnabledFor(DBG):
+                        LOGGER.debug( "%s successfully using linked %s for %s", self.name, linkparts, when)
                 else:
                     LOGGER.error( "%s linked subschedule %s not found for %s", self.name, linkparts, when )
                     return self._dummy( when=when )
 
-            except:
-                raise
+            except (HomeAssistantError, TemplateError, ServiceNotFound) as e:
+                LOGGER.error( "%s %s", self.name, e )
+                return self._dummy( when=when )
 
         return sorted(
             [
