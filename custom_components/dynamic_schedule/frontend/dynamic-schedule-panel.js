@@ -938,7 +938,7 @@ if (false) {
 
         let subschedNamesHtml = subsched_names.map((sub, inx) => {
             let subsched = scheduleConfig.sub_schedules[ sub ];
-            console.log('subby', subsched );
+            console.log('subby names', subsched );
             return subsched.link
               ? `<div class="sub-header sh-name" data-sub="${sub}" data-link="${subsched.link}" data-inx=${inx}>
                   <div>${sub}</div>
@@ -966,6 +966,7 @@ if (false) {
         let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
             let cont = `<div class="sub-header subschedule-${inx}" style="contain: content; overflow: visible; position: relatve;">`;
             let subsched = scheduleConfig.sub_schedules[ sub ];
+            console.log('subby transs', subsched );
             let lastpc = 0;
             let desiredpc;
             let st;
