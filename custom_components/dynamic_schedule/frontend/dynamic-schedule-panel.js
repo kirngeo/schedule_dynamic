@@ -263,14 +263,13 @@ class DynamicSchedulePanel extends HTMLElement {
                   }
               });
 
-
           console.log('save newConfig', structuredClone(newConfig) );
 
           const returned = await this._hass.connection.sendMessagePromise( newConfig );
           console.log('save returned', returned );
             
           this._editing = false;
-          this._fetchAllConfigs();
+          await this._fetchAllConfigs();
           this.render();
           return;
       }
@@ -468,7 +467,7 @@ class DynamicSchedulePanel extends HTMLElement {
       this._editing = false;
       this._currentConfigId = null;
       const returned = await this._hass.connection.sendMessagePromise(parms);
-      this._fetchAllConfigs();
+      await this._fetchAllConfigs();
       this.render();
   }
 
@@ -586,7 +585,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
           this.showToast(`${this._name} "${name}" created successfully`);
           this._closeModal();
-          this._fetchAllConfigs();
+          await this._fetchAllConfigs();
           this._currentConfigId = this._domaindot + returned.id;
           this.render()
       } catch (err) {
