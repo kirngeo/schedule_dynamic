@@ -759,7 +759,7 @@ class Schedule(CollectionEntity):
         if link := subsched.get( CONF_LINK ):
             try:
                 linkparts = link.split('.')
-                entid = DOMAIN + "." + linkparts[-2] + "XX"
+                entid = DOMAIN + "." + linkparts[-2]
                 assert( len(linkparts) > 1 )
                 actions = [
                   {
