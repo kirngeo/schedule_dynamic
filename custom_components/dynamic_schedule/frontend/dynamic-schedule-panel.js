@@ -964,9 +964,17 @@ if (false) {
       `;
 
         let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
+            let linked = false;
             let cont = `<div class="sub-header subschedule-${inx}" style="contain: content; overflow: visible; position: relatve;">`;
             let subsched = scheduleConfig.sub_schedules[ sub ];
             console.log('subby transs', subsched );
+
+            if (subsched.link) {
+                linked = true;
+                const parts = subsched.link.split(".");
+                const linkedSched = this._allConfigs[ this.domaindot + parts.at(-2) ];
+                console.log('x', parts, linkedSched);
+            }
             let lastpc = 0;
             let desiredpc;
             let st;
@@ -987,7 +995,7 @@ if (false) {
                 }
 
                 cont += `<div class="trans${hl}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${desiredpc}%;">`;
-                if (rw) {
+                if (rw && !linked ) {
                     cont += `<span>hh:<input class="hh ch" type=number min=0 max=23 value=${trans.at.hh}></input>`;
                     cont += `<span>mm:<input class="mm ch" type=number min=0 max=59 value=${trans.at.mm}></input>`;
                     cont += `<span>ss:<input class="ss ch" type=number min=0 max=59 value=${trans.at.ss}></input>`;
