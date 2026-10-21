@@ -972,7 +972,7 @@ if (false) {
             if (subsched.link) {
                 linked = true;
                 const parts = subsched.link.split(".");
-                const linkedSched = this._allConfigs[ this.domaindot + parts.at(-2) ];
+                const linkedSched = this._allConfigs[ this._domaindot + parts.at(-2) ];
                 console.log('x', parts, linkedSched);
             }
             let lastpc = 0;
