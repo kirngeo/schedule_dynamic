@@ -51,8 +51,9 @@ from homeassistant.config_entries import (
     ConfigEntry,
 )
 from homeassistant.exceptions import (
-    TemplateError,
+    HomeAssistantError,
     ServiceNotFound,
+    TemplateError,
 )
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.collection import (
