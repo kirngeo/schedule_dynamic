@@ -11,15 +11,11 @@ class DynamicSchedulePanel extends HTMLElement {
     this._allConfigs = {};  // all configs
     this._orderedIds = [];  // schedule entity ids,  alphabetic order
     this._currentConfigId = null;  // viewing config
+    this._editingConfig = null;  // editing config
 
     this._scheduleStates = [];
- //   this._scheduleConfigs = {};
- //   this._zoomLevel = 0.5;
- //   this._activeScheduleOverview = null;
     this._eligibleScriptConfigs = [];
     this._isEditing = false;
-    this._editingConfig = null;
- //   this._activeScheduleId = null;
     this._dummyBase = '____' + new Date().valueOf();
     this._dummyExt = 0;
 
@@ -336,7 +332,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      clicked  = e.target.closest('.modal-cancel-btn,.modal-close-btn');
+      clicked  = e.target.closest('.modal-cancel-btn,.modal-close-btn,.modal-contents');
       if (clicked) {
           e.preventDefault();
           this._closeModal();
