@@ -972,7 +972,9 @@ if (false) {
             if (subsched.link) {
                 linked = true;
                 const parts = subsched.link.split(".");
-                subsched = ((this._allConfigs[ this._domaindot + parts.at(-2) ] || {}).sub_schedules || {})[parts.at(-1);
+                subsched = ((this._allConfigs[ this._domaindot + parts.at(-2) ] || {})
+                    .sub_schedules || {})
+                    [parts.at(-1)];
                 console.log('x', parts, subsched);
             }
 
