@@ -755,21 +755,40 @@ class Schedule(CollectionEntity):
                     self.name, subsched_id, sname, when.isoformat()  )
                 return self._dummy( when=when )
 
-        if subsched.get( CONF_LINK ):
-            LOGGER.debug( "%s linked subsched %s", self.name, subsched )
-            # should just point "subsched" at the linked thing
-            comment = """
-            result = await async_call_from_config(
-                self.hass,
-                'get_schedule',
-                variables = {
-                    },
-                blocking=True,
-                validate_config=False,
-                }
-                """
-            
-            return self._dummy( when=when )
+        if link := subsched.get( CONF_LINK ):
+            try:
+                linkparts = link.split('.')
+                entid = DOMAIN + "." + linkparts[-2]
+                assert( len(linkparts > 1) )
+                actions = [
+                  {
+                    "action" : DOMAIN + "." + SERVICE_GET,
+                    "target" : {"entity_id" : entid},
+                    "response_variable" : "service_result",
+                  },
+                  {
+                    "stop" : "done",
+                    "response_variable" : "service_result",
+                  }
+                ]
+
+                script_config = await async_validate_actions_config( self.hass, actions )
+
+                result = await Script(
+                    self.hass,
+                    script_config,
+                    eye,
+                    DOMAIN,
+                ).async_run( context=Context() )
+
+                if not subsched := result.service_response.get(entid,{}).get(CONF_SUB_SCHEDULES,{}).get(linkparts[-1]):
+                    LOGGER.error( "%s linked subschedule %s not found", self.name, linkparts )
+                    return self._dummy( when=when )
+
+                LOGGER.error( "%s successfully using linked %s", self.name, linkparts)
+
+            except:
+                raise
 
         return sorted(
             [
