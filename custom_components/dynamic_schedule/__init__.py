@@ -759,7 +759,7 @@ class Schedule(CollectionEntity):
             try:
                 linkparts = link.split('.')
                 entid = DOMAIN + "." + linkparts[-2]
-                assert( len(linkparts > 1) )
+                assert( len(linkparts) > 1 )
                 actions = [
                   {
                     "action" : DOMAIN + "." + SERVICE_GET,
