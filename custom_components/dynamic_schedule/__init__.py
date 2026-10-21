@@ -758,7 +758,7 @@ class Schedule(CollectionEntity):
         if subsched.get( CONF_LINK ):
             LOGGER.debug( "%s linked subsched %s", self.name, subsched )
             # should just point "subsched" at the linked thing
-
+            comment = """
             result = await async_call_from_config(
                 self.hass,
                 'get_schedule',
@@ -767,6 +767,7 @@ class Schedule(CollectionEntity):
                 blocking=True,
                 validate_config=False,
                 }
+                """
             
             return self._dummy( when=when )
 
