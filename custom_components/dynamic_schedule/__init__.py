@@ -70,7 +70,10 @@ from homeassistant.helpers.event import (
     async_track_point_in_utc_time,
 )
 from homeassistant.helpers.script import Script, async_validate_actions_config
-from homeassistant.helpers.service import async_register_admin_service
+from homeassistant.helpers.service import (
+    async_call_from_config,
+    async_register_admin_service,
+    )
 from homeassistant.helpers.storage import Store
 from homeassistant.helpers.typing import ConfigType, StateType, VolDictType
 from homeassistant.util import dt as dt_util
@@ -684,11 +687,11 @@ class Schedule(CollectionEntity):
             self._unsub_update()
             self._unsub_update = None
 
-    def _dummy( self, when: date, at: int=0 ) -> list[Transition]:
+    def _dummy( self, when: date, hh: int=0 ) -> list[Transition]:
         """ Retuens a dummy daily transition list, containing just one transition. """
-        if not at : LOGGER.warning( "%s subschedule for %s is missing", self.name, when.isoformat() )
+        if not hh : LOGGER.warning( "%s subschedule for %s is missing", self.name, when.isoformat() )
         return [ Transition( tdate = when,
-                             ttime = time( hour=at, tzinfo = dt_util.get_default_time_zone() ),
+                             ttime = time( hour=hh, tzinfo = dt_util.get_default_time_zone() ),
                              state = STATE_OFF if self._is_boolean else None,
                             ) ]
 
@@ -698,7 +701,7 @@ class Schedule(CollectionEntity):
         sub_schedules = self._config[ CONF_SUB_SCHEDULES ]
 
         if LOGGER.isEnabledFor(DBG):
-            LOGGER.debug( '%s get_for when=%s offset=%s subschs=%s', self.name, when, offset, sub_schedules)
+            LOGGER.debug( '%s get_for when=%s offset=%s len=%s subschs=%s', self.name, when, offset, len(sub_schedules), sub_schedules)
 
         if len( sub_schedules ) == 1:
             # If there is exactly one subschedule specified, then use it.
@@ -718,14 +721,14 @@ class Schedule(CollectionEntity):
             ]
 
             try:
-                await async_validate_actions_config( self.hass, actions )
+                script_config = await async_validate_actions_config( self.hass, actions )
             except ValueError as _:
                 return self._dummy( when=when )
 
             try:
                 result = await Script(
                     self.hass,
-                    actions,
+                    script_config,
                     "get_subschedule_id",
                     DOMAIN,
                 ).async_run( context=Context() )
@@ -755,6 +758,16 @@ class Schedule(CollectionEntity):
         if subsched.get( CONF_LINK ):
             LOGGER.debug( "%s linked subsched %s", self.name, subsched )
             # should just point "subsched" at the linked thing
+
+            result = await async_call_from_config(
+                self.hass,
+                'get_schedule',
+                variables = {
+                    },
+                blocking=True,
+                validate_config=False,
+                }
+            
             return self._dummy( when=when )
 
         return sorted(
@@ -881,8 +894,9 @@ class Schedule(CollectionEntity):
 
     async def debug_schedule(self, msg: str | None = None) -> None:
         """Debug schedule."""
+        eye = 'Debug_schedule'
         if msg:
-            LOGGER.debug( "Debug_schedule %s", msg )
+            LOGGER.debug( "%s %s", eye, msg )
 
         response = {}
         sname = 'debug_script'
@@ -897,28 +911,39 @@ class Schedule(CollectionEntity):
                   },
              }
         ]
+        actions = [
+		{
+			"action": "dynamic_schedule.get_schedule",
+			"target": {
+				"entity_id": "dynamic_schedule.ch_temp_fguest"
+			},
+			"data": {},
+			"response_variable": "service_result"
+		},
+		{
+			"stop": "done",
+			"response_variable": "service_result"
+		}
+        ]
+	
 
-        await async_validate_actions_config( self.hass, actions )
+        script_config = await async_validate_actions_config( self.hass, actions )
 
         try:
             result = await Script(
                 self.hass,
-                actions,
-                "get_subschedule_id",
+                script_config,
+                eye,
                 DOMAIN,
             ).async_run( context=Context() )
         except (TemplateError, ServiceNotFound) as e:
-            LOGGER.error( "%s script %s execution failed %s", self.name, sname, e )
+            LOGGER.error( "%s %s script %s execution failed %s", eye, self.name, sname, e )
             return
 
-        LOGGER.debug( "%s I=%s",
-                       self._attr_unique_id,
-                       actions[0].get('data'),
+        LOGGER.debug( "%s I=%s", eye,
+                       script_config[0].get('data'),
                      )
-        LOGGER.debug( "%s O=%s",
-                       self._attr_unique_id,
-                       vars(result).get('variables',{}).get(response_variable),
-                     )
+        LOGGER.debug( "%s result=%s", eye, result ) 
 
 
     def dump_schedule(self, msg: str | None = None) -> None:
