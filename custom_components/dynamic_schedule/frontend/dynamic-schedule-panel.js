@@ -829,6 +829,7 @@ if (false) {
         }
 
         scheduleConfig = this._editing ? this._editingConfig : this._allConfigs[ this._currentConfigId ];
+        console.log('render scheduleConfig', scheduleConfig);
         if ( ! scheduleConfig ) {
             console.log( 'no scheduleConfig : not rendering' );
             return;
@@ -836,6 +837,8 @@ if (false) {
 
         rw = scheduleConfig._editable;
         schedName = scheduleConfig.name;
+
+        //
 
         schedselHtml += `<select class="icon-btn" id="schedule-sel-entid">`
         this._orderedIds.forEach( eid => {
@@ -872,7 +875,7 @@ if (false) {
 
         scriptselHtml += '</select>';
 
-      //
+        //
 
         boolHtml = `<ha-switch ${rw ? "" : "disabled "}${scheduleConfig.boolean ? "checked " : ""} id="schedule-is-boolean" class="ch"></ha-switch>`;
 
@@ -881,7 +884,7 @@ if (false) {
         attribs = (scheduleConfig && scheduleConfig.attributes) ? scheduleConfig.attributes : {}; 
         attribs_names = Object.keys(attribs).sort((a,b) => a.localeCompare(b));
 
-    // subschedule columns
+        // subschedule columns
         let subschedHtml = '';
 
         // time gutter header 
@@ -914,7 +917,7 @@ if (false) {
 
         }
 
-    // Time Gutter (Y-Axis)
+        // Time Gutter (Y-Axis)
         const timeGutterHtml = `
         <div class="time-gutter">
             ${Array.from({length: 24}).map((_, i) => `
@@ -922,6 +925,8 @@ if (false) {
             `).join('')}
         </div>
         `;
+
+        //
 
         let subschedNamesHtml = subsched_names.map((sub, inx) => {
             let subsched = scheduleConfig.sub_schedules[ sub ];
@@ -948,6 +953,8 @@ if (false) {
        ${subschedNamesHtml}
       </div>
       `;
+
+        //
 
         let subschedTransitionsHtml = subsched_names.map( (sub, inx) => {
             let linked = false;
@@ -1013,6 +1020,8 @@ if (false) {
       </div>
       `;
 
+        //
+
         if (attribs_names.length || rw) {
             attrHtml = attribs_names.map((attrname, inx) => {
             let atname = this._isDummyName(attrname) ? '' : attrname;
@@ -1031,12 +1040,16 @@ if (false) {
             }
         } 
 
+        //
+
         if (rw) {
             deleteScheduleHtml = `
               <button class="icon-btn" id="delete-schedule-btn" title="Delete ${this._name}" style="padding-left: 12px; padding-right: 12px; gap: 8px;">
                   <ha-icon icon="mdi:delete-forever" style="color:rgb(220, 49, 70);"></ha-icon>Delete ${this._name}
               </button>`
         }
+
+        //
 
         allContentHtml = `
       <div class="content">
@@ -1061,7 +1074,7 @@ if (false) {
            <ha-icon-picker
             id="schedule-icon"
             class="ch"
-            ${rw?"":"disabled "} 
+            ${rw?"":"disabled"} 
             value="${ (scheduleConfig && scheduleConfig.icon) ? scheduleConfig.icon:'mdi:table-clock'}"
            ></ha-icon-picker>
           </div>
