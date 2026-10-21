@@ -334,6 +334,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
       clicked  = e.target.closest('.modal-cancel-btn,.modal-close-btn,.modal-overlay');
       if (clicked) {
+          console.log('clicked', e );
           e.preventDefault();
           this._closeModal();
           return;
