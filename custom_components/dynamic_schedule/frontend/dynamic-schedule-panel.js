@@ -127,7 +127,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
       clicked = e.target.closest('#add-attribute');
       if (clicked) {
-          console.log('add-attribute', clicked);
+      //    console.log('add-attribute', clicked);
           this._editing = true;
           e.preventDefault();
 
@@ -149,7 +149,7 @@ class DynamicSchedulePanel extends HTMLElement {
             .sub_schedules[ ctr.dataset.sub ]
             .transitions;
 
-          console.log('adding trans to', ctr.dataset.sub, structuredClone( this._editingConfig ));
+       //   console.log('adding trans to', ctr.dataset.sub, structuredClone( this._editingConfig ));
           let tsecs;
 
           if (transs.length) {
@@ -258,9 +258,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
           Object.keys( newConfig.attributes || {})
               .forEach( k => {
-                  console.log('checking k', k);
                   if (this._isDummyName(k)) {
-                      console.log('deleting', k, newConfig.attributes);
                       delete newConfig.attributes[k];
                   }
               });
@@ -295,19 +293,16 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           e.preventDefault();
           this._openNewSubScheduleModal();
-          console.log('add subschedule');
           return;
       }
 
       clicked = e.target.closest( '#link-source-sch-sub-select' );
       if (clicked) {
-          console.log('selected sub schedule', clicked.value);
           return;
       }
 
       clicked = e.target.closest( '#link-source-sch-select' );
       if (clicked) {
-          console.log('selected linked schedule', clicked.value);
 
           let els = [];
           let opt;
@@ -339,7 +334,6 @@ class DynamicSchedulePanel extends HTMLElement {
       if (clicked) {
           e.preventDefault();
           this._openNewLinkedSubScheduleModal();
-          console.log('add linked subschedule');
           return;
       }
 
@@ -473,7 +467,6 @@ class DynamicSchedulePanel extends HTMLElement {
   //    parms[ "id" ] = this._currentConfigId;
       this._editing = false;
       this._currentConfigId = null;
-      console.log('DELETED', parms);
       const returned = await this._hass.connection.sendMessagePromise(parms);
       this._fetchAllConfigs();
       this.render();
@@ -670,7 +663,6 @@ class DynamicSchedulePanel extends HTMLElement {
           console.error("[Schedule Panel Debug] Global error in _fetchScriptConfigss:", err);
       }
 
-      console.log('_eligibleScriptConfigs', this._eligibleScriptConfigs);
       this.render();
   }
 
@@ -699,7 +691,6 @@ class DynamicSchedulePanel extends HTMLElement {
 
       let do_render = false;
       if (orderedIds.toString() !== this._orderedIds.toString()) {
-          console.log('orderedIds changed', this._orderedIds, orderedIds );
           this._orderedIds = orderedIds;
           do_render = true;
       }
@@ -735,13 +726,9 @@ class DynamicSchedulePanel extends HTMLElement {
       let subs = {};
       [...this.shadowRoot.querySelectorAll('.sh-name')].forEach( (sh, inx) => {
           const sub = sh.dataset.sub;
-          console.log('forEach sh', sub, sh); 
           if (sh.dataset.link) {
               subs[ sub ] = {link : sh.dataset.link}
           } else {
-              console.log('no link');
-
-
               this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
                   let transs = [];
                   schctr.querySelectorAll(".trans").forEach( trans => {
@@ -938,7 +925,6 @@ if (false) {
 
         let subschedNamesHtml = subsched_names.map((sub, inx) => {
             let subsched = scheduleConfig.sub_schedules[ sub ];
-            console.log('subby names', subsched );
             return subsched.link
               ? `<div class="sub-header sh-name" data-sub="${sub}" data-link="${subsched.link}" data-inx=${inx}>
                   <div>${sub}</div>
@@ -967,15 +953,13 @@ if (false) {
             let linked = false;
             let cont = `<div class="sub-header subschedule-${inx}" style="contain: content; overflow: visible; position: relatve;">`;
             let subsched = scheduleConfig.sub_schedules[ sub ];
-            console.log('subby transs', subsched );
 
             if (subsched.link) {
                 linked = true;
                 const parts = subsched.link.split(".");
                 subsched = ((this._allConfigs[ this._domaindot + parts.at(-2) ] || {})
                     .sub_schedules || {})
-                    [parts.at(-1)];
-                console.log('x', parts, subsched);
+                    [parts.at(-1)] || [];
             }
 
             let lastpc = 0;
