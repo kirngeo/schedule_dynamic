@@ -919,7 +919,7 @@ class Schedule(CollectionEntity):
 				"entity_id": "dynamic_schedule.ch_temp_fguest"
 			},
 	#		"data": {},
-	#		"response_variable": "service_result"
+			"response_variable": "service_result"
 		},
 		{
 			"stop": "done",
