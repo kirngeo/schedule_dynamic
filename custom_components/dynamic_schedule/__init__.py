@@ -781,11 +781,11 @@ class Schedule(CollectionEntity):
                     DOMAIN,
                 ).async_run( context=Context() )
 
-                if not subsched := result.service_response.get(entid,{}).get(CONF_SUB_SCHEDULES,{}).get(linkparts[-1]):
+                if subsched := result.service_response.get(entid,{}).get(CONF_SUB_SCHEDULES,{}).get(linkparts[-1]):
+                    LOGGER.error( "%s successfully using linked %s", self.name, linkparts)
+                else:
                     LOGGER.error( "%s linked subschedule %s not found", self.name, linkparts )
                     return self._dummy( when=when )
-
-                LOGGER.error( "%s successfully using linked %s", self.name, linkparts)
 
             except:
                 raise
