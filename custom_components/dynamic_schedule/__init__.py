@@ -777,7 +777,7 @@ class Schedule(CollectionEntity):
                 result = await Script(
                     self.hass,
                     script_config,
-                    eye,
+                    linkparts.join("_"),
                     DOMAIN,
                 ).async_run( context=Context() )
 
