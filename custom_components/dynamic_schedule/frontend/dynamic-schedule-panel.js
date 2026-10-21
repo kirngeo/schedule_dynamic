@@ -1072,7 +1072,7 @@ if (false) {
           <div class="attr-value">
            <ha-icon-picker
             id="schedule-icon"
-            class="ch"
+            class="ch maxc"
             ${rw?"":"disabled"} 
             value="${ (scheduleConfig && scheduleConfig.icon) ? scheduleConfig.icon:'mdi:table-clock'}"
            ></ha-icon-picker>
@@ -1174,6 +1174,10 @@ div {
         .trans {
             display: flex
             align-items: center;
+            width: max-content;
+        }
+
+        .maxc{
             width: max-content;
         }
 
