@@ -332,7 +332,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      clicked  = e.target.closest('.modal-cancel-btn,.modal-close-btn,.modal-contents');
+      clicked  = e.target.closest('.modal-cancel-btn,.modal-close-btn,.modal-content');
       if (clicked) {
           e.preventDefault();
           this._closeModal();
