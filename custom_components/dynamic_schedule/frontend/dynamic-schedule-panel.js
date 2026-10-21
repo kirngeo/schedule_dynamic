@@ -972,9 +972,10 @@ if (false) {
             if (subsched.link) {
                 linked = true;
                 const parts = subsched.link.split(".");
-                const linkedSched = this._allConfigs[ this._domaindot + parts.at(-2) ];
-                console.log('x', parts, linkedSched);
+                subsched = ((this._allConfigs[ this._domaindot + parts.at(-2) ] || {}).sub_schedules || {})[parts.at(-1);
+                console.log('x', parts, subsched);
             }
+
             let lastpc = 0;
             let desiredpc;
             let st;
