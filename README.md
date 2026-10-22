@@ -1,9 +1,7 @@
 # Dynamic Schedule
 ![icon](/custom_components/dynamic_schedule/brand/icon.txt)
 
-Home Assistant drop-in replacement for schedule integration
-
-**dynamic schedules can currently only be set up via YAML.**
+Home Assistant infinitely flexible dynamic schedule integration
 
 ## Summary
 
@@ -23,7 +21,7 @@ Each of the sub-schedules is named, and consists of a list of transitions, each 
 * the time of day
 * the state desired for the schedule helper entity
 
-Note that the sub-schedules do not contain information about day-of-week, or day-of-month, etc. They only contain the time of day and the required entity state.
+Note that the sub-schedules do not contain information about day-of-week, or day-of-month, etc. They only contain the time of day and the desired entity state.
 
 ## Schedule definition
  key | description
