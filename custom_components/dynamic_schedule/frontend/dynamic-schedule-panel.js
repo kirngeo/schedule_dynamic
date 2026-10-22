@@ -504,7 +504,7 @@ class DynamicSchedulePanel extends HTMLElement {
           return;
       }
 
-      this._editing(true);
+      this._editing = true;
       this._editingConfig = this._gatherConfig();
 
       let sub_schedules = this._editingConfig.sub_schedules;
