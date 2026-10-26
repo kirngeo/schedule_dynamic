@@ -1166,11 +1166,13 @@ class Schedule(CollectionEntity):
                            self.name, self._attr_state, type(self._attr_state)
                            )
 
-        self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = next_event = next_transition.datetime
-        self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = next_transition.state
+        if next_transition:
+            self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = next_event = next_transition.datetime
+            self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = next_transition.state
+
         self._attr_extra_state_attributes[ CONF_OFFSET ]  = want.offset.total_seconds()
        # self._attr_extra_state_attributes[ CONF_OFFSET ]  = want.offset
-        self._attr_extra_state_attributes[ ATTR_LAST_OFFSET_REFRESH ]  = self._attr_last_offset_refresh
+        self._attr_extra_state_attributes[ ATTR_LAST_OFFSET_REFRESH ] = self._attr_last_offset_refresh
 
         # Arrange to replenish transitions, and update the entity state, sometime...
         self.hass.async_create_task( self._async_replenish_transitions( update=True ) )
@@ -1236,7 +1238,4 @@ async def async_get_schedule_service(
     schedule: Schedule, service_call: ServiceCall
 ) -> ServiceResponse:
     """Return the schedule configuration."""
-    rc = schedule.get_schedule()
-    LOGGER.debug( "almacp async_get_schedule_service, %s, %s", schedule, service_call )
-    LOGGER.debug( "%s", rc )
     return schedule.get_schedule()
