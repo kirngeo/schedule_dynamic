@@ -44,7 +44,7 @@ class DynamicSchedulePanel extends HTMLElement {
           e.preventDefault();
           this._currentConfigId = clicked.value;
           this._editing = false;
-          this.render();
+          this.render(1);
           return;
       }
 
@@ -107,7 +107,7 @@ class DynamicSchedulePanel extends HTMLElement {
               .sub_schedules[ sub ]
               .transitions
               .splice( tinx, 1 ); // remove from editing config
-          this.render();
+          this.render(2);
           return;
       }
 
@@ -128,7 +128,7 @@ class DynamicSchedulePanel extends HTMLElement {
 
           this._editingConfig = this._gatherConfig();
           this._editingConfig.attributes[ this._getDummyName() ] = [];
-          this.render();
+          this.render(3);
           return;
       }
 
@@ -220,7 +220,7 @@ class DynamicSchedulePanel extends HTMLElement {
           }
           transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) );
           console.log('added trans, editingConfig is now', structuredClone( this._editingConfig));
-          this.render();
+          this.render(4);
 
           return;
       }
@@ -231,7 +231,7 @@ class DynamicSchedulePanel extends HTMLElement {
           this._editing = true;
           const data = clicked.closest( '.sh-name' ).dataset
           delete this._editingConfig.sub_schedules[ data.sub ];
-          this.render();
+          this.render(5);
 
           return;
       }
@@ -265,7 +265,7 @@ class DynamicSchedulePanel extends HTMLElement {
             
           this._editing = false;
           await this._fetchAllConfigs();
-          this.render();
+          this.render(6);
           return;
       }
 
@@ -463,7 +463,7 @@ class DynamicSchedulePanel extends HTMLElement {
       this._currentConfigId = null;
       const returned = await this._hass.connection.sendMessagePromise(parms);
       await this._fetchAllConfigs();
-      this.render();
+      this.render(7);
   }
 
   async _onCreateLinkedSubScheduleSubmit() {
@@ -491,7 +491,7 @@ class DynamicSchedulePanel extends HTMLElement {
           };
 
       this._closeModal();
-      this.render();
+      this.render(8);
 
   }
 
@@ -517,7 +517,7 @@ class DynamicSchedulePanel extends HTMLElement {
       sub_schedules[ name ] = {transitions: []}; // add the new sub-schedule
 
       this._closeModal();
-      this.render();
+      this.render(9);
 
   }
 
@@ -602,7 +602,7 @@ class DynamicSchedulePanel extends HTMLElement {
           this._closeModal();
           await this._fetchAllConfigs();
           this._currentConfigId = this._domaindot + returned.id;
-          this.render()
+          this.render(10)
       } catch (err) {
           console.error(`Failed to create ${this._name}.`, err);
           this.showToast(`Failed to create ${this._name}: ${err.message || 'Unknown error'}`);
@@ -677,7 +677,7 @@ class DynamicSchedulePanel extends HTMLElement {
           console.error("[Schedule Panel Debug] Global error in _fetchScriptConfigss:", err);
       }
 
-      this.render();
+      this.render(11);
   }
 
   async _fetchAllConfigs() {
@@ -714,7 +714,7 @@ class DynamicSchedulePanel extends HTMLElement {
       }
 
       if (do_render) {
-          this.render();
+          this.render(12);
       }
 
       console.log('allConfigs', this._allConfigs );
@@ -818,7 +818,7 @@ if (false) {
       return conf;
   }
 
-  render() {
+  render(n) {
 
     let schedselHtml = '';
     let scriptselHtml = '';
@@ -843,7 +843,7 @@ if (false) {
         }
 
         scheduleConfig = this._editing ? this._editingConfig : this._allConfigs[ this._currentConfigId ];
-        console.log('render scheduleConfig', scheduleConfig);
+        console.log('render', n, 'scheduleConfig', scheduleConfig);
         if ( ! scheduleConfig ) {
             console.log( 'no scheduleConfig : not rendering' );
             return;
