@@ -19,7 +19,7 @@ class DynamicSchedulePanel extends HTMLElement {
     this._dummyBase = '____' + new Date().valueOf();
     this._dummyExt = 0;
 
-    this.transHeight = 24;
+    this._transHeight = 24;
 
   }
 
@@ -995,14 +995,17 @@ if (false) {
             const transs = subsched.transitions || [];
             const ntrans = transs.length;
 
-            const minheight = this.transHeight * (ntrans+1);
+            const minheight = this._transHeight * (ntrans+1);
             timeSlotH = Math.max( minheight/24, 30 );
             const timeGutterH = timeSlotH * 24;
 
             console.log('sub', sub, 'minheight', minheight, 'timeSlotH', timeSlotH, 'timeGutterH', timeGutterH); 
             transs.map( (trans, tinx) => {
 
-                myh = (this._transToSecs(trans) / (24*60*60)) * timeGutterH;
+                myh = Math.min(
+                    (this._transToSecs(trans) / (24*60*60)) * timeGutterH,
+                    this._transHeight * (ntrans - tinx) 
+                );
 
                 desiredpc = this._transToPc(trans, 97);
                 const mustLeave = ntrans - tinx;
