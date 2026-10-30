@@ -1004,7 +1004,7 @@ if (false) {
 
                 myh = Math.min(
                     (this._transToSecs(trans) / (24*60*60)) * timeGutterH,
-                    this._transHeight * (ntrans - tinx) 
+                    timeGutterH - (this._transHeight * (ntrans - tinx)) 
                 );
 
                 desiredpc = this._transToPc(trans, 97);
