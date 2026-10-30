@@ -837,6 +837,7 @@ if (false) {
     let attribs = {};
     let attribs_names = [];
     let schedName = '';
+    let timeSlotH = 30;
 
     if (this._orderedIds.length > 0) {
 
@@ -995,7 +996,7 @@ if (false) {
             const ntrans = transs.length;
 
             const minheight = this.transHeight * (ntrans+1);
-            const timeSlotH = Math.max( minheight/24, 30 );
+            timeSlotH = Math.max( minheight/24, 30 );
             const timeGutterHeight = timeSlotH * 24;
 
             transs.map( (trans, tinx) => {
