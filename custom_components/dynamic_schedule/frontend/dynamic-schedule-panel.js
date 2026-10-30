@@ -997,11 +997,12 @@ if (false) {
 
             const minheight = this.transHeight * (ntrans+1);
             timeSlotH = Math.max( minheight/24, 30 );
-            const timeGutterHeight = timeSlotH * 24;
+            const timeGutterH = timeSlotH * 24;
 
+            console.log('sub', sub, 'minheight', minheight, 'timeSlotH', timeSlotH, 'timeGutterH', timeGutterH); 
             transs.map( (trans, tinx) => {
 
-                myh = (this._transToSecs(trans) / (24*60*60)) * timeGutterHeight;
+                myh = (this._transToSecs(trans) / (24*60*60)) * timeGutterH;
 
                 desiredpc = this._transToPc(trans, 97);
                 const mustLeave = ntrans - tinx;
