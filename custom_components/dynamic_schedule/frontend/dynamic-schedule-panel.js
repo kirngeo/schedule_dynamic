@@ -527,10 +527,6 @@ class DynamicSchedulePanel extends HTMLElement {
       return proposed.replaceAll(/[^a-zA-Z0-9_]/g,'_');
   }
 
-  _transToPc (trans, pc=100) {
-      return (this._transToSecs(trans) / (24*60*60)) * pc;
-  }
-
   _transToSecs( trans ) {
       try {
           const at = trans.at;
@@ -986,9 +982,6 @@ if (false) {
                     [parts.at(-1)] || [];
             }
 
-            let lastpc = 0;
-            let desiredpc;
-            let desiredtop;
             let st;
             let hl;
             let myh;
@@ -1007,13 +1000,8 @@ if (false) {
                     timeGutterH - (this._transHeight * (ntrans - tinx)) 
                 );
 
-                desiredpc = this._transToPc(trans, 97);
                 const mustLeave = ntrans - tinx;
                 st = trans.state;
-
-                if (tinx) {
-                    desiredpc = Math.max( desiredpc, lastpc + 3.5 );  // was 4
-                }
 
                 if (st === null) {
                     hl = " hilite";
@@ -1022,7 +1010,6 @@ if (false) {
                     hl = "";
                 }
 
-              //  cont += `<div class="trans${hl}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${desiredpc}%;">`;
                 cont += `<div class="trans${hl}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${myh}px;">`;
                 if (rw && !linked ) {
                     cont += `<span>hh:<input class="hh ch" type=number min=0 max=23 value=${trans.at.hh}></input>`;
@@ -1043,7 +1030,6 @@ if (false) {
                     cont += '</span>'
                 }
                 cont += `</div>`;
-                lastpc = desiredpc;
             });
             cont += '</div>';
             return cont;
