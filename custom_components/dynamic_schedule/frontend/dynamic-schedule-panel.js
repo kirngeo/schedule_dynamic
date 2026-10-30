@@ -19,6 +19,8 @@ class DynamicSchedulePanel extends HTMLElement {
     this._dummyBase = '____' + new Date().valueOf();
     this._dummyExt = 0;
 
+    this.transHeight = 24;
+
   }
 
   connectedCallback() {
@@ -985,10 +987,23 @@ if (false) {
 
             let lastpc = 0;
             let desiredpc;
+            let desiredtop;
             let st;
             let hl;
-            (subsched.transitions || []).map( (trans, tinx) => {
+            let myh;
+            const transs = subsched.transitions || [];
+            const ntrans = transs.length;
+
+            const minheight = this.transHeight * (ntrans+1);
+            const timeSlotH = Math.max( minheight/24, 30 );
+            const timeGutterHeight = timeSlotH * 24;
+
+            transs.map( (trans, tinx) => {
+
+                myh = (this._transToSecs(trans) / (24*60*60)) * timeGutterHeight;
+
                 desiredpc = this._transToPc(trans, 97);
+                const mustLeave = ntrans - tinx;
                 st = trans.state;
 
                 if (tinx) {
@@ -1002,7 +1017,8 @@ if (false) {
                     hl = "";
                 }
 
-                cont += `<div class="trans${hl}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${desiredpc}%;">`;
+              //  cont += `<div class="trans${hl}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${desiredpc}%;">`;
+                cont += `<div class="trans${hl}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${myh}px;">`;
                 if (rw && !linked ) {
                     cont += `<span>hh:<input class="hh ch" type=number min=0 max=23 value=${trans.at.hh}></input>`;
                     cont += `<span>mm:<input class="mm ch" type=number min=0 max=59 value=${trans.at.mm}></input>`;
@@ -1271,12 +1287,14 @@ div {
         }
 
         .time-slot {
-            height: 30px;
+            xheight: 30px;
+            height: ${timeSlotH}px;
             position: relative;
         }
 
         .time-slot-half {
-            height: 30px;
+            xheight: 30px;
+            height: ${timeSLotH}px; 
             position: relative;
             border: 1px solid green;
         }
