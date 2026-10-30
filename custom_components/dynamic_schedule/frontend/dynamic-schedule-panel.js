@@ -1296,7 +1296,7 @@ div {
 
         .time-slot-half {
             xheight: 30px;
-            height: ${timeSLotH}px; 
+            height: ${timeSlotH}px; 
             position: relative;
             border: 1px solid green;
         }
