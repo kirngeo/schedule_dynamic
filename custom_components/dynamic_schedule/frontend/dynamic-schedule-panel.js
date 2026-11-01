@@ -1012,6 +1012,7 @@ if (false) {
                 myY = idealY > maxY ? maxY :
                         (idealY < minY ? minY : idealY);
 
+                console.log('at', trans.at, 'minY', minY, 'maxY', maxY, 'idealY', idealY, 'myY', myY);
                 currentY += myY;
                 st = trans.state;
 
