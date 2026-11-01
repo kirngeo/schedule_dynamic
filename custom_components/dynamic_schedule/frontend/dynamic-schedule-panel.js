@@ -983,7 +983,6 @@ if (false) {
             }
 
             let st;
-            let proposedY;
             let minY;
             let maxY;
             let idealY;
@@ -997,22 +996,17 @@ if (false) {
             let freeSpace = timeGutterH - minheight;
             let currentY = 0;
 
-            console.log('sub', sub, 'minheight', minheight, 'timeSlotH', timeSlotH, 'timeGutterH', timeGutterH, 'ntrans', ntrans, 'freeSpace', freeSpace); 
+      //      console.log('sub', sub, 'minheight', minheight, 'timeSlotH', timeSlotH, 'timeGutterH', timeGutterH, 'ntrans', ntrans, 'freeSpace', freeSpace); 
             transs.map( (trans, tinx) => {
 
                 minY = currentY;
                 maxY = timeGutterH - (this._transHeight * (ntrans - tinx));
-
-                proposedY = Math.min(
-                    (this._transToSecs(trans) / (24*60*60)) * timeGutterH,
-                    timeGutterH - (this._transHeight * (ntrans - tinx)) 
-                );
-
                 idealY = (this._transToSecs(trans) / (24*60*60)) * timeGutterH;
+
                 myY = idealY > maxY ? maxY :
                         (idealY < minY ? minY : idealY);
 
-                console.log('at', trans.at, 'minY', minY, 'maxY', maxY, 'idealY', idealY, 'myY', myY);
+       //         console.log('at', trans.at, 'minY', minY, 'maxY', maxY, 'idealY', idealY, 'myY', myY);
                 currentY = myY + this._transHeight;
                 st = trans.state;
 
