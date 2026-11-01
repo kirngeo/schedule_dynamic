@@ -991,7 +991,7 @@ if (false) {
             const minheight = this._transHeight * (ntrans+1);
             timeSlotH = Math.max( minheight/24, 30 );
             const timeGutterH = timeSlotH * 24;
-            let freeSpace = timeGutterH - ((ntrans+1) * minheight);
+            let freeSpace = timeGutterH - minheight;
 
             console.log('sub', sub, 'minheight', minheight, 'timeSlotH', timeSlotH, 'timeGutterH', timeGutterH, 'ntrans', ntrans, 'freeSpace', freeSpace); 
             transs.map( (trans, tinx) => {
