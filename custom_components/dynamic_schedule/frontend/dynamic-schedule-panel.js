@@ -672,10 +672,10 @@ class DynamicSchedulePanel extends HTMLElement {
               .filter(auto => auto !== null)
               .sort((a,b) => a.alias.localeCompare(b.alias));
       } catch (err) {
-          console.error("[Schedule Panel Debug] Global error in _fetchScriptConfigss:", err);
+          console.error("[Schedule Panel Debug] Global error in _fetchScriptConfigs:", err);
       }
 
-      this.render(11);
+ //     this.render(11);
   }
 
   async _fetchAllConfigs() {
@@ -984,18 +984,19 @@ if (false) {
 
             let st;
             let hl;
-            let myh;
+            let myY;
             const transs = subsched.transitions || [];
             const ntrans = transs.length;
 
             const minheight = this._transHeight * (ntrans+1);
             timeSlotH = Math.max( minheight/24, 30 );
             const timeGutterH = timeSlotH * 24;
+            let freeSpace = timeGutterH - ((ntrans+1) * minheight);
 
-            console.log('sub', sub, 'minheight', minheight, 'timeSlotH', timeSlotH, 'timeGutterH', timeGutterH); 
+            console.log('sub', sub, 'minheight', minheight, 'timeSlotH', timeSlotH, 'timeGutterH', timeGutterH, 'ntrans', ntrans, 'freeSpace', freeSpace); 
             transs.map( (trans, tinx) => {
 
-                myh = Math.min(
+                myY = Math.min(
                     (this._transToSecs(trans) / (24*60*60)) * timeGutterH,
                     timeGutterH - (this._transHeight * (ntrans - tinx)) 
                 );
@@ -1010,7 +1011,7 @@ if (false) {
                     hl = "";
                 }
 
-                cont += `<div class="trans${hl}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${myh}px;">`;
+                cont += `<div class="trans${hl}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${myY}px;">`;
                 if (rw && !linked ) {
                     cont += `<span>hh:<input class="hh ch" type=number min=0 max=23 value=${trans.at.hh}></input>`;
                     cont += `<span>mm:<input class="mm ch" type=number min=0 max=59 value=${trans.at.mm}></input>`;
@@ -1022,7 +1023,7 @@ if (false) {
                     cont += '</span>';
                     cont += `<ha-icon class="rm-trans" icon="mdi:delete-forever" title="delete transition"></ha-icon>`;
                 } else {
-                    cont += `<span>${trans.at.hh}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
+                    cont += `<span>${trans.at.hh.toString().padStart(2,'0')}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
                     cont += '<span> state ';
                     cont += scheduleConfig["boolean"] 
                     ? `<ha-switch disabled ${!!st ? "checked " : ""}></ha-switch>`

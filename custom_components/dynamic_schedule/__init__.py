@@ -975,7 +975,7 @@ class Schedule(CollectionEntity):
         if msg:
             LOGGER.debug( "%s dump_schedule %s", self.name, msg )
         for dt in self._transitions:
-            LOGGER.debug( dt )
+            LOGGER.debug( "%s %s", self.name, dt )
 
     def advance(self) -> dict:
         """Advance the current value, to the next transition value."""
