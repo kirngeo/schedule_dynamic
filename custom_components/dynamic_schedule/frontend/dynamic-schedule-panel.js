@@ -1013,7 +1013,7 @@ if (false) {
                         (idealY < minY ? minY : idealY);
 
                 console.log('at', trans.at, 'minY', minY, 'maxY', maxY, 'idealY', idealY, 'myY', myY);
-                currentY += myY;
+                currentY = myY + this._transHeight;
                 st = trans.state;
 
                 cont += `<div class="trans${st===null ? " hilite" : ""}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${myY}px;">`;
