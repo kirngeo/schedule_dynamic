@@ -983,7 +983,10 @@ if (false) {
             }
 
             let st;
-            let hl;
+            let proposedY;
+            let minY;
+            let maxY;
+            let idealY;
             let myY;
             const transs = subsched.transitions || [];
             const ntrans = transs.length;
@@ -992,41 +995,42 @@ if (false) {
             timeSlotH = Math.max( minheight/24, 30 );
             const timeGutterH = timeSlotH * 24;
             let freeSpace = timeGutterH - minheight;
+            let currentY = 0;
 
             console.log('sub', sub, 'minheight', minheight, 'timeSlotH', timeSlotH, 'timeGutterH', timeGutterH, 'ntrans', ntrans, 'freeSpace', freeSpace); 
             transs.map( (trans, tinx) => {
 
-                myY = Math.min(
+                minY = currentY;
+                maxY = timeGutterH - (this._transHeight * (ntrans - tinx));
+
+                proposedY = Math.min(
                     (this._transToSecs(trans) / (24*60*60)) * timeGutterH,
                     timeGutterH - (this._transHeight * (ntrans - tinx)) 
                 );
 
-                const mustLeave = ntrans - tinx;
+                idealY = (this._transToSecs(trans) / (24*60*60)) * timeGutterH;
+                myY = idealY > maxY ? maxY :
+                        (idealY < minY ? minY : idealY);
+
+                currentY += myY;
                 st = trans.state;
 
-                if (st === null) {
-                    hl = " hilite";
-                    st = 0;
-                } else {
-                    hl = "";
-                }
-
-                cont += `<div class="trans${hl}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${myY}px;">`;
+                cont += `<div class="trans${st===null ? " hilite" : ""}" data-inx=${tinx} data-sub="${sub}"style="position:absolute;top:${myY}px;">`;
                 if (rw && !linked ) {
                     cont += `<span>hh:<input class="hh ch" type=number min=0 max=23 value=${trans.at.hh}></input>`;
                     cont += `<span>mm:<input class="mm ch" type=number min=0 max=59 value=${trans.at.mm}></input>`;
                     cont += `<span>ss:<input class="ss ch" type=number min=0 max=59 value=${trans.at.ss}></input>`;
                     cont += '<span> state';
                     cont += scheduleConfig["boolean"]
-                    ? `<ha-switch class="state ch" ${!!st ? "checked " : ""}></ha-switch>`
-                    : `<input class="state ch" type="text" value="${st}" size="5" style="field-sizing:content;"></input>`;
+                    ? `<ha-switch class="state ch" ${st ? "checked " : ""}></ha-switch>`
+                    : `<input class="state ch" type="text" value="${st||0}" size="5" style="field-sizing:content;"></input>`;
                     cont += '</span>';
                     cont += `<ha-icon class="rm-trans" icon="mdi:delete-forever" title="delete transition"></ha-icon>`;
                 } else {
                     cont += `<span>${trans.at.hh.toString().padStart(2,'0')}:${trans.at.mm.toString().padStart(2, '0')}:${trans.at.ss.toString().padStart(2, '0')}</span>`;
                     cont += '<span> state ';
                     cont += scheduleConfig["boolean"] 
-                    ? `<ha-switch disabled ${!!st ? "checked " : ""}></ha-switch>`
+                    ? `<ha-switch disabled ${st ? "checked " : ""}></ha-switch>`
                     : `${st}`;
                     cont += '</span>'
                 }
