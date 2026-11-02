@@ -983,28 +983,27 @@ if (false) {
             }
 
             let st;
-            let minY;
             let maxY;
             let idealY;
             let myY;
+            let currentY = 0;
+
             const transs = subsched.transitions || [];
             const ntrans = transs.length;
 
             const minheight = this._transHeight * (ntrans+1);
             timeSlotH = Math.max( minheight/24, 30 );
             const timeGutterH = timeSlotH * 24;
-            let freeSpace = timeGutterH - minheight;
-            let currentY = 0;
 
       //      console.log('sub', sub, 'minheight', minheight, 'timeSlotH', timeSlotH, 'timeGutterH', timeGutterH, 'ntrans', ntrans, 'freeSpace', freeSpace); 
             transs.map( (trans, tinx) => {
 
-                minY = currentY;
                 maxY = timeGutterH - (this._transHeight * (ntrans - tinx));
                 idealY = (this._transToSecs(trans) / (24*60*60)) * timeGutterH;
 
-                myY = idealY > maxY ? maxY :
-                        (idealY < minY ? minY : idealY);
+                myY = Math.max( currentY, Math.min( idealY, maxY ) );
+     //           myY = idealY > maxY ? maxY :
+     //                   (idealY < minY ? minY : idealY);
 
        //         console.log('at', trans.at, 'minY', minY, 'maxY', maxY, 'idealY', idealY, 'myY', myY);
                 currentY = myY + this._transHeight;
