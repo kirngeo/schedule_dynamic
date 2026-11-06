@@ -657,7 +657,13 @@ class Schedule(CollectionEntity):
         self._attr_name = self._config[CONF_NAME]
         self._attr_extra_state_attributes = self._config.get(CONF_ATTR).copy()
         self._unrecorded_attributes = self._attr_extra_state_attributes.keys()
-        self._unrecorded_attributes |= frozenset( {ATTR_TRANSITIONS, ATTR_LAST_OFFSET_REFRESH, ATTR_EDITABLE, ATTR_NEXT_EVENT, CONF_OFFSET} )
+        self._unrecorded_attributes |= frozenset({
+            ATTR_EDITABLE,
+            ATTR_LAST_OFFSET_REFRESH,
+            ATTR_NEXT_EVENT,
+            ATTR_TRANSITIONS,
+            CONF_OFFSET,
+            } )
         self._attr_extra_state_attributes[ CONF_OFFSET ] = 0
         self._attr_unit_of_measurement = self._config.get(CONF_UNIT_OF_MEASUREMENT)
         if CONF_DEVICE_CLASS in self._config:
