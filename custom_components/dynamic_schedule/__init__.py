@@ -360,8 +360,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     component.async_register_entity_service(
         SERVICE_MODIFY,
         {
-            vol.Required(ATTR_DURATION, default=timedelta()): vol.All( cv.time_period, vol.Clamp( max=timedelta( hours=12 ) ) ),
-            vol.Required(CONF_STATE, default=""): vol.Coerce(str),
+            vol.Optional(ATTR_DURATION, default=timedelta()): vol.All( cv.time_period, vol.Clamp( max=timedelta( hours=12 ) ) ),
+            vol.Optional(CONF_STATE, default=""): vol.Coerce(str),
         },
         handle_modify,
         supports_response=SupportsResponse.OPTIONAL,
@@ -1034,7 +1034,7 @@ class Schedule(CollectionEntity):
 
         return response
 
-    async def modify(self, modify_value : StateType, duration : timedelta) -> dict:
+    async def modify(self, modify_value : StateType | None, duration : timedelta | None) -> dict:
         """Alter the value of the schedule to the specified value, for the specified time.
 
         This deletes any future transitions which the specified time overlaps.
