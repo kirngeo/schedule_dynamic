@@ -1041,19 +1041,108 @@ class Schedule(CollectionEntity):
         """
         LOGGER.debug( f"{self.name} modify_value={modify_value}({type(modify_value)}) duration={duration}({type(duration)})" )
 
+        self.dump_schedule( msg="pre-modify" )
+        response = {}
+        now = dt_util.now()
+
         if modify_value and duration:
             LOGGER.debug( 'value AND duration : boost to VALUE for DURATION')
+
+            until = now + duration
+
+            now_index = None
+            until_index = None
+            for inx, transition in enumerate( self._transitions ):
+                if transition.datetime < now:
+                    now_index = inx
+                    now_transition = transition
+                if transition.datetime >= until:
+                    break
+                until_index = inx
+                until_transition = transition
+
+            if LOGGER.isEnabledFor(DBG):
+                LOGGER.debug( "until=%02d-%02d:%02d:%02d boost_value=%s",
+                               until.day,
+                               until.hour,
+                               until.minute,
+                               until.second,
+                               modify_value)
+                LOGGER.debug( "duration=%s now_index=%s until_index=%s",
+                               duration,
+                               now_index,
+                               until_index)
+                LOGGER.debug( "latest transition is currently %s",
+                               self._transitions[-1].datetime)
+
+            # Ensure that the existing  transitions extend beyond the desired boost time...
+            while until > self._transitions[-1].datetime:
+                await self._async_replenish_transitions()
+
+            if (now_index is None) or (until_index is None) or (until_index < now_index):
+                LOGGER.error( "schedule %s invalid boost until %s to %s",
+                             self.name,
+                             until,
+                             boost_value)
+                response["msg"] = f"schedule {self.name} invalid boost until {until} to {modify_value}"
+
+            elif until_index == now_index:
+                # Insert one additional transition
+                current = now_transition.state
+                self._transitions.insert( now_index+1,
+                                  Transition( tdate=until.date(), ttime=until.time(), state=current ) )
+                now_transition.state = boost_value
+
+            else:
+                until_transition.datetime = until
+                now_transition.state = modify_value
+
+                # If any transitions have been overlapped, just delete them:
+                if until_index > now_index +1:
+                    del self._transitions[ now_index+1 : until_index ]
+
+            if not response:
+                response["msg"] = f"schedule modified : boosted to {modify_value} " \
+                                  f"until {until.hour:02}:{until.minute:02}:{until.second:02}"
+
         elif modify_value:
             LOGGER.debug( 'value, but no duration : alter to VALUE (until next transition)' )
+
+            now_transition = None
+            next_transition = None
+            for transition in self._transitions:
+                if transition.datetime >= now:
+                    next_transition = transition
+                    break
+                now_transition = transition
+
+            if now_transition and next_transition and (value is not None):
+                now_transition.state = value
+                self._clean_update()
+                tm = next_transition.datetime
+                response["msg"] = f"schedule modified : altered to {value} " \
+                                  f"until {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
+
         elif duration:
             LOGGER.debug( 'duration, but no value. Hmmm.')
         else:
             LOGGER.debug( 'neither value nor duration. advance to next transition.' )
 
-        self.dump_schedule( msg="pre-modify" )
-        response = {}
-        now = dt_util.now()
+            now_transition = None
+            next_transition = None
+            for transition in self._transitions:
+                if transition.datetime >= now:
+                    next_transition = transition
+                    break
+                now_transition = transition
 
+            if now_transition and next_transition:
+                now_transition.state = next_transition.state
+                self._clean_update()
+                tm = next_transition.time
+                response["msg"] = f"schedule modified : advanced to {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
+
+        comment = '''
         if duration:
             # If "until" is specified, use it.
             until = now + duration
@@ -1124,6 +1213,7 @@ class Schedule(CollectionEntity):
         if not response:
             response["msg"] = f"schedule modified to {modify_value} " \
                               f"until {until.hour:02}:{until.minute:02}:{until.second:02}"
+'''
 
         self._clean_update()
         self.dump_schedule( msg="post-modify" )
