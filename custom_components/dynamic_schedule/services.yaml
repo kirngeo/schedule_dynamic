@@ -3,19 +3,6 @@ get_schedule:
   target:
     entity:
       domain: dynamic_schedule
-advance_schedule:
-  target:
-    entity:
-      domain: dynamic_schedule
-alter_schedule:
-  target:
-    entity:
-      domain: dynamic_schedule
-  fields:
-    state:
-      required: true
-      selector:
-        text:
 debug_schedule:
   target:
     entity:

@@ -341,22 +341,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     )
 
     component.async_register_entity_service(
-        SERVICE_ADVANCE,
-        {},
-        handle_advance,
-        supports_response=SupportsResponse.OPTIONAL,
-    )
-
-    component.async_register_entity_service(
-        SERVICE_ALTER,
-        {
-            vol.Required(CONF_STATE): vol.Coerce(str),
-        },
-        handle_alter,
-        supports_response=SupportsResponse.OPTIONAL,
-    )
-
-    component.async_register_entity_service(
         SERVICE_MODIFY,
         {
             vol.Optional(ATTR_DURATION, default=timedelta()): vol.All( cv.time_period, vol.Clamp( max=timedelta( hours=12 ) ) ),
@@ -983,70 +967,18 @@ class Schedule(CollectionEntity):
         for dt in self._transitions:
             LOGGER.debug( "%s %s", self.name, dt )
 
-    def advance(self) -> dict:
-        """Advance the current value, to the next transition value."""
-        self.dump_schedule( msg="pre-advance" )
-        now = dt_util.now()
-        response = {}
-
-        now_transition = None
-        next_transition = None
-        for transition in self._transitions:
-            if transition.datetime >= now:
-                next_transition = transition
-                break
-            now_transition = transition
-
-        if now_transition and next_transition:
-            now_transition.state = next_transition.state
-            self._clean_update()
-            tm = next_transition.time
-            response["msg"] = f"schedule advanced to {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
-
-        self.dump_schedule( msg="post-advance" )
-        return response
-
-    def alter(self, value : StateType) -> dict:
-        """Alter the current value of the schedule, to the specified value.
-
-        This altered value will only remain in force until the next schedule transition.
-        """
-        self.dump_schedule( msg="pre-alter" )
-        now = dt_util.now()
-        response = {}
-
-        now_transition = None
-        next_transition = None
-        for transition in self._transitions:
-            if transition.datetime >= now:
-                next_transition = transition
-                break
-            now_transition = transition
-
-        if now_transition and next_transition and (value is not None):
-            now_transition.state = value
-            self._clean_update()
-            tm = next_transition.datetime
-            response["msg"] = f"schedule altered to {value} " \
-                              f"until {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
-
-        self.dump_schedule( msg="post-alter" )
-
-        return response
-
-    async def modify(self, modify_value : StateType | None, duration : timedelta | None) -> dict:
+    async def modify(self, value : StateType | None, duration : timedelta | None) -> dict:
         """Alter the value of the schedule to the specified value, for the specified time.
 
         This deletes any future transitions which the specified time overlaps.
         """
-        LOGGER.debug( f"{self.name} modify_value={modify_value}({type(modify_value)}) duration={duration}({type(duration)})" )
 
         self.dump_schedule( msg="pre-modify" )
         response = {}
         now = dt_util.now()
 
-        if modify_value and duration:
-            LOGGER.debug( 'value AND duration : boost to VALUE for DURATION')
+        if value and duration:
+            LOGGER.debug( '%s : value AND duration : boost to VALUE for DURATION', self.name)
 
             until = now + duration
 
@@ -1067,7 +999,7 @@ class Schedule(CollectionEntity):
                                until.hour,
                                until.minute,
                                until.second,
-                               modify_value)
+                               value)
                 LOGGER.debug( "duration=%s now_index=%s until_index=%s",
                                duration,
                                now_index,
@@ -1080,33 +1012,33 @@ class Schedule(CollectionEntity):
                 await self._async_replenish_transitions()
 
             if (now_index is None) or (until_index is None) or (until_index < now_index):
-                LOGGER.error( "schedule %s invalid boost until %s to %s",
+                LOGGER.error( "%s invalid boost until %s to %s",
                              self.name,
                              until,
                              boost_value)
-                response["msg"] = f"schedule {self.name} invalid boost until {until} to {modify_value}"
+                response["msg"] = f"{self.name} invalid boost until {until} to {value}"
 
             elif until_index == now_index:
                 # Insert one additional transition
                 current = now_transition.state
                 self._transitions.insert( now_index+1,
                                   Transition( tdate=until.date(), ttime=until.time(), state=current ) )
-                now_transition.state = modify_value
+                now_transition.state = value
 
             else:
                 until_transition.datetime = until
-                now_transition.state = modify_value
+                now_transition.state = value
 
                 # If any transitions have been overlapped, just delete them:
                 if until_index > now_index +1:
                     del self._transitions[ now_index+1 : until_index ]
 
             if not response:
-                response["msg"] = f"schedule modified : boosted to {modify_value} " \
+                response["msg"] = f"schedule modified : boosted to {value} " \
                                   f"until {until.hour:02}:{until.minute:02}:{until.second:02}"
 
-        elif modify_value:
-            LOGGER.debug( 'value, but no duration : alter to VALUE (until next transition)' )
+        elif value:
+            LOGGER.debug( '%s value, but no duration : alter to VALUE (until next transition)', self.name )
 
             now_transition = None
             next_transition = None
@@ -1124,9 +1056,10 @@ class Schedule(CollectionEntity):
                                   f"until {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
 
         elif duration:
-            LOGGER.debug( 'duration, but no value. Hmmm.')
+            LOGGER.debug( '%s duration, but no value. No action taken.', self.name)
+
         else:
-            LOGGER.debug( 'neither value nor duration. advance to next transition.' )
+            LOGGER.debug( '%s neither value nor duration. advance to next transition.', ,self.name )
 
             now_transition = None
             next_transition = None
@@ -1141,79 +1074,6 @@ class Schedule(CollectionEntity):
   #              self._clean_update()
                 tm = next_transition.datetime
                 response["msg"] = f"schedule modified : advanced to {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
-
-        comment = '''
-        if duration:
-            # If "until" is specified, use it.
-            until = now + duration
-        else:
-            # If "until" is not specified, then just alter the state until the next transition.
-            for transition in self._transitions:
-                if transition.datetime >= now:
-                    until = transition.datetime
-                    break
-            else:
-                until = None
-
-        LOGGER.debug( "%s modify value=%s duration=%s (until=%s)", self.name, modify_value, duration, until)
-
-        now_index = None
-        until_index = None
-        for inx, transition in enumerate( self._transitions ):
-            if transition.datetime < now:
-                now_index = inx
-                now_transition = transition
-            if transition.datetime >= until:
-                break
-            until_index = inx
-            until_transition = transition
-
-        if LOGGER.isEnabledFor(DBG):
-            LOGGER.debug( "until=%02d-%02d:%02d:%02d modify_value=%s",
-                           until.day,
-                           until.hour,
-                           until.minute,
-                           until.second,
-                           modify_value)
-            LOGGER.debug( "duration=%s now_index=%s until_index=%s",
-                           duration,
-                           now_index,
-                           until_index)
-            LOGGER.debug( "latest transition is currently %s",
-                           self._transitions[-1].datetime)
-
-        # Ensure that the existing  transitions extend beyond the desired modify time...
-        while until > self._transitions[-1].datetime:
-            await self._async_replenish_transitions()
-
-        if (now_index is None) or (until_index is None) or (until_index < now_index):
-            LOGGER.error( "schedule %s invalid modify until %s to %s",
-                         self.name,
-                         until,
-                         modify_value)
-            response["msg"] = f"schedule {self.name} invalid modify until {until} to {modify_value}"
-
-        elif until_index == now_index:
-            if until < self._transitions[ until_index + 1 ].datetime:
-                # Time gap between end of "until" and start of the follwing transition.
-                # Insert one additional transition
-                current = now_transition.state
-                self._transitions.insert( now_index+1,
-                                  Transition( tdate=until.date(), ttime=until.time(), state=current ) )
-            now_transition.state = modify_value
-
-        else:
-            until_transition.datetime = until
-            now_transition.state = modify_value
-
-            # If any transitions have been overlapped, just delete them:
-            if until_index > now_index +1:
-                del self._transitions[ now_index+1 : until_index ]
-
-        if not response:
-            response["msg"] = f"schedule modified to {modify_value} " \
-                              f"until {until.hour:02}:{until.minute:02}:{until.second:02}"
-'''
 
         self._clean_update()
         self.dump_schedule( msg="post-modify" )
@@ -1316,18 +1176,6 @@ class Schedule(CollectionEntity):
 async def handle_modify(schedule: Schedule, call: ServiceCall) -> ServiceResponse:
     """Handle modify action."""
     return await schedule.modify( call.data.get( CONF_STATE ), call.data.get( ATTR_DURATION ) )
-
-async def handle_alter(schedule: Schedule, call: ServiceCall) -> ServiceResponse:
-    """Handle alter action.
-
-    Alter the value of the schedule to the specified value.
-    This altered value will only remain in force until the next schedule transition.
-    """
-    return schedule.alter( call.data.get( CONF_STATE ) )
-
-async def handle_advance(schedule: Schedule, _: ServiceCall) -> ServiceResponse:
-    """Handle advance action."""
-    return schedule.advance()
 
 async def handle_dump(schedule : Schedule, _: ServiceCall) -> ServiceResponse:
     """Handle dump action."""
