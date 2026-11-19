@@ -408,7 +408,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     frontend_dir = os.path.join(integration_dir, "frontend")
 
     DATA_PANELS: HassKey[dict[str, Panel]] = HassKey("frontend_panels")
-    for k, v in hass.data.get(DATA_PANELS,{}):
+    for k, v in hass.data.get(DATA_PANELS,{}).items():
         LOGGER.error( f'PANEL {k} {v.component_name} {v.frontend_url_path}' )
 
     # Register the static path so HA can serve the JS file
