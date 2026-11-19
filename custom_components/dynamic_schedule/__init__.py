@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 import os
-import pprint
 from collections.abc import Callable
 from datetime import date, datetime, time, timedelta
 import itertools
@@ -119,66 +118,6 @@ from .const import (
 STORAGE_VERSION = 1
 STORAGE_VERSION_MINOR = 1
 
-def ppr(msg, data ):
-    LOGGER.debug(msg)
-    for line in pprint.pformat( data ).splitlines():
-        LOGGER.debug(line)
-
-#comment = '''
-#def valid_schedule(schedule: list[dict[str, str]]) -> list[dict[str, str]]:
-#    """Validate the schedule of time ranges.
-#
-#    Ensure they have no overlap and the end time is greater than the start time.
-#    """
-#    # Empty schedule is valid
-#    if not schedule:
-#        return schedule
-#
-#    # Sort the schedule by start times
-#    schedule = sorted(schedule, key=lambda time_range: time_range[CONF_FROM])
-#
-#    # Check if the start time of the next event is before the end time of the previous event
-#    previous_to = None
-#    for time_range in schedule:
-#        if time_range[CONF_FROM] >= time_range[CONF_TO]:
-#            raise vol.Invalid(
-#                f"Invalid time range, from {time_range[CONF_FROM]} is after"
-#                f" {time_range[CONF_TO]}"
-#            )
-#
-#        # Check if the from time of the event is after the to time of the previous event
-#        if previous_to is not None and previous_to > time_range[CONF_FROM]:
-#            raise vol.Invalid("Overlapping times found in schedule")
-#
-#        previous_to = time_range[CONF_TO]
-#
-#    return schedule
-#
-#
-#def deserialize_to_time(value: Any) -> Any:
-#    """Convert 24:00 and 24:00:00 to time.max."""
-#    if not isinstance(value, str):
-#        return cv.time(value)
-#
-#    parts = value.split(":")
-#    if len(parts) < 2:
-#        return cv.time(value)
-#    hour = int(parts[0])
-#    minute = int(parts[1])
-#
-#    if hour == 24 and minute == 0:
-#        return time.max
-#
-#    return cv.time(value)
-#
-#
-#def serialize_to_time(value: Any) -> Any:
-#    """Convert time.max to 24:00:00."""
-#    if value == time.max:
-#        return "24:00:00"
-#    return vol.Coerce(str)(value)
-#
-#
 ## Extra data that the user can set on each time range
 #CUSTOM_DATA_SCHEMA = vol.Schema({str: vol.Any(bool, str, int, float)})
 #'''
@@ -188,29 +127,6 @@ BASE_SCHEMA: VolDictType = {
     vol.Required(CONF_NAME): vol.All(str, vol.Length(min=1)),
     vol.Optional(CONF_ICON): cv.icon,
 }
-
-comment = """
-TIME_RANGE_SCHEMA: VolDictType = {
-    vol.Required(CONF_FROM): cv.time,
-    vol.Required(CONF_TO): deserialize_to_time,
-    vol.Optional(CONF_DATA): CUSTOM_DATA_SCHEMA,
-}
-
-# Serialize time in validated config
-STORAGE_TIME_RANGE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_FROM): vol.Coerce(str),
-        vol.Required(CONF_TO): serialize_to_time,
-        vol.Optional(CONF_DATA): CUSTOM_DATA_SCHEMA,
-    }
-)
-
-SCHEDULE_SCHEMA: VolDictType = {
-    vol.Optional(day, default=[]): vol.All(
-        cv.ensure_list, [TIME_RANGE_SCHEMA], valid_schedule
-    )
-    for day in CONF_ALL_DAYS
-}"""
 
 AT_SCHEMA: VolDictType = {
     vol.Required( CONF_HH ) :vol.All(vol.Coerce(int), vol.Range(min=0, max=23)),
@@ -248,15 +164,6 @@ SCHEDULE_SCHEMA_V2: VolDictType = {
     vol.Required( CONF_ATTR, default={}): CUSTOM_ATTR_SCHEMA_LIST,
     vol.Required( CONF_ATTR_TRANSITIONS, default=0) : vol.All( int, vol.Range(min=0, max=20)),
 }
-
-comment = """
-STORAGE_SCHEDULE_SCHEMA: VolDictType = {
-    vol.Optional(day, default=[]): vol.All(
-        cv.ensure_list, [TIME_RANGE_SCHEMA], valid_schedule, [STORAGE_TIME_RANGE_SCHEMA]
-    )
-    for day in CONF_ALL_DAYS
-}
-"""
 
 # Validate YAML config
 CONFIG_SCHEMA = vol.Schema(
@@ -327,7 +234,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     async def reload_service_handler(service_call: ServiceCall) -> None:
         """Reload yaml entities."""
-        LOGGER.debug( "almacp reload_service_handler %s", service_call )
         conf = await component.async_prepare_reload(skip_reset=True)
         await yaml_collection.async_load(
             [{CONF_ID: id_, **cfg} for id_, cfg in conf.get(DOMAIN, {}).items()]
@@ -424,9 +330,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     )
 
     ###
-
-  #  ppr( 'SCHEMA', vol.Schema(BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA) )
- #   ppr( 'SCHEMA', BASE_SCHEMA | STORAGE_SCHEDULE_SCHEMA )
 
     return True
 
@@ -1084,7 +987,7 @@ class Schedule(CollectionEntity):
         if not self._is_ready:
             LOGGER.debug( "%s is not ready for refresh yet", self.name )
             return
-        LOGGER.debug( "refresh %s offset=%s", self.name, offset)
+        LOGGER.debug( "%s refresh, offset=%s", self.name, offset)
         self._transitions : [Transition] = []
         await self._async_replenish_transitions( offset=offset )
         self._attr_offset = offset
