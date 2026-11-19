@@ -11,7 +11,6 @@ import itertools
 from typing import Any
 
 import voluptuous as vol
-from homeassistant.util.hass_dict import HassKey  #######################
 from homeassistant.const import (
     ATTR_EDITABLE,
     CONF_DEVICE_CLASS,
@@ -407,10 +406,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     integration_dir = os.path.dirname(__file__)
     frontend_dir = os.path.join(integration_dir, "frontend")
 
-    DATA_PANELS: HassKey[dict[str, Panel]] = HassKey("frontend_panels")
-    for k, v in hass.data.get(DATA_PANELS,{}).items():
-        LOGGER.error( f'PANEL {k} {v.component_name} {v.frontend_url_path}' )
-
     # Register the static path so HA can serve the JS file
     # We serve it at /dynamic_schedule_panel_static
     await hass.http.async_register_static_paths([
@@ -458,6 +453,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     LOGGER.debug( "async_setup_entry entry=%s", entry )
 
+    return True  ##########################################
     # Get the directory of this integration
     integration_dir = os.path.dirname(__file__)
     frontend_dir = os.path.join(integration_dir, "frontend")
@@ -1043,7 +1039,7 @@ class Schedule(CollectionEntity):
 
         This deletes any future transitions which the specified time overlaps.
         """
-        LOGGER.debug( "%s modify_value={modify_value}({type(modify_value)}) duration={duration}({type(duration)})" )
+        LOGGER.debug( f"{self.name} modify_value={modify_value}({type(modify_value)}) duration={duration}({type(duration)})" )
         self.dump_schedule( msg="pre-modify" )
         response = {}
         now = dt_util.now()
