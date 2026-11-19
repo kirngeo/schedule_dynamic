@@ -1059,7 +1059,7 @@ class Schedule(CollectionEntity):
             LOGGER.debug( '%s duration, but no value. No action taken.', self.name)
 
         else:
-            LOGGER.debug( '%s neither value nor duration. advance to next transition.', ,self.name )
+            LOGGER.debug( '%s neither value nor duration. advance to next transition.', self.name )
 
             now_transition = None
             next_transition = None
