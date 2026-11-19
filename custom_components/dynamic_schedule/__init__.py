@@ -1040,6 +1040,16 @@ class Schedule(CollectionEntity):
         This deletes any future transitions which the specified time overlaps.
         """
         LOGGER.debug( f"{self.name} modify_value={modify_value}({type(modify_value)}) duration={duration}({type(duration)})" )
+
+        if modify_value and duration:
+            LOGGER.debug( 'value AND duration : boost to VALUE for DURATION')
+        else if modify_value:
+            LOGGER.debug( 'value, but no duration : alter to VALUE (until next transition)' )
+        else if duration:
+            LOGGER.debug( 'duration, but no value. Hmmm.')
+        else:
+            LOGGER.debug( 'neither value nor duration. advance to next transition.' )
+
         self.dump_schedule( msg="pre-modify" )
         response = {}
         now = dt_util.now()
