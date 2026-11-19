@@ -1039,7 +1039,7 @@ class Schedule(CollectionEntity):
 
         This deletes any future transitions which the specified time overlaps.
         """
-        LOGGER.debug( "%s modify_value={modify_value} duration={duration}" )
+        LOGGER.debug( "%s modify_value={modify_value}({type(modify_value)}) duration={duration}({type(duration)})" )
         self.dump_schedule( msg="pre-modify" )
         response = {}
         now = dt_util.now()
