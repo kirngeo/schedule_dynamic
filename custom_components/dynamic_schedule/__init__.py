@@ -1139,7 +1139,7 @@ class Schedule(CollectionEntity):
             if now_transition and next_transition:
                 now_transition.state = next_transition.state
                 self._clean_update()
-                tm = next_transition.time
+                tm = next_transition.datetime
                 response["msg"] = f"schedule modified : advanced to {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
 
         comment = '''
