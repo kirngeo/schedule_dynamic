@@ -1091,7 +1091,7 @@ class Schedule(CollectionEntity):
                 current = now_transition.state
                 self._transitions.insert( now_index+1,
                                   Transition( tdate=until.date(), ttime=until.time(), state=current ) )
-                now_transition.state = boost_value
+                now_transition.state = modify_value
 
             else:
                 until_transition.datetime = until
@@ -1118,7 +1118,7 @@ class Schedule(CollectionEntity):
 
             if now_transition and next_transition and (value is not None):
                 now_transition.state = value
-                self._clean_update()
+  #              self._clean_update()
                 tm = next_transition.datetime
                 response["msg"] = f"schedule modified : altered to {value} " \
                                   f"until {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
@@ -1138,7 +1138,7 @@ class Schedule(CollectionEntity):
 
             if now_transition and next_transition:
                 now_transition.state = next_transition.state
-                self._clean_update()
+  #              self._clean_update()
                 tm = next_transition.datetime
                 response["msg"] = f"schedule modified : advanced to {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
 
