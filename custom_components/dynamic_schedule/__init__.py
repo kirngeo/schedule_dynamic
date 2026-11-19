@@ -1043,9 +1043,9 @@ class Schedule(CollectionEntity):
 
         if modify_value and duration:
             LOGGER.debug( 'value AND duration : boost to VALUE for DURATION')
-        else if modify_value:
+        elif modify_value:
             LOGGER.debug( 'value, but no duration : alter to VALUE (until next transition)' )
-        else if duration:
+        elif duration:
             LOGGER.debug( 'duration, but no value. Hmmm.')
         else:
             LOGGER.debug( 'neither value nor duration. advance to next transition.' )
