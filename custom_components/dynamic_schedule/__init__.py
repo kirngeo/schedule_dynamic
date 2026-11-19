@@ -11,7 +11,7 @@ import itertools
 from typing import Any
 
 import voluptuous as vol
-
+from homeassistant.util.hass_dict import HassKey  #######################
 from homeassistant.const import (
     ATTR_EDITABLE,
     CONF_DEVICE_CLASS,
@@ -406,6 +406,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     # Get the directory of this integration
     integration_dir = os.path.dirname(__file__)
     frontend_dir = os.path.join(integration_dir, "frontend")
+
+    DATA_PANELS: HassKey[dict[str, Panel]] = HassKey("frontend_panels")
+    LOGGER.error( f'{hass.data.get(DATA_PANELS)' )
 
     # Register the static path so HA can serve the JS file
     # We serve it at /dynamic_schedule_panel_static
