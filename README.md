@@ -1,14 +1,14 @@
 # Dynamic Schedule
-![icon](/custom_components/dynamic_schedule/brand/icon.txt)
+![icon](/custom_components/dynamic_schedule/brand/icon.png)
 
-Home Assistant infinitely flexible dynamic schedule integration
+Infinitely flexible dynamic schedule integration for Home Assistant
 
 ## Summary
 
 Provides a dynamic scheduling facility.
 
-* dynamic schedule generation
-* for example, vary the schedule according to the day of the week, or the season of the year.
+* dynamic schedule generation, adds the power of Home Assistant Scripts to your scheduling system.
+* for example, vary the schedule according to the day of the week, or the season of the year, or even according to the square root of the date.
 * can use any type of state (eg numeric), not merely boolean.
 * schedules not restricted to daily / weekly / etc
 * each schedule basically comprises
@@ -71,14 +71,6 @@ The script should use the variables which are passed as input to determine which
 
 If the script returns the name of an invalid sub-schedule, or if the specified sub-schedule contains no transitions, then a dummy schedule is used for the particular day, which either sets the state to `off` (if `boolean` is true), or leaves the state unchanged (if `boolean` is false).
 ## Services
-
-### `advance_schedule`
-
-This service alters the state of the schedule to the value which it would get at the next transition.
-
-### `alter_schedule`
-
-This service alters the current state of the schedule to a specified value (`state`).
 
 ### `modify_schedule`
 
