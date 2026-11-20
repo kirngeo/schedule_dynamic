@@ -336,7 +336,8 @@ This emulates the operation of a non-dynamic schedule : it'll create the same sc
 
 #### Example 2 schedule-selector script
 
-```sequence:
+```
+sequence:
   - stop: normal
     response_variable: results
 variables:
