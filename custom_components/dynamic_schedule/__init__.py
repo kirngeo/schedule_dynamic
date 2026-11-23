@@ -12,6 +12,7 @@ from typing import Any
 import voluptuous as vol
 from homeassistant.const import (
     ATTR_EDITABLE,
+    ATTR_TEMPERATURE,
     CONF_DEVICE_CLASS,
     CONF_ICON,
     CONF_ID,
@@ -501,7 +502,6 @@ class Schedule(CollectionEntity):
 
     _attr_has_entity_name = True
     _attr_should_poll = False
- #   _attr_state: Literal["on", "off"]
     _attr_state: StateType
     _attr_offset: timedelta
     _attr_last_offset_refresh: datetime
@@ -512,6 +512,7 @@ class Schedule(CollectionEntity):
     _transitions: [Transition] = []
     _state_is_numeric: bool = False
     _is_ready: bool = False
+    _generate_temperature_attr: bool = False
 
     def __init__(self, config: ConfigType, editable: bool) -> None:
         """Initialize a schedule."""
@@ -558,6 +559,8 @@ class Schedule(CollectionEntity):
             self._state_is_numeric = self._attr_device_class not in NON_NUMERIC_DEVICE_CLASSES
         else:
             self._state_is_numeric = False
+
+        self._generate_temperature_attr = self._state_is_numeric and self._attr_device_class == ATTR_TEMPERATURE
 
         # Exclude any custom attributes that may be present on time ranges from recording.
         self._entity__combined_unrecorded_attributes = (
@@ -1036,17 +1039,18 @@ class Schedule(CollectionEntity):
                            self.name, self._attr_state, type(self._attr_state)
                            )
 
+        if self._generate_temperature_attr:
+            self._attr_extra_state_attributes[ ATTR_TEMPERATURE ] = self._attr_state
+
         if next_transition:
             self._attr_extra_state_attributes[ ATTR_NEXT_EVENT ] = next_event = next_transition.datetime
             self._attr_extra_state_attributes[ ATTR_NEXT_STATE ] = next_transition.state
 
         self._attr_extra_state_attributes[ CONF_OFFSET ]  = want.offset.total_seconds()
-       # self._attr_extra_state_attributes[ CONF_OFFSET ]  = want.offset
         self._attr_extra_state_attributes[ ATTR_LAST_OFFSET_REFRESH ] = self._attr_last_offset_refresh
 
         # Arrange to replenish transitions, and update the entity state, sometime...
         self.hass.async_create_task( self._async_replenish_transitions( update=True ) )
-  #      self.hass.async_create_task( self._async_replenish_transitions_and_update() )
 
         if next_event:
             self._unsub_update = async_track_point_in_utc_time(
