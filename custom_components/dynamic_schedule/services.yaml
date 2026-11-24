@@ -19,16 +19,16 @@ modify_schedule:
     duration:
       example: "00:01:00 or 60"
       required: false
-      default:
-        days: 0
-        hours: 0
-        minutes: 0
-        seconds: 0
+ #     default:
+ #       days: 0
+ #       hours: 0
+ #       minutes: 0
+ #       seconds: 0
       selector:
         duration:
     state:
       required: false
-      default: ""
+ #     default: ""
       selector:
         text:
 refresh_schedule:
