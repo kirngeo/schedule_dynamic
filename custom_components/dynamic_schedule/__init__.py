@@ -879,6 +879,9 @@ class Schedule(CollectionEntity):
         This deletes any future transitions which the specified time overlaps.
         """
 
+        LOGGER.error( f'value={value} type={type(value)} bool={not not value}' )
+        LOGGER.error( f'duration={duration} type={type(duration)} bool={not not duration}' )
+
         self.dump_schedule( msg="pre-modify" )
         response = {}
         now = dt_util.now()
