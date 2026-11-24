@@ -250,8 +250,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     component.async_register_entity_service(
         SERVICE_MODIFY,
         {
-            vol.Optional(ATTR_DURATION, default=timedelta()): vol.All( cv.time_period, vol.Clamp( max=timedelta( hours=12 ) ) ),
-            vol.Optional(CONF_STATE, default=""): vol.Coerce(str),
+   #         vol.Optional(ATTR_DURATION, default=timedelta()): vol.All( cv.time_period, vol.Clamp( max=timedelta( hours=12 ) ) ),
+   #         vol.Optional(CONF_STATE, default=""): vol.Coerce(str),
+            vol.Optional(ATTR_DURATION): vol.All( cv.time_period, vol.Clamp( max=timedelta( hours=12 ) ) ),
+            vol.Optional(CONF_STATE): vol.Coerce(str),
         },
         handle_modify,
         supports_response=SupportsResponse.OPTIONAL,
@@ -882,12 +884,12 @@ class Schedule(CollectionEntity):
         LOGGER.error( f'value={value} type={type(value)} bool={not not value}' )
         LOGGER.error( f'duration={duration} type={type(duration)} bool={not not duration}' )
 
-        self.dump_schedule( msg="pre-modify" )
         response = {}
         now = dt_util.now()
 
         if value and duration:
             LOGGER.debug( '%s : value AND duration : boost to VALUE for DURATION', self.name)
+            self.dump_schedule( msg="pre-boost" )
 
             until = now + duration
 
@@ -946,8 +948,11 @@ class Schedule(CollectionEntity):
                 response["msg"] = f"schedule modified : boosted to {value} " \
                                   f"until {until.hour:02}:{until.minute:02}:{until.second:02}"
 
+            self.dump_schedule( msg="post-boost" )
+
         elif value:
             LOGGER.debug( '%s value, but no duration : alter to VALUE (until next transition)', self.name )
+            self.dump_schedule( msg="pre-alter" )
 
             now_transition = None
             next_transition = None
@@ -964,11 +969,14 @@ class Schedule(CollectionEntity):
                 response["msg"] = f"schedule modified : altered to {value} " \
                                   f"until {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
 
+            self.dump_schedule( msg="post-alter" )
+
         elif duration:
             LOGGER.debug( '%s duration, but no value. No action taken.', self.name)
 
         else:
             LOGGER.debug( '%s neither value nor duration. advance to next transition.', self.name )
+            self.dump_schedule( msg="pre-advance" )
 
             now_transition = None
             next_transition = None
@@ -984,8 +992,9 @@ class Schedule(CollectionEntity):
                 tm = next_transition.datetime
                 response["msg"] = f"schedule modified : advanced to {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
 
+            self.dump_schedule( msg="post-advance" )
+
         self._clean_update()
-        self.dump_schedule( msg="post-modify" )
         return response
 
     async def refresh(self, offset: timedelta) -> None:
