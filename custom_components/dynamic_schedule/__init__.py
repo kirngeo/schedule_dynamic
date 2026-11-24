@@ -885,9 +885,10 @@ class Schedule(CollectionEntity):
         LOGGER.error( f'duration={duration} type={type(duration)} bool={not not duration}' )
 
         response = {}
+        actioned = False
         now = dt_util.now()
 
-        if value and duration:
+        if value is not None   and   duration is not None:
             LOGGER.debug( '%s : value AND duration : boost to VALUE for DURATION', self.name)
             self.dump_schedule( msg="pre-boost" )
 
@@ -947,10 +948,11 @@ class Schedule(CollectionEntity):
             if not response:
                 response["msg"] = f"schedule modified : boosted to {value} " \
                                   f"until {until.hour:02}:{until.minute:02}:{until.second:02}"
+                actioned = True
 
             self.dump_schedule( msg="post-boost" )
 
-        elif value:
+        elif value is not None:
             LOGGER.debug( '%s value, but no duration : alter to VALUE (until next transition)', self.name )
             self.dump_schedule( msg="pre-alter" )
 
@@ -968,11 +970,13 @@ class Schedule(CollectionEntity):
                 tm = next_transition.datetime
                 response["msg"] = f"schedule modified : altered to {value} " \
                                   f"until {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
+                actioned = True
 
             self.dump_schedule( msg="post-alter" )
 
-        elif duration:
+        elif duration is not None:
             LOGGER.debug( '%s duration, but no value. No action taken.', self.name)
+            response["msg"] = "no action taken"
 
         else:
             LOGGER.debug( '%s neither value nor duration. advance to next transition.', self.name )
@@ -991,10 +995,13 @@ class Schedule(CollectionEntity):
   #              self._clean_update()
                 tm = next_transition.datetime
                 response["msg"] = f"schedule modified : advanced to {tm.hour:02}:{tm.minute:02}:{tm.second:02}"
+                actioned = True
 
             self.dump_schedule( msg="post-advance" )
 
-        self._clean_update()
+        if actioned:
+            self._clean_update()
+
         return response
 
     async def refresh(self, offset: timedelta) -> None:
