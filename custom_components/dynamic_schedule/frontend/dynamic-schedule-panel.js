@@ -614,8 +614,8 @@ class DynamicSchedulePanel extends HTMLElement {
     // Initial fetch of detailed blocks if possible
     if (this._hass && !this._hasFetchedConfigs) {
         this._hasFetchedConfigs = true;
-        this._fetchAllConfigs();
         this._fetchScriptConfigs();
+        this._fetchAllConfigs();
     } else if (this._hass && this._hasFetchedConfigs && oldHass) {
         // Detect if any schedule states changed (e.g. user edited a schedule in the dialog)
         const oldSchedules = Object.values(oldHass.states).filter(state => state.entity_id.startsWith( this._domaindot));
@@ -674,6 +674,8 @@ class DynamicSchedulePanel extends HTMLElement {
       } catch (err) {
           console.error("[Schedule Panel Debug] Global error in _fetchScriptConfigs:", err);
       }
+
+      console.log('eligibleScriptConfigs', this._eligibleScriptConfigs );
 
  //     this.render(11);
   }
