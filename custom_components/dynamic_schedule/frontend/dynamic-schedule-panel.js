@@ -766,8 +766,6 @@ class DynamicSchedulePanel extends HTMLElement {
                           t.state = Boolean( trans.querySelector('.state').checked );
                       } else {
                           const state = trans.querySelector('.state').value;
-                          console.log('gatherConfig state=', state, 'isNumeric', isNumeric(state) );
-                     //     t.state = Number.isNaN(state) ? state : Number(state);
                           t.state = isNumeric(state) ? Number(state) : state;
                       }
                       transs.push( t );
