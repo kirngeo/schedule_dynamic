@@ -1,8 +1,4 @@
 
-// Source - https://stackoverflow.com/a/21070520
-// Posted by jackocnr, modified by community. See post 'Timeline' for change history
-// Retrieved 2026-11-27, License - CC BY-SA 4.0
-
 function isNumeric(s) {
     return !isNaN(s - parseFloat(s));
 }
@@ -204,33 +200,6 @@ class DynamicSchedulePanel extends HTMLElement {
               console.log('pushed onto empty transs', transs.at(-1) );
           }
 
-          let ddtsecs;
-
-          if (false) {
-          if (transs.length) {
-              let prevsecs = 0;
-              transs.map( (trans, inx) => {
-                  tsecs = this._transToSecs(trans);
-                  gaps.push( [tsecs - prevsecs, inx] );
-                  prevsecs = tsecs;
-              })
-              gaps.push( [(24*60*60) - prevsecs, -1] );
-              gaps = gaps.filter( (gap, inx) => gap[0] > 45*60 ).sort( (a, b) => a[0] > b[0] );
-              console.log('gaps', gaps);
-
-              let trans;
-              if (gaps[0][1] < 0) {
-                  // insert after the last transition
-                  trans = transs[ transs.length - 1 ];
-              } else {
-                  trans = transs[ gaps[0][1] ];
-              }
-
-              transs.push( {at: this._secsToAt( this._transToSecs(trans) + 45*60 ), state: 0} );
-          } else {
-              transs.push( {at: {hh: 0, mm:0, ss:0}, state: 0} );
-          }
-          }
           transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) );
           console.log('added trans, editingConfig is now', structuredClone( this._editingConfig));
           this.render(4);
@@ -776,30 +745,6 @@ class DynamicSchedulePanel extends HTMLElement {
 
           }
       } );
-
-if (false) {
-      [...this.shadowRoot.querySelectorAll('.sh-name')].map( sh => sh.dataset.sub ).map((sub, inx) => {
-          console.log( 'sh-name sub=', sub); 
-          this.shadowRoot.querySelectorAll( ".subschedule-" + inx.toString() ).forEach( schctr => {
-              let transs = [];
-              schctr.querySelectorAll(".trans").forEach( trans => {
-                  let at = {};
-                  at.hh = Number( trans.querySelector('.hh').value );
-                  at.mm = Number( trans.querySelector('.mm').value );
-                  at.ss = Number( trans.querySelector('.ss').value );
-                  let t = {at : at};
-                  if (conf.boolean) {
-                      t.state = Boolean( trans.querySelector('.state').checked );
-                  } else {
-                      const state = trans.querySelector('.state').value;
-                      t.state = Number.isNaN(state) ? state : Number(state);
-                  }
-                  transs.push( t );
-              });
-              subs[ sub ] = {transitions : transs.sort( (a,b) => this._transToSecs(a) > this._transToSecs(b) )}
-          } );
-      });
-}
 
       conf.sub_schedules = subs;
 
