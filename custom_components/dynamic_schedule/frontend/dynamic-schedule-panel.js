@@ -1,4 +1,15 @@
 
+// Source - https://stackoverflow.com/a/21070520
+// Posted by jackocnr, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-11-27, License - CC BY-SA 4.0
+
+function isNumeric(s) {
+    return !isNaN(s - parseFloat(s));
+}
+
+//
+
+
 class DynamicSchedulePanel extends HTMLElement {
   constructor() {
     super();
@@ -755,8 +766,9 @@ class DynamicSchedulePanel extends HTMLElement {
                           t.state = Boolean( trans.querySelector('.state').checked );
                       } else {
                           const state = trans.querySelector('.state').value;
-                          console.log('getherConfig state=', state, 'isNaN=', Number.isNaN(state) );
-                          t.state = Number.isNaN(state) ? state : Number(state);
+                          console.log('gatherConfig state=', state, 'isNumeric', isNumeric(state) );
+                     //     t.state = Number.isNaN(state) ? state : Number(state);
+                          t.state = isNumeric(state) ? Number(state) : state;
                       }
                       transs.push( t );
                   });
