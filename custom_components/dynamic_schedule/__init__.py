@@ -135,8 +135,9 @@ AT_SCHEMA: VolDictType = {
     vol.Optional( CONF_SS, default=0 ) : vol.All(vol.Coerce(int), vol.Range(min=0, max=59)),
 }
 
-SUBSCHED_SCHEMA: VolDictType = vol.Or( {
-    vol.Required( CONF_TRANSITIONS ) : vol.All( cv.ensure_list, [
+SUBSCHED_SCHEMA: VolDictType = vol.Or(
+
+    {vol.Required( CONF_TRANSITIONS ) : vol.All( cv.ensure_list, [
         vol.Schema({
             vol.Required( CONF_AT ) : vol.Schema({
                 vol.Required( CONF_HH ) :vol.All(vol.Coerce(int), vol.Range(min=0, max=23)),
@@ -146,7 +147,9 @@ SUBSCHED_SCHEMA: VolDictType = vol.Or( {
             vol.Optional( CONF_STATE, default=STATE_UNKNOWN ) : vol.Any( int, float, bool, str),
         }),
     ])},
-         {vol.Required( CONF_LINK ) : str}
+
+    {vol.Required( CONF_LINK ) : str}
+
   )
 
 SUBSCHEDS_SCHEMA: VolDictType = {
@@ -591,7 +594,7 @@ class Schedule(CollectionEntity):
         if not hh : LOGGER.warning( "%s subschedule for %s is missing", self.name, when.isoformat() )
         return [ Transition( tdate = when,
                              ttime = time( hour=hh, tzinfo = dt_util.get_default_time_zone() ),
-                             state = STATE_OFF if self._is_boolean else None,
+                             state = STATE_OFF if self._is_boolean else STATE_UNKNOWN,
                             ) ]
 
     async def _async_get_subschedule_for(self, offset: timedelta = None, when: date = None) -> list | None:
