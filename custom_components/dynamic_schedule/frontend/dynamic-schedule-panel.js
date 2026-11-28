@@ -1053,7 +1053,7 @@ class DynamicSchedulePanel extends HTMLElement {
             id="schedule-icon"
             class="ch maxc"
             ${rw?"":"disabled"} 
-            value="${ (scheduleConfig && scheduleConfig.icon) ? scheduleConfig.icon:'mdi:table-clock'}"
+            value="${ (scheduleConfig && scheduleConfig.icon) ? scheduleConfig.icon:'mdi:calendar-check'}"
            ></ha-icon-picker>
           </div>
           <div class="attr-name">Unit of  measurement</div>
